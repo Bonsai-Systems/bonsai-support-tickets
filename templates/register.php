@@ -81,7 +81,7 @@ $bst_field = function ( $key, $label, $type, $required, $autocomplete, $hint = '
 		<div class="bst-notice bst-notice--success" role="status">
 			<p><?php esc_html_e( 'We\'ve received your details. Once we\'ve checked them, we\'ll email you a link to set your password, usually within one working day.', 'bonsai-support-tickets' ); ?></p>
 		</div>
-		<p><a class="bst-btn bst-btn--secondary" href="<?php echo esc_url( $login_url ); ?>"><?php esc_html_e( 'Back to log in', 'bonsai-support-tickets' ); ?></a></p>
+		<p><a class="bst-btn bst-btn--primary" href="<?php echo esc_url( $login_url ); ?>"><?php esc_html_e( 'Back to log in', 'bonsai-support-tickets' ); ?></a></p>
 	<?php else : ?>
 		<h2 class="bst__title"><?php esc_html_e( 'Register for an account', 'bonsai-support-tickets' ); ?></h2>
 		<p class="bst__lead"><?php esc_html_e( 'For clients of The Bonsai Digital Collective. We check every registration, then email you a link to set your password.', 'bonsai-support-tickets' ); ?></p>
@@ -115,7 +115,7 @@ $bst_field = function ( $key, $label, $type, $required, $autocomplete, $hint = '
 			<?php $bst_field( 'email', __( 'Email address', 'bonsai-support-tickets' ), 'email', true, 'email', __( 'You\'ll log in with this, and replies to your requests go here.', 'bonsai-support-tickets' ), true ); ?>
 
 			<div class="bst-form__grid">
-				<?php $bst_field( 'website', __( 'Website', 'bonsai-support-tickets' ), 'text', false, 'url', __( 'e.g. theleyarms.co.uk', 'bonsai-support-tickets' ) ); ?>
+				<?php $bst_field( 'website', __( 'Website', 'bonsai-support-tickets' ), 'text', false, 'url', __( 'e.g. https://theleyarms.co.uk', 'bonsai-support-tickets' ) ); ?>
 				<?php $bst_field( 'phone', __( 'Phone', 'bonsai-support-tickets' ), 'tel', false, 'tel' ); ?>
 			</div>
 
@@ -133,7 +133,7 @@ $bst_field = function ( $key, $label, $type, $required, $autocomplete, $hint = '
 
 		<p class="bst__small">
 			<?php esc_html_e( 'Already have an account?', 'bonsai-support-tickets' ); ?>
-			<a href="<?php echo esc_url( $login_url ); ?>"><?php esc_html_e( 'Log in', 'bonsai-support-tickets' ); ?></a>
+			<a href="<?php echo esc_url( $login_url ); ?>" class="black-link"><?php esc_html_e( 'Log in', 'bonsai-support-tickets' ); ?></a>
 		</p>
 	<?php endif; ?>
 </div>

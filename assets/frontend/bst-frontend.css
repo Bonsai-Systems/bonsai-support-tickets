@@ -424,6 +424,11 @@
 	text-decoration-color: var(--bst-accent);
 }
 
+a.black-link {color:var(--bst-black);}
+a.black-link:hover,
+a.black-link:focus {
+	color: var(--bst-accent);
+}
 /* Stack rows into cards on small screens. */
 @media (max-width: 767px) {
 	.bst-table thead {
@@ -461,6 +466,8 @@
 		content: attr(data-label);
 	}
 }
+
+
 
 /* Single ticket -------------------------------------------------------- */
 

@@ -1,0 +1,676 @@
+/**
+ * Bonsai Support Tickets — front end.
+ *
+ * Follows the Bonsai theme design system (tbdc_theme_v2/DESIGN.md): warm
+ * off-white surfaces, black buttons that turn pink on hover, no rounded
+ * corners, Plus Jakarta Sans, pink uppercase section tags.
+ *
+ * Every colour/font reads the theme's custom property first and falls back
+ * to the Bonsai value, so it looks right on the Bonsai theme and anywhere
+ * else. Turn the whole file off with:
+ * add_filter( 'bst_load_frontend_css', '__return_false' );
+ *
+ * Everything is scoped under .bst. BEM: .bst-block__element--modifier.
+ */
+
+/* Tokens --------------------------------------------------------------- */
+
+.bst {
+	--bst-accent: var(--bonsai-accent, #ee4367);
+	--bst-accent-hover: var(--bonsai-accent-hover, #d23253); /* White text on this passes AA (4.9:1). */
+	--bst-accent-text: #c21f48; /* Pink for small text on light backgrounds (5.8:1). */
+	--bst-black: var(--bonsai-black, #000);
+	--bst-dark: var(--bonsai-dark, #111);
+	--bst-warm: var(--bonsai-warm, #faf8f5);
+	--bst-white: var(--bonsai-white, #fff);
+	--bst-grey-dark: var(--bonsai-grey-dark, #333);
+	--bst-grey-mid: #6b6b6b; /* Theme's #767676 is borderline on warm backgrounds; this passes AA. */
+	--bst-grey-light: var(--bonsai-grey-light, #e5e5e0);
+	--bst-border: var(--bonsai-border, rgba(0, 0, 0, 0.08));
+	--bst-sans: var(--bonsai-sans, "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+	--bst-ease: all 0.25s ease;
+
+	--bst-success: #13744a;
+	--bst-success-bg: #e7f4ed;
+	--bst-warning: #8a4b00;
+	--bst-warning-bg: #fdf1e1;
+	--bst-error: #b0122c;
+	--bst-error-bg: #fdeaed;
+
+	font-family: var(--bst-sans);
+	color: var(--bst-grey-dark);
+}
+
+.bst *,
+.bst *::before,
+.bst *::after {
+	box-sizing: border-box;
+}
+
+/* Type ----------------------------------------------------------------- */
+
+.bst__tag {
+	margin: 0 0 0.75rem;
+	font-size: 0.75rem;
+	font-weight: 600;
+	letter-spacing: 0.15em;
+	text-transform: uppercase;
+	color: var(--bst-accent-text);
+}
+
+.bst__title {
+	margin: 0 0 1rem;
+	font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+	font-weight: 500;
+	line-height: 1.2;
+	letter-spacing: -0.02em;
+	color: var(--bst-black);
+}
+
+.bst__lead {
+	margin: 0 0 1.5rem;
+	font-size: 1.0625rem;
+	font-weight: 300;
+	line-height: 1.6;
+}
+
+.bst__small {
+	font-size: 0.875rem;
+}
+
+.bst a {
+	color: var(--bst-black);
+	text-decoration-color: var(--bst-accent);
+	text-underline-offset: 3px;
+}
+
+.bst a:hover,
+.bst a:focus {
+	text-decoration-thickness: 2px;
+}
+
+.bst :focus-visible {
+	outline: 2px solid var(--bst-accent);
+	outline-offset: 2px;
+}
+
+/* Buttons -------------------------------------------------------------- */
+
+.bst-btn,
+.bst #bst-login-form .button-primary {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0.95rem 1.75rem;
+	font-family: var(--bst-sans);
+	font-size: 0.875rem;
+	font-weight: 500;
+	line-height: 1.2;
+	letter-spacing: 0.05em;
+	text-decoration: none;
+	text-transform: uppercase;
+	border: 1px solid var(--bst-black);
+	border-radius: 0;
+	cursor: pointer;
+	transition: var(--bst-ease);
+}
+
+.bst-btn--primary,
+.bst #bst-login-form .button-primary {
+	color: var(--bst-warm);
+	background: var(--bst-black);
+}
+
+.bst-btn--primary:hover,
+.bst-btn--primary:focus,
+.bst #bst-login-form .button-primary:hover,
+.bst #bst-login-form .button-primary:focus {
+	color: var(--bst-white);
+	background: var(--bst-accent-hover);
+	border-color: var(--bst-accent-hover);
+}
+
+.bst-btn--secondary {
+	color: var(--bst-black);
+	background: transparent;
+}
+
+.bst-btn--secondary:hover,
+.bst-btn--secondary:focus {
+	color: var(--bst-warm);
+	background: var(--bst-black);
+}
+
+/* For dark backgrounds. */
+.bst-btn--light {
+	color: var(--bst-black);
+	background: var(--bst-white);
+	border-color: var(--bst-white);
+}
+
+.bst-btn--light:hover,
+.bst-btn--light:focus {
+	color: var(--bst-white);
+	background: var(--bst-accent-hover);
+	border-color: var(--bst-accent-hover);
+}
+
+.bst a.bst-btn {
+	text-decoration: none;
+}
+
+/* Notices -------------------------------------------------------------- */
+
+.bst-notice {
+	margin: 0 0 1.5rem;
+	padding: 1rem 1.25rem;
+	background: var(--bst-white);
+	border: 1px solid var(--bst-grey-light);
+	border-left: 3px solid var(--bst-black);
+}
+
+.bst-notice p {
+	margin: 0;
+}
+
+.bst-notice p + p {
+	margin-top: 0.5rem;
+}
+
+.bst-notice--success {
+	color: var(--bst-success);
+	background: var(--bst-success-bg);
+	border-left-color: var(--bst-success);
+}
+
+.bst-notice--error {
+	color: var(--bst-error);
+	background: var(--bst-error-bg);
+	border-left-color: var(--bst-error);
+}
+
+.bst-empty {
+	padding: 2rem;
+	text-align: center;
+	background: var(--bst-white);
+	border: 1px solid var(--bst-grey-light);
+}
+
+/* Badges --------------------------------------------------------------- */
+
+.bst-badge {
+	display: inline-block;
+	padding: 0.3rem 0.65rem;
+	font-size: 0.6875rem;
+	font-weight: 600;
+	line-height: 1.3;
+	letter-spacing: 0.12em;
+	white-space: nowrap;
+	text-transform: uppercase;
+	color: var(--bst-grey-dark);
+	background: var(--bst-white);
+	border: 1px solid currentColor;
+}
+
+.bst-badge--new,
+.bst-badge--open {
+	color: var(--bst-warning);
+	background: var(--bst-warning-bg);
+}
+
+.bst-badge--awaiting_client {
+	color: var(--bst-error);
+	background: var(--bst-error-bg);
+}
+
+.bst-badge--solved,
+.bst-badge--closed {
+	color: var(--bst-success);
+	background: var(--bst-success-bg);
+}
+
+/* Forms ---------------------------------------------------------------- */
+
+.bst-form {
+	display: grid;
+	gap: 1.5rem;
+}
+
+.bst-form__grid {
+	display: grid;
+	gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+	.bst-form__grid {
+		grid-template-columns: 1fr 1fr;
+	}
+}
+
+.bst-form__group {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	min-width: 0;
+}
+
+.bst-form__label,
+.bst #bst-login-form label {
+	font-size: 0.75rem;
+	font-weight: 600;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: var(--bst-black);
+}
+
+.bst-form__required {
+	color: var(--bst-accent-text);
+}
+
+.bst-form__input,
+.bst #bst-login-form input[type="text"],
+.bst #bst-login-form input[type="password"] {
+	width: 100%;
+	padding: 0.9rem 1rem;
+	font-family: var(--bst-sans);
+	font-size: 1rem;
+	color: var(--bst-dark);
+	background: var(--bst-white);
+	border: 1px solid #8a8a85; /* 3:1 against white for the input boundary. */
+	border-radius: 0;
+	transition: var(--bst-ease);
+}
+
+.bst-form__input:focus,
+.bst #bst-login-form input:focus {
+	border-color: var(--bst-black);
+	outline: 2px solid transparent; /* Keeps a ring in forced-colours mode. */
+	box-shadow: 0 0 0 1px var(--bst-black);
+}
+
+.bst-form__input[aria-invalid="true"] {
+	border-color: var(--bst-error);
+}
+
+.bst-form__textarea {
+	min-height: 10rem;
+	resize: vertical;
+}
+
+.bst-form__file {
+	font-family: var(--bst-sans);
+	font-size: 0.9375rem;
+}
+
+.bst-form__hint {
+	margin: 0;
+	font-size: 0.875rem;
+	color: var(--bst-grey-mid);
+}
+
+.bst-form__error {
+	margin: 0;
+	font-size: 0.875rem;
+	font-weight: 600;
+	color: var(--bst-error);
+}
+
+.bst-form__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+}
+
+/* Honeypot: hidden from people and screen readers, visible to bots. */
+.bst-form__hp {
+	position: absolute;
+	left: -9999px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+.bst #bst-login-form p {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	margin: 0 0 1.25rem;
+}
+
+.bst #bst-login-form .login-remember {
+	flex-direction: row;
+}
+
+.bst #bst-login-form .login-remember label {
+	letter-spacing: 0;
+	text-transform: none;
+	font-weight: 400;
+}
+
+/* Portal (my requests) ------------------------------------------------- */
+
+.bst-portal__head {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1rem 2rem;
+	align-items: flex-end;
+	justify-content: space-between;
+	margin-bottom: 2rem;
+}
+
+.bst-portal__head .bst__title {
+	margin: 0;
+}
+
+.bst-table {
+	width: 100%;
+	margin: 0 0 3rem;
+	border-collapse: collapse;
+	background: var(--bst-white);
+	border: 1px solid var(--bst-grey-light);
+}
+
+.bst-table__caption {
+	padding: 0 0 0.75rem;
+	font-size: 0.75rem;
+	font-weight: 600;
+	letter-spacing: 0.15em;
+	text-align: left;
+	text-transform: uppercase;
+	color: var(--bst-black);
+}
+
+.bst-table th,
+.bst-table td {
+	padding: 1rem 1.25rem;
+	text-align: left;
+	vertical-align: middle;
+	border-bottom: 1px solid var(--bst-grey-light);
+}
+
+.bst-table th {
+	font-size: 0.75rem;
+	font-weight: 600;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: var(--bst-grey-mid);
+	background: var(--bst-warm);
+}
+
+.bst-table tbody tr {
+	transition: var(--bst-ease);
+}
+
+.bst-table tbody tr:hover {
+	background: var(--bst-warm);
+}
+
+.bst-table__ref {
+	font-size: 0.875rem;
+	font-weight: 600;
+	white-space: nowrap;
+	color: var(--bst-black);
+}
+
+.bst a.bst-table__link {
+	font-weight: 500;
+	text-decoration: none;
+}
+
+.bst a.bst-table__link:hover,
+.bst a.bst-table__link:focus {
+	text-decoration: underline;
+	text-decoration-color: var(--bst-accent);
+}
+
+/* Stack rows into cards on small screens. */
+@media (max-width: 767px) {
+	.bst-table thead {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip: rect(0 0 0 0);
+	}
+
+	.bst-table,
+	.bst-table tbody,
+	.bst-table tr,
+	.bst-table td {
+		display: block;
+	}
+
+	.bst-table tr {
+		padding: 1rem 1.25rem;
+		border-bottom: 1px solid var(--bst-grey-light);
+	}
+
+	.bst-table td {
+		padding: 0.25rem 0;
+		border: 0;
+	}
+
+	.bst-table td::before {
+		display: block;
+		font-size: 0.6875rem;
+		font-weight: 600;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--bst-grey-mid);
+		content: attr(data-label);
+	}
+}
+
+/* Single ticket -------------------------------------------------------- */
+
+.bst-back {
+	font-size: 0.875rem;
+	font-weight: 500;
+}
+
+.bst-ticket__head {
+	margin: 1.5rem 0 2rem;
+	padding-bottom: 1.5rem;
+	border-bottom: 1px solid var(--bst-grey-light);
+}
+
+.bst-thread {
+	display: grid;
+	gap: 1rem;
+	margin: 0 0 3rem;
+	padding: 0;
+	list-style: none;
+}
+
+.bst-message {
+	padding: 1.5rem 1.75rem;
+	background: var(--bst-white);
+	border: 1px solid var(--bst-grey-light);
+	border-left: 3px solid var(--bst-grey-light);
+	scroll-margin-top: 8rem; /* Clear the theme's fixed header when jumping to #bst-latest. */
+}
+
+.bst-message--team {
+	background: var(--bst-warm);
+	border-left-color: var(--bst-accent);
+}
+
+.bst-message__meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.25rem 1rem;
+	align-items: baseline;
+	justify-content: space-between;
+	margin-bottom: 0.75rem;
+}
+
+.bst-message__author {
+	font-weight: 600;
+	color: var(--bst-black);
+}
+
+.bst-message__team {
+	margin-left: 0.5rem;
+	font-size: 0.6875rem;
+	font-weight: 600;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: var(--bst-accent-text);
+}
+
+.bst-message__time {
+	font-size: 0.8125rem;
+	color: var(--bst-grey-mid);
+}
+
+.bst-message__body {
+	font-size: 1rem;
+	line-height: 1.7;
+	overflow-wrap: anywhere;
+}
+
+.bst-message__body > :first-child {
+	margin-top: 0;
+}
+
+.bst-message__body > :last-child {
+	margin-bottom: 0;
+}
+
+.bst-message__body blockquote {
+	margin: 1rem 0;
+	padding-left: 1rem;
+	color: var(--bst-grey-mid);
+	border-left: 2px solid var(--bst-grey-light);
+}
+
+.bst-files {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem 1.5rem;
+	margin: 1rem 0 0;
+	padding: 1rem 0 0;
+	font-size: 0.875rem;
+	list-style: none;
+	border-top: 1px solid var(--bst-grey-light);
+}
+
+.bst-files__size {
+	color: var(--bst-grey-mid);
+}
+
+.bst-reply {
+	padding: 2rem;
+	background: var(--bst-white);
+	border: 1px solid var(--bst-grey-light);
+}
+
+.bst-reply__title {
+	margin: 0 0 1.5rem;
+	font-size: 1.25rem;
+	font-weight: 500;
+	color: var(--bst-black);
+}
+
+/* Help centre ---------------------------------------------------------- */
+
+.bst-help__search {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	margin-bottom: 3rem;
+}
+
+.bst-help__search-row {
+	display: flex;
+	gap: 0;
+}
+
+.bst-help__search-row .bst-form__input {
+	border-right: 0;
+}
+
+.bst-help__topics {
+	display: grid;
+	gap: 1.5rem;
+	margin-bottom: 4rem;
+}
+
+@media (min-width: 768px) {
+	.bst-help__topics {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (min-width: 1100px) {
+	.bst-help__topics {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+.bst-help__topic {
+	padding: 2rem;
+	background: var(--bst-white);
+	border: 1px solid var(--bst-grey-light);
+	transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bst-help__topic:hover {
+	border-color: var(--bst-black);
+	transform: translateY(-4px);
+}
+
+.bst-help__topic-title {
+	margin: 0 0 0.75rem;
+	font-size: 1.25rem;
+	font-weight: 500;
+}
+
+.bst a:where(.bst-help__topic-title a) {
+	text-decoration: none;
+}
+
+.bst-help__topic-intro {
+	margin: 0 0 1rem;
+	font-size: 0.9375rem;
+	color: var(--bst-grey-mid);
+}
+
+.bst-help__list {
+	margin: 0 0 1rem;
+	padding: 0;
+	list-style: none;
+}
+
+.bst-help__list li {
+	padding: 0.5rem 0;
+	border-bottom: 1px solid var(--bst-border);
+}
+
+.bst-help__more {
+	font-size: 0.875rem;
+	font-weight: 600;
+}
+
+.bst-help__cta {
+	padding: 3rem 2rem;
+	text-align: center;
+	color: var(--bst-warm);
+	background: var(--bst-black);
+}
+
+.bst-help__cta .bst__title {
+	color: var(--bst-white);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.bst *,
+	.bst *::before,
+	.bst *::after {
+		transition: none !important; /* Respect reduced motion over our own hover transitions. */
+	}
+
+	.bst-help__topic:hover {
+		transform: none;
+	}
+}

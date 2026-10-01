@@ -1,0 +1,6 @@
+# vendor/ is committed on purpose (update checker ships with the plugin).
+# Build it with `composer install --no-dev` before committing.
+.DS_Store
+Thumbs.db
+*.zip
+.phpunit.result.cache

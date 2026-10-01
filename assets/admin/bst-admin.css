@@ -1,0 +1,459 @@
+/**
+ * Bonsai Support Tickets — admin.
+ *
+ * Builds on bonsai-admin-ui.css (the shared Bonsai admin design system).
+ * Ticket and help-article screens are core post screens that can't be
+ * wrapped in .bonsai-ui, so rules here are scoped to body.bst-admin-screen
+ * and reuse the same token values.
+ */
+
+.bst-admin-screen {
+	--bst-accent: #ee4367;
+	--bst-accent-strong: #c21f48;
+	--bst-ink: #000;
+	--bst-text: #1d2327;
+	--bst-muted: #50575e;
+	--bst-line: #d8dcdf;
+	--bst-line-soft: #f0f0f1;
+	--bst-subtle: #f6f7f7;
+	--bst-header-bg: #f9f8f4;
+	--bst-note: #8a4b00;
+	--bst-note-bg: #fff8e1;
+	--bst-note-line: #f5a623;
+	--bst-radius: 10px;
+	--bst-radius-sm: 6px;
+}
+
+/* Banner (compact Bonsai header above core screens) ------------------- */
+
+.bst-banner.bonsai-ui {
+	max-width: none;
+	margin: 0 20px 0 2px;
+	padding-top: 0;
+}
+
+.bst-banner .bst-banner__inner {
+	align-items: center;
+	margin: 16px 0 4px;
+	padding: 14px 20px;
+}
+
+.bst-banner__brand {
+	display: flex;
+	gap: 14px;
+	align-items: center;
+}
+
+.bst-banner__logo {
+	display: block;
+	width: 140px;
+	height: auto;
+}
+
+.bst-banner__title {
+	padding-left: 14px;
+	font-size: 15px;
+	font-weight: 650;
+	color: var(--bst-ink);
+	border-left: 1px solid #ccd1d5;
+}
+
+.bst-banner__nav {
+	display: flex;
+	flex: 1 1 auto;
+	flex-wrap: wrap;
+	gap: 6px 20px;
+	margin-left: 12px;
+}
+
+.bst-banner__nav a {
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--bst-ink);
+	text-decoration: none;
+	text-underline-offset: 4px;
+}
+
+.bst-banner__nav a:hover,
+.bst-banner__nav a:focus,
+.bst-banner__nav a[aria-current="page"] {
+	color: var(--bst-ink);
+	text-decoration: underline;
+	text-decoration-color: var(--bst-accent);
+	text-decoration-thickness: 2px;
+}
+
+@media (max-width: 782px) {
+	.bst-banner.bonsai-ui {
+		margin-right: 10px;
+	}
+
+	.bst-banner .bst-banner__inner {
+		flex-wrap: wrap;
+	}
+
+	.bst-banner__nav {
+		margin-left: 0;
+	}
+}
+
+/* Buttons on core screens: match the design system --------------------- */
+
+.bst-admin-screen .wrap .page-title-action,
+.bst-admin-screen #poststuff .button-primary {
+	color: #fff;
+	background: var(--bst-ink);
+	border-color: var(--bst-ink);
+	border-radius: var(--bst-radius-sm);
+}
+
+.bst-admin-screen .wrap .page-title-action:hover,
+.bst-admin-screen .wrap .page-title-action:focus,
+.bst-admin-screen #poststuff .button-primary:hover,
+.bst-admin-screen #poststuff .button-primary:focus {
+	color: #fff;
+	background: var(--bst-accent-strong);
+	border-color: var(--bst-accent-strong);
+}
+
+/* List table ----------------------------------------------------------- */
+
+.bst-admin-screen .wp-list-table {
+	border-color: var(--bst-line);
+	border-radius: var(--bst-radius-sm);
+}
+
+.bst-admin-screen .wp-list-table thead th,
+.bst-admin-screen .wp-list-table tfoot th {
+	color: var(--bst-muted);
+	background: var(--bst-subtle);
+}
+
+.bst-admin-screen .column-bst_ref {
+	width: 90px;
+}
+
+.bst-admin-screen .column-bst_status,
+.bst-admin-screen .column-bst_priority {
+	width: 130px;
+}
+
+.bst-admin-screen .column-bst_activity {
+	width: 120px;
+}
+
+.bst-ref {
+	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+	font-size: 12px;
+	color: var(--bst-ink);
+}
+
+.bst-muted {
+	color: var(--bst-muted);
+}
+
+.bst-waiting {
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--bst-accent-strong);
+}
+
+/* Badges outside .bonsai-ui (list table, meta boxes). */
+.bst-admin-screen .bonsai-ui-badge {
+	display: inline-block;
+	padding: 2px 9px;
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 1.6;
+	white-space: nowrap;
+	color: var(--bst-muted);
+	background: var(--bst-line-soft);
+	border: 1px solid currentColor;
+	border-radius: 999px;
+}
+
+.bst-admin-screen .bonsai-ui-badge--success { color: #13744a; background: #e7f4ed; }
+.bst-admin-screen .bonsai-ui-badge--warning { color: #8a4b00; background: #fdf1e1; }
+.bst-admin-screen .bonsai-ui-badge--error { color: #b0122c; background: #fdeaed; }
+
+/* Ticket screen -------------------------------------------------------- */
+
+.bst-ticket-meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px 18px;
+	align-items: baseline;
+	margin: 10px 0 0;
+	color: var(--bst-muted);
+}
+
+.bst-ticket-meta a {
+	color: var(--bst-ink);
+	text-decoration-color: var(--bst-accent);
+	text-underline-offset: 3px;
+}
+
+.bst-unverified-notice {
+	margin: 14px 0 0 !important; /* Core .inline notices set their own margin with higher specificity. */
+}
+
+.bst-admin-screen #poststuff .postbox {
+	border-color: var(--bst-line);
+	border-radius: var(--bst-radius);
+	overflow: hidden;
+}
+
+.bst-admin-screen #poststuff .postbox-header {
+	border-bottom-color: var(--bst-line-soft);
+}
+
+.bst-admin-screen #poststuff .postbox .hndle {
+	font-size: 14px;
+	color: var(--bst-ink);
+}
+
+/* Details box. */
+.bst-field {
+	margin: 0 0 14px;
+}
+
+.bst-field label {
+	display: block;
+	margin: 0 0 4px;
+	font-weight: 600;
+	color: var(--bst-text);
+}
+
+.bst-field select,
+.bst-field input {
+	border-radius: var(--bst-radius-sm);
+}
+
+.bst-field .description {
+	margin-top: 4px;
+}
+
+.bst-details-actions {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	justify-content: space-between;
+	margin: 18px -12px -12px;
+	padding: 12px;
+	background: var(--bst-subtle);
+	border-top: 1px solid var(--bst-line-soft);
+}
+
+.bst-details-actions .submitdelete {
+	color: #b32d2e;
+}
+
+.bst-details-actions .button-primary {
+	margin-left: auto;
+}
+
+/* Reply box. */
+.bst-mode {
+	display: inline-flex;
+	margin: 4px 0 10px;
+	padding: 3px;
+	background: var(--bst-subtle);
+	border: 1px solid var(--bst-line);
+	border-radius: 999px;
+}
+
+.bst-mode__option {
+	position: relative;
+}
+
+.bst-mode__option input {
+	position: absolute;
+	opacity: 0;
+}
+
+.bst-mode__option span {
+	display: inline-block;
+	padding: 6px 16px;
+	font-weight: 600;
+	color: var(--bst-muted);
+	border-radius: 999px;
+	cursor: pointer;
+}
+
+.bst-mode__option input:checked + span {
+	color: #fff;
+	background: var(--bst-ink);
+}
+
+.bst-mode__option--internal input:checked + span {
+	color: var(--bst-note);
+	background: var(--bst-note-bg);
+	box-shadow: inset 0 0 0 1px var(--bst-note-line);
+}
+
+.bst-mode__option input:focus-visible + span {
+	outline: 2px solid var(--bst-accent);
+	outline-offset: 2px;
+}
+
+.bst-mode-hint {
+	margin: 0 0 8px;
+	color: var(--bst-muted);
+}
+
+.bst-reply-box[data-mode="external"] .bst-mode-hint--internal,
+.bst-reply-box[data-mode="internal"] .bst-mode-hint--external {
+	display: none;
+}
+
+.bst-reply-box__text {
+	padding: 12px;
+	font-size: 14px;
+	line-height: 1.6;
+	border-radius: var(--bst-radius-sm);
+}
+
+.bst-reply-box[data-mode="internal"] .bst-reply-box__text {
+	background: var(--bst-note-bg);
+	border-color: var(--bst-note-line);
+}
+
+.bst-reply-box__row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px 32px;
+	margin: 12px 0;
+}
+
+.bst-reply-box__row label {
+	display: block;
+	margin: 0 0 4px;
+	font-weight: 600;
+}
+
+.bst-reply-box__actions {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.bst-reply-box[data-mode="internal"] .bst-send {
+	color: var(--bst-note) !important; /* Beat the primary button rule above. */
+	background: var(--bst-note-bg) !important;
+	border-color: var(--bst-note-line) !important;
+}
+
+/* Conversation. */
+.bst-admin-thread {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.bst-admin-message {
+	margin: 0 0 12px;
+	padding: 14px 18px;
+	background: #fff;
+	border: 1px solid var(--bst-line);
+	border-left: 3px solid var(--bst-line);
+	border-radius: var(--bst-radius-sm);
+}
+
+.bst-admin-message--team {
+	background: var(--bst-header-bg);
+	border-left-color: var(--bst-ink);
+}
+
+.bst-admin-message--internal {
+	background: var(--bst-note-bg);
+	border-color: #f3dfa6;
+	border-left-color: var(--bst-note-line);
+}
+
+.bst-admin-message__meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px 10px;
+	align-items: center;
+	margin: 0 0 8px;
+}
+
+.bst-admin-message__time {
+	margin-left: auto;
+	font-size: 12px;
+}
+
+.bst-admin-message__body {
+	font-size: 14px;
+	line-height: 1.6;
+	overflow-wrap: anywhere;
+}
+
+.bst-admin-message__body > :first-child {
+	margin-top: 0;
+}
+
+.bst-admin-message__body > :last-child {
+	margin-bottom: 0;
+}
+
+.bst-admin-files {
+	margin: 10px 0 0;
+	padding: 8px 0 0;
+	border-top: 1px solid var(--bst-line-soft);
+}
+
+.bst-admin-files li {
+	margin: 0 0 4px;
+}
+
+.bst-admin-files .dashicons {
+	font-size: 16px;
+	vertical-align: text-bottom;
+}
+
+/* Activity. */
+.bst-activity {
+	margin: 0;
+	max-height: 320px;
+	overflow-y: auto;
+}
+
+.bst-activity li {
+	margin: 0;
+	padding: 8px 0;
+	border-bottom: 1px solid var(--bst-line-soft);
+}
+
+.bst-activity li:last-child {
+	border-bottom: 0;
+}
+
+/* Settings page -------------------------------------------------------- */
+
+.bst-steps {
+	margin: 8px 0 0 18px;
+}
+
+.bst-steps li {
+	margin: 0 0 10px;
+	line-height: 1.6;
+}
+
+.bst-code {
+	margin: 8px 0 0;
+	padding: 12px 14px;
+	overflow-x: auto;
+	font-size: 12px;
+	background: var(--bst-subtle);
+	border: 1px solid var(--bst-line);
+	border-radius: var(--bst-radius-sm);
+}
+
+.bst-code code {
+	padding: 0;
+	background: none;
+}
+
+.bonsai-ui-card__footer.bonsai-ui-actions form {
+	margin: 0;
+}

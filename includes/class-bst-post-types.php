@@ -100,8 +100,34 @@ class BST_Post_Types {
 	/**
 	 * Help centre articles. Public and indexable, block editor enabled.
 	 * Uses normal post capabilities so editors can write them.
+	 *
+	 * The topic taxonomy is registered first on purpose: rewrite rules are
+	 * added in registration order, and the post type's attachment rule
+	 * (help/{article}/{attachment}/) would otherwise swallow
+	 * help/topic/{term}/ and 404 every topic page.
 	 */
 	private static function register_article() {
+		register_taxonomy(
+			self::ARTICLE_TOPIC,
+			self::ARTICLE,
+			array(
+				'labels'            => array(
+					'name'          => __( 'Help topics', 'bonsai-support-tickets' ),
+					'singular_name' => __( 'Help topic', 'bonsai-support-tickets' ),
+					'menu_name'     => __( 'Help topics', 'bonsai-support-tickets' ),
+					'add_new_item'  => __( 'Add help topic', 'bonsai-support-tickets' ),
+				),
+				'public'            => true,
+				'hierarchical'      => true,
+				'show_in_rest'      => true,
+				'show_admin_column' => true,
+				'rewrite'           => array(
+					'slug'       => 'help/topic',
+					'with_front' => false,
+				),
+			)
+		);
+
 		register_post_type(
 			self::ARTICLE,
 			array(
@@ -123,27 +149,7 @@ class BST_Post_Types {
 					'with_front' => false,
 				),
 				'supports'     => array( 'title', 'editor', 'excerpt', 'revisions', 'page-attributes' ),
-			)
-		);
-
-		register_taxonomy(
-			self::ARTICLE_TOPIC,
-			self::ARTICLE,
-			array(
-				'labels'            => array(
-					'name'          => __( 'Help topics', 'bonsai-support-tickets' ),
-					'singular_name' => __( 'Help topic', 'bonsai-support-tickets' ),
-					'menu_name'     => __( 'Help topics', 'bonsai-support-tickets' ),
-					'add_new_item'  => __( 'Add help topic', 'bonsai-support-tickets' ),
-				),
-				'public'            => true,
-				'hierarchical'      => true,
-				'show_in_rest'      => true,
-				'show_admin_column' => true,
-				'rewrite'           => array(
-					'slug'       => 'help/topic',
-					'with_front' => false,
-				),
+				'taxonomies'   => array( self::ARTICLE_TOPIC ),
 			)
 		);
 	}

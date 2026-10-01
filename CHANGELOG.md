@@ -18,3 +18,6 @@ All notable changes to this plugin are documented here. Format: [Keep a Changelo
 - Settings screen in the Bonsai admin design system, with mailbox status, Test connection and Check now.
 - Auto-close of solved tickets after a configurable number of days.
 - Unit tests (email parsing), WordPress integration tests (permissions, inbound) and a manual checklist.
+
+### Fixed
+- Help topic pages (`/help/topic/{topic}/`) returned 404: the topic taxonomy is now registered before the Help articles post type, so its rewrite rules are not swallowed by the article attachment rule. Re-save Settings → Permalinks (or reactivate) on any site that already had the plugin active.

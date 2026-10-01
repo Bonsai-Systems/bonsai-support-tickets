@@ -132,4 +132,4 @@ Manual pre-launch checklist: [tests/manual/support-flow.md](tests/manual/support
 
 1. Bump `Version:` and `BST_VERSION` in `bonsai-support-tickets.php`, and add a `CHANGELOG.md` entry.
 2. Merge `develop` into `main` and push.
-3. Publish a GitHub Release tagged with the version, with a zip whose top folder is `bonsai-support-tickets/`. Release-assets mode is on.
+3. Publish a GitHub Release on `main` tagged `vX.Y.Z`. `.github/workflows/release.yml` checks the tag matches both version numbers, builds `bonsai-support-tickets.zip` (production `vendor/`, no tests or dev files) and attaches it. Sites update from that zip (release-assets mode).

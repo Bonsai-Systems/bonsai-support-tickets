@@ -3,6 +3,10 @@
     "description": "Support ticketing for The Bonsai Digital Collective.",
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",
+    "homepage": "https://github.com/Bonsai-Systems/bonsai-support-tickets",
+    "support": {
+        "issues": "https://github.com/Bonsai-Systems/bonsai-support-tickets/issues"
+    },
     "config": {
         "autoloader-suffix": "BonsaiSupportTickets",
         "platform": {

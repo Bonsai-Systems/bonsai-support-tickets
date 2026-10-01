@@ -185,6 +185,22 @@ class BST_Admin_Settings {
 							</td>
 						</tr>
 						<tr>
+							<th scope="row"><?php esc_html_e( 'Client registration', 'bonsai-support-tickets' ); ?></th>
+							<td>
+								<input type="hidden" name="bst[registration_enabled]" value="0">
+								<label for="bst-registration"><input type="checkbox" class="bonsai-ui-toggle" id="bst-registration" name="bst[registration_enabled]" value="1" <?php checked( $s['registration_enabled'] ); ?>> <?php esc_html_e( 'Show a Register link under the log-in form', 'bonsai-support-tickets' ); ?></label>
+								<p class="description">
+									<?php
+									printf(
+										/* translators: %s: link to the sign-ups screen. */
+										esc_html__( 'New accounts wait for approval under %s before they can log in. Use [bst_register] to put the form on its own page.', 'bonsai-support-tickets' ),
+										'<a href="' . esc_url( BST_Admin_Signups::url() ) . '">' . esc_html__( 'Support → Sign-ups', 'bonsai-support-tickets' ) . '</a>'
+									);
+									?>
+								</p>
+							</td>
+						</tr>
+						<tr>
 							<th scope="row"><label for="bst-auto-close"><?php esc_html_e( 'Auto-close solved tickets after', 'bonsai-support-tickets' ); ?></label></th>
 							<td>
 								<input type="number" id="bst-auto-close" name="bst[auto_close_days]" value="<?php echo esc_attr( $s['auto_close_days'] ); ?>" min="0" max="90" class="small-text"> <?php esc_html_e( 'days', 'bonsai-support-tickets' ); ?>

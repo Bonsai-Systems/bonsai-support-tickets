@@ -25,4 +25,10 @@ defined( 'ABSPATH' ) || exit;
 	<p class="bst__small">
 		<a href="<?php echo esc_url( wp_lostpassword_url( (string) get_permalink() ) ); ?>"><?php esc_html_e( 'Forgotten your password?', 'bonsai-support-tickets' ); ?></a>
 	</p>
+	<?php if ( BST_Registration::enabled() ) : ?>
+		<div class="bst-login__register">
+			<p class="bst-login__register-text"><?php esc_html_e( 'New client? Register for an account and we\'ll set you up.', 'bonsai-support-tickets' ); ?></p>
+			<a class="bst-btn bst-btn--secondary" href="<?php echo esc_url( BST_Registration::url( (string) get_permalink() ) ); ?>#bst-register"><?php esc_html_e( 'Register', 'bonsai-support-tickets' ); ?></a>
+		</div>
+	<?php endif; ?>
 </div>

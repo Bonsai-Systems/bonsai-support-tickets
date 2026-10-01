@@ -26,6 +26,18 @@ Required by Bonsai testing rules: this plugin stores client data, sends email, a
 - [ ] Reply from the portal → appears in the thread. The agent gets "Client reply".
 - [ ] **Mark as solved** → status Solved, no "solved" email to the client.
 
+## Registration
+- [ ] Logged-out My requests page shows **Register** under the log-in form. Clicking it shows the register form on the same page.
+- [ ] Submit empty → errors on Client name, First name, Last name and Email; typed values kept.
+- [ ] Register with an email that already has an account → "already an account" error.
+- [ ] Register properly (client name "The Ley Arms", website without https://) → "Thanks for registering". Applicant gets "We've received your registration"; agents get "New support sign-up" with the details.
+- [ ] Trying to log in before approval (after a password reset attempt) → "waiting for approval"; Forgotten password does not send a link.
+- [ ] Emailing support@ from that address before approval → Unverified ticket, no auto email.
+- [ ] Support → Sign-ups shows the count bubble and the person. **Approve** → they get "Your support account is ready" with Set your password; the link sets a password and lands on My requests after login.
+- [ ] Ticket Client dropdown, ticket list and ticket header show "The Ley Arms".
+- [ ] **Reject** asks to confirm, then deletes the sign-up.
+- [ ] Settings → untick Client registration → Register link disappears.
+
 ## Agent (wp-admin)
 - [ ] New ticket email arrives for agents.
 - [ ] Reply to client → client receives the email. Status becomes Awaiting client.

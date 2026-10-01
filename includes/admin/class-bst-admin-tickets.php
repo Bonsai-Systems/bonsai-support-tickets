@@ -91,6 +91,10 @@ class BST_Admin_Tickets {
 				break;
 
 			case 'bst_client':
+				$client_name = BST_Clients::client_name( BST_Tickets::client_id( $post_id ) );
+				if ( '' !== $client_name ) {
+					echo '<strong>' . esc_html( $client_name ) . '</strong><br>';
+				}
 				echo esc_html( BST_Tickets::contact_name( $post_id ) );
 				if ( BST_Tickets::is_unverified( $post_id ) ) {
 					echo ' ' . BST_Admin_UI::badge( __( 'Unverified', 'bonsai-support-tickets' ), 'error' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in badge().
@@ -592,6 +596,10 @@ class BST_Admin_Tickets {
 		?>
 		<div class="bst-ticket-meta">
 			<strong class="bst-ref"><?php echo esc_html( BST_Tickets::ref( $post->ID ) ); ?></strong>
+			<?php $client_name = BST_Clients::client_name( BST_Tickets::client_id( $post->ID ) ); ?>
+			<?php if ( '' !== $client_name ) : ?>
+				<strong><?php echo esc_html( $client_name ); ?></strong>
+			<?php endif; ?>
 			<span><?php echo esc_html( BST_Tickets::contact_name( $post->ID ) ); ?> &lt;<?php echo esc_html( BST_Tickets::contact_email( $post->ID ) ); ?>&gt;</span>
 			<?php if ( $site ) : ?>
 				<a href="<?php echo esc_url( $site ); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html( $site ); ?><span class="screen-reader-text"> <?php esc_html_e( '(opens in a new tab)', 'bonsai-support-tickets' ); ?></span></a>
@@ -680,7 +688,15 @@ class BST_Admin_Tickets {
 			<select name="bst_client" id="bst-client" class="widefat">
 				<option value="0"><?php echo $is_new ? esc_html__( 'Choose a client', 'bonsai-support-tickets' ) : esc_html__( 'Not linked', 'bonsai-support-tickets' ); ?></option>
 				<?php foreach ( BST_Tickets::clients() as $user ) : ?>
-					<option value="<?php echo esc_attr( $user->ID ); ?>" <?php selected( $client, $user->ID ); ?>><?php echo esc_html( $user->display_name . ' (' . $user->user_email . ')' ); ?></option>
+					<option value="<?php echo esc_attr( $user->ID ); ?>" <?php selected( $client, $user->ID ); ?>>
+						<?php
+						$label = BST_Clients::label( $user ) . ' (' . $user->user_email . ')';
+						if ( BST_Clients::is_pending( $user->ID ) ) {
+							$label .= ' — ' . __( 'awaiting approval', 'bonsai-support-tickets' );
+						}
+						echo esc_html( $label );
+						?>
+					</option>
 				<?php endforeach; ?>
 			</select>
 			<?php if ( BST_Tickets::is_unverified( $post->ID ) ) : ?>
@@ -691,7 +707,7 @@ class BST_Admin_Tickets {
 					?>
 				</p>
 			<?php endif; ?>
-			<p class="description"><?php esc_html_e( 'Add clients under Users with the Support Client role.', 'bonsai-support-tickets' ); ?></p>
+			<p class="description"><?php esc_html_e( 'Clients register on the support site (approve them under Support → Sign-ups), or add them under Users with the Support Client role.', 'bonsai-support-tickets' ); ?></p>
 		</div>
 
 		<div class="bst-field">

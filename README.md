@@ -25,8 +25,18 @@ Support ticketing for The Bonsai Digital Collective, built to replace Zendesk on
    | Help | `[bst_help_centre]` |
 
 3. **Support → Settings**: choose those pages, and set the From address. Use an address on your own domain, not the Gmail one.
-4. Add clients under **Users → Add New** with the role **Support Client**. That's one login per client company.
+4. Clients can **register** themselves (see below), or you add them under **Users → Add New** with the role **Support Client** and fill in **Client name** on their profile.
 5. Add team members as **Support Agent**. Administrators are agents automatically.
+
+### Client registration
+
+The log-in box on the portal and submit pages has a **Register** link (switch it off in **Support → Settings**). The form asks for client name (the business, e.g. *The Ley Arms*), first and last name, email, website and phone.
+
+1. The account is created as a **Support Client**, *awaiting approval*. It can't log in or reset its password yet, and email from that address is treated as unknown (Unverified ticket).
+2. The applicant gets a "we've received your registration" email, and everyone who can approve gets a "new sign-up" email.
+3. **Support → Sign-ups** (agents and admins): **Approve** emails the client a link to set their password. **Reject** deletes the account (only pending, ticket-less client accounts can be deleted this way).
+
+Each person has their own account and sees only their own requests. Client name is a label shown in the ticket list, ticket header, Client dropdown and Users list. Spam protection is a honeypot, a minimum fill time and 5 sign-ups per IP per hour, so there's no CAPTCHA. `[bst_register]` puts the form on a page of its own.
 
 ### Incoming email (Gmail)
 
@@ -76,7 +86,8 @@ Template functions, all permission-checked:
 | `bst_get_ticket_thread( $ticket_id )` | Client-visible messages, never internal notes |
 | `bst_user_can_view_ticket( $ticket_id )` | bool |
 | `bst_get_ticket_ref()`, `bst_get_ticket_status()`, `bst_get_status_label()` | Ticket details |
-| `bst_get_ticket_url()`, `bst_get_portal_url()`, `bst_get_submit_url()` | URLs |
+| `bst_get_ticket_url()`, `bst_get_portal_url()`, `bst_get_submit_url()`, `bst_get_register_url()` | URLs (register is `''` when switched off) |
+| `bst_get_client_name( $user_id )` | Client (business) name |
 | `bst_get_message_attachments()`, `bst_get_attachment_url()` | Files |
 | `bst_get_template( $name, $args )` | Renders a template (with theme override) |
 
@@ -91,6 +102,8 @@ Template functions, all permission-checked:
 | `bst_email` | Change any outgoing email before it's sent |
 | `bst_settings_defaults` | Change setting defaults |
 | `bst_ticket_created`, `bst_message_added`, `bst_status_changed`, `bst_ticket_assigned` | Actions for integrations (e.g. Slack later) |
+| `bst_registration_notify_recipients` | Who is emailed about new sign-ups |
+| `bst_client_registered`, `bst_client_approved`, `bst_client_rejected` | Registration actions |
 
 ## Security notes
 
@@ -101,6 +114,7 @@ Template functions, all permission-checked:
   ```
 
 - Clients are kept out of wp-admin and don't see the admin bar.
+- Self-registered accounts can't log in, reset their password or submit until approved. The emailed set-password link is what proves they own the address. Login names are generated (`client-…`) so email addresses never appear in author slugs.
 - Uninstalling removes settings and roles. Tickets, messages and files are only deleted if `BST_REMOVE_ALL_DATA` is `true` in `wp-config.php`.
 
 ## Development

@@ -49,7 +49,18 @@ class BST_Admin_UI {
 		if ( in_array( $screen->taxonomy, array( BST_Post_Types::TICKET_TYPE, BST_Post_Types::ARTICLE_TOPIC ), true ) ) {
 			return true;
 		}
-		return str_contains( (string) $screen->id, 'bst-settings' );
+		return str_contains( (string) $screen->id, 'bst-settings' ) || str_contains( (string) $screen->id, 'bst-signups' );
+	}
+
+	/**
+	 * Whether the screen is one of our full pages (settings, sign-ups),
+	 * which print their own header instead of the banner.
+	 *
+	 * @param WP_Screen|null $screen Screen.
+	 * @return bool
+	 */
+	private static function is_full_page( $screen ) {
+		return $screen && ( str_contains( (string) $screen->id, 'bst-settings' ) || str_contains( (string) $screen->id, 'bst-signups' ) );
 	}
 
 	/**
@@ -64,6 +75,9 @@ class BST_Admin_UI {
 		wp_enqueue_style( 'bst-admin', BST_URL . 'assets/admin/bst-admin.css', array( self::HANDLE ), BST_VERSION );
 
 		$screen = get_current_screen();
+		if ( self::is_full_page( $screen ) ) {
+			wp_enqueue_script( 'bst-admin', BST_URL . 'assets/admin/bst-admin.js', array( 'jquery' ), BST_VERSION, true );
+		}
 		if ( $screen && BST_Post_Types::TICKET === $screen->post_type && 'post' === $screen->base ) {
 			wp_enqueue_script( 'bst-admin', BST_URL . 'assets/admin/bst-admin.js', array( 'jquery' ), BST_VERSION, true );
 			wp_localize_script(
@@ -92,8 +106,8 @@ class BST_Admin_UI {
 	 */
 	public static function banner() {
 		$screen = get_current_screen();
-		if ( ! self::is_plugin_screen() || ! $screen || str_contains( (string) $screen->id, 'bst-settings' ) ) {
-			return; // The settings page prints the full header itself.
+		if ( ! self::is_plugin_screen() || ! $screen || self::is_full_page( $screen ) ) {
+			return; // Settings and sign-ups print the full header themselves.
 		}
 		?>
 		<div class="bonsai-ui bst-banner">
@@ -132,6 +146,16 @@ class BST_Admin_UI {
 				'current' => $screen && BST_Post_Types::ARTICLE === $screen->post_type && ! $screen->taxonomy,
 			),
 		);
+
+		if ( current_user_can( 'bst_approve_clients' ) ) {
+			$pending = BST_Clients::pending_count();
+			$links[] = array(
+				/* translators: %d: sign-ups awaiting approval. */
+				'label'   => $pending ? sprintf( __( 'Sign-ups (%d)', 'bonsai-support-tickets' ), $pending ) : __( 'Sign-ups', 'bonsai-support-tickets' ),
+				'url'     => BST_Admin_Signups::url(),
+				'current' => false,
+			);
+		}
 
 		if ( current_user_can( 'bst_manage_settings' ) ) {
 			$links[] = array(

@@ -13,8 +13,9 @@
  * @var string      $button_url   Call to action URL ('' = no button).
  * @var string      $button_label Call to action label.
  * @var string      $footer       Small print.
- * @var string      $ref          Ticket reference.
- * @var string      $subject      Ticket subject.
+ * @var string      $ref          Ticket reference ('' for account emails).
+ * @var string      $subject      Ticket subject ('' for account emails).
+ * @var array       $details      Optional label => value rows (account emails).
  * @var string      $reply_marker Reply-above-this-line marker ('' when inbound email is off).
  * @var string      $logo_url     Logo image URL.
  * @var string      $site_name    Sender name.
@@ -24,14 +25,15 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$bst_font = "'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif";
+$bst_font    = "'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif";
+$bst_details = isset( $details ) && is_array( $details ) ? $details : array();
 ?>
 <!DOCTYPE html>
 <html lang="en-GB">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title><?php echo esc_html( $ref . ' ' . $subject ); ?></title>
+	<title><?php echo esc_html( trim( $ref . ' ' . ( $subject ? $subject : $heading ) ) ); ?></title>
 </head>
 <body style="margin:0;padding:0;background:#faf8f5;">
 	<?php if ( $reply_marker ) : ?>
@@ -51,18 +53,37 @@ $bst_font = "'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI',
 
 					<tr>
 						<td style="padding:32px 32px 8px;font-family:<?php echo esc_attr( $bst_font ); ?>;">
-							<p style="margin:0 0 12px;font-size:12px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:#c21f48;">
-								<?php echo esc_html( $ref ); ?>
-							</p>
+							<?php if ( $ref ) : ?>
+								<p style="margin:0 0 12px;font-size:12px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:#c21f48;">
+									<?php echo esc_html( $ref ); ?>
+								</p>
+							<?php endif; ?>
 							<h1 style="margin:0 0 12px;font-size:24px;line-height:1.25;font-weight:600;color:#000000;">
 								<?php echo esc_html( $heading ); ?>
 							</h1>
 							<?php if ( $intro ) : ?>
 								<p style="margin:0 0 8px;font-size:15px;line-height:1.6;color:#333333;"><?php echo esc_html( $intro ); ?></p>
 							<?php endif; ?>
-							<p style="margin:0;font-size:13px;line-height:1.6;color:#767676;"><?php echo esc_html( $subject ); ?></p>
+							<?php if ( $subject ) : ?>
+								<p style="margin:0;font-size:13px;line-height:1.6;color:#767676;"><?php echo esc_html( $subject ); ?></p>
+							<?php endif; ?>
 						</td>
 					</tr>
+
+					<?php if ( $bst_details ) : ?>
+						<tr>
+							<td style="padding:16px 32px 8px;font-family:<?php echo esc_attr( $bst_font ); ?>;">
+								<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid #e5e5e0;">
+									<?php foreach ( $bst_details as $bst_label => $bst_value ) : ?>
+										<tr>
+											<td style="padding:10px 16px 10px 0;border-bottom:1px solid #e5e5e0;font-size:13px;font-weight:600;color:#000000;width:110px;vertical-align:top;"><?php echo esc_html( $bst_label ); ?></td>
+											<td style="padding:10px 0;border-bottom:1px solid #e5e5e0;font-size:14px;line-height:1.5;color:#333333;"><?php echo esc_html( $bst_value ); ?></td>
+										</tr>
+									<?php endforeach; ?>
+								</table>
+							</td>
+						</tr>
+					<?php endif; ?>
 
 					<?php if ( $message ) : ?>
 						<tr>

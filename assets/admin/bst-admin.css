@@ -457,3 +457,20 @@
 .bonsai-ui-card__footer.bonsai-ui-actions form {
 	margin: 0;
 }
+
+/* Sign-ups ------------------------------------------------------------- */
+
+.bst-signups td {
+	vertical-align: middle;
+}
+
+.bst-signups__actions {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	white-space: nowrap;
+}
+
+.bst-signups__actions form {
+	margin: 0;
+}

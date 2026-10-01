@@ -308,6 +308,77 @@ class BST_Mailer {
 	}
 
 	/**
+	 * Account email (registration, approval): same layout and From as
+	 * ticket emails, but no ticket reference, no Reply-To token and no
+	 * threading headers.
+	 *
+	 * @param string $to      Recipient.
+	 * @param string $subject Subject.
+	 * @param array  $content heading, intro, details, button_url, button_label, footer.
+	 * @return bool
+	 */
+	public static function send_account_email( $to, $subject, array $content ) {
+		if ( ! is_email( $to ) ) {
+			return false;
+		}
+
+		$content = wp_parse_args(
+			$content,
+			array(
+				'heading'      => '',
+				'intro'        => '',
+				'details'      => array(),
+				'message'      => null,
+				'internal'     => false,
+				'button_url'   => '',
+				'button_label' => '',
+				'footer'       => '',
+			)
+		);
+
+		$content['ref']          = '';
+		$content['subject']      = '';
+		$content['reply_marker'] = '';
+		$content['logo_url']     = BST_Settings::get( 'email_logo_url' ) ? BST_Settings::get( 'email_logo_url' ) : BST_URL . 'assets/bonsai-avatar.jpg';
+		$content['site_name']    = BST_Settings::get( 'from_name' ) ? BST_Settings::get( 'from_name' ) : get_bloginfo( 'name' );
+
+		$html = BST_Template::capture( 'emails/layout.php', $content );
+		$text = self::html_to_text( $html );
+
+		$headers    = array( 'Content-Type: text/html; charset=UTF-8', 'Auto-Submitted: auto-generated' );
+		$from_email = BST_Settings::get( 'from_email' );
+		if ( is_email( $from_email ) ) {
+			$headers[] = sprintf( 'From: %s <%s>', self::header_safe( BST_Settings::get( 'from_name' ) ), $from_email );
+		}
+
+		$set_mailer = function ( $phpmailer ) use ( $text ) {
+			$phpmailer->AltBody = $text; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		};
+		add_action( 'phpmailer_init', $set_mailer );
+
+		/** This filter is documented in includes/class-bst-mailer.php (send()). */
+		$email = apply_filters(
+			'bst_email',
+			array(
+				'to'      => $to,
+				'subject' => wp_specialchars_decode( $subject, ENT_QUOTES ),
+				'html'    => $html,
+				'headers' => $headers,
+			),
+			0
+		);
+
+		$sent = wp_mail( $email['to'], $email['subject'], $email['html'], $email['headers'] );
+
+		remove_action( 'phpmailer_init', $set_mailer );
+
+		if ( ! $sent ) {
+			error_log( 'Bonsai Support Tickets: wp_mail failed sending account email "' . $subject . '" to ' . $to );
+		}
+		return $sent;
+	}
+
+	/**
 	 * Build and send one email.
 	 *
 	 * @param string $to        Recipient.

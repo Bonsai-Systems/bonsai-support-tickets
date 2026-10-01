@@ -23,6 +23,7 @@ class BST_Install {
 		'bst_reply_tickets',
 		'bst_add_internal_notes',
 		'bst_assign_tickets',
+		'bst_approve_clients',
 		'edit_bst_tickets',
 		'edit_others_bst_tickets',
 		'edit_published_bst_tickets',

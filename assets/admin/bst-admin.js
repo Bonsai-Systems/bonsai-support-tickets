@@ -1,12 +1,22 @@
 /**
- * Bonsai Support Tickets — ticket screen.
+ * Bonsai Support Tickets — admin screens.
  *
- * Switches the reply box between "Reply to client" and "Internal note":
- * the box colour, the hint text and the button label follow the choice,
- * so it is always obvious whether the client will see the message.
+ * Ticket screen: switches the reply box between "Reply to client" and
+ * "Internal note": the box colour, the hint text and the button label
+ * follow the choice, so it is always obvious whether the client will see
+ * the message.
+ *
+ * Any screen: buttons with data-bst-confirm ask before submitting.
  */
 (function ($) {
 	'use strict';
+
+	// Confirm destructive actions (e.g. Reject on Sign-ups).
+	$(document).on('click.bonsai_bst', '[data-bst-confirm]', function (e) {
+		if (!window.confirm($(this).attr('data-bst-confirm'))) {
+			e.preventDefault();
+		}
+	});
 
 	var $box = $('.bst-reply-box');
 	if (!$box.length) {

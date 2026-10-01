@@ -163,7 +163,11 @@ class BST_Inbound {
 			return $skip( 'duplicate' );
 		}
 
-		$sender    = get_user_by( 'email', $from );
+		$sender = get_user_by( 'email', $from );
+		// A sign-up awaiting approval hasn't proved it owns the address: treat it as an unknown sender.
+		if ( $sender && BST_Clients::is_pending( $sender->ID ) ) {
+			$sender = false;
+		}
 		$sender_id = $sender ? (int) $sender->ID : 0;
 
 		list( $ticket_id, $trusted ) = self::match_ticket( $email );

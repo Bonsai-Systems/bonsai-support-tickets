@@ -301,12 +301,22 @@ class BST_Tickets {
 	 * @return WP_User[]
 	 */
 	public static function clients() {
-		return get_users(
+		$users = get_users(
 			array(
 				'role'    => 'bst_client',
 				'orderby' => 'display_name',
 			)
 		);
+
+		// Sort by "Client name — Person" so a business's people sit together.
+		usort(
+			$users,
+			function ( $a, $b ) {
+				return strcasecmp( BST_Clients::label( $a ), BST_Clients::label( $b ) );
+			}
+		);
+
+		return $users;
 	}
 
 	/*

@@ -29,6 +29,7 @@ class BST_Frontend {
 		add_shortcode( 'bst_submit_form', array( __CLASS__, 'shortcode_submit_form' ) );
 		add_shortcode( 'bst_my_tickets', array( __CLASS__, 'shortcode_my_tickets' ) );
 		add_shortcode( 'bst_help_centre', array( __CLASS__, 'shortcode_help_centre' ) );
+		add_shortcode( 'bst_register', array( __CLASS__, 'shortcode_register' ) );
 
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue' ) );
 
@@ -72,6 +73,32 @@ class BST_Frontend {
 	}
 
 	/**
+	 * What logged-out visitors see in place of the portal or form: the
+	 * login box, or the register form when the URL has ?bst_register.
+	 *
+	 * @return string
+	 */
+	private static function logged_out_view() {
+		return BST_Registration::requested() ? BST_Registration::render() : BST_Template::capture( 'login-required.php' );
+	}
+
+	/**
+	 * [bst_register] — the register form on its own page. Logged-in
+	 * visitors get a link to their requests instead.
+	 *
+	 * @return string
+	 */
+	public static function shortcode_register() {
+		self::ensure_style();
+
+		if ( is_user_logged_in() ) {
+			return BST_Template::capture( 'notice.php', array( 'message' => __( 'You are already logged in.', 'bonsai-support-tickets' ) ) );
+		}
+
+		return BST_Registration::enabled() ? BST_Registration::render() : BST_Template::capture( 'login-required.php' );
+	}
+
+	/**
 	 * [bst_submit_form]
 	 *
 	 * @return string
@@ -80,7 +107,7 @@ class BST_Frontend {
 		self::ensure_style();
 
 		if ( ! is_user_logged_in() ) {
-			return BST_Template::capture( 'login-required.php' );
+			return self::logged_out_view();
 		}
 
 		if ( ! BST_Forms::current_user_can_submit() ) {
@@ -112,7 +139,7 @@ class BST_Frontend {
 		self::ensure_style();
 
 		if ( ! is_user_logged_in() ) {
-			return BST_Template::capture( 'login-required.php' );
+			return self::logged_out_view();
 		}
 
 		$ticket_id = isset( $_GET['ticket'] ) ? absint( $_GET['ticket'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only, permission checked.

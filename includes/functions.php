@@ -181,6 +181,25 @@ function bst_get_submit_url() {
 }
 
 /**
+ * Register URL ('' when registration is switched off).
+ *
+ * @return string
+ */
+function bst_get_register_url() {
+	return BST_Registration::enabled() ? BST_Registration::url() . '#bst-register' : '';
+}
+
+/**
+ * Client (business) name for a user, e.g. "The Ley Arms".
+ *
+ * @param int|null $user_id Defaults to the current user.
+ * @return string
+ */
+function bst_get_client_name( $user_id = null ) {
+	return BST_Clients::client_name( null === $user_id ? get_current_user_id() : (int) $user_id );
+}
+
+/**
  * Format a stored GMT datetime in the site's timezone and date format.
  *
  * @param string $gmt_datetime Y-m-d H:i:s in GMT.

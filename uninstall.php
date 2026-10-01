@@ -31,6 +31,7 @@ $bst_caps = array(
 	'bst_reply_tickets',
 	'bst_add_internal_notes',
 	'bst_assign_tickets',
+	'bst_approve_clients',
 	'bst_manage_settings',
 	'edit_bst_tickets',
 	'edit_others_bst_tickets',
@@ -92,4 +93,10 @@ if ( is_dir( $bst_dir ) ) {
 }
 
 delete_option( 'bst_ref_counter' );
+
+// Client fields on user accounts (the accounts themselves are kept).
+foreach ( array( 'bst_client_name', 'bst_phone', 'bst_pending', 'bst_registered_via' ) as $bst_meta_key ) {
+	delete_metadata( 'user', 0, $bst_meta_key, '', true );
+}
+
 remove_role( 'bst_client' );

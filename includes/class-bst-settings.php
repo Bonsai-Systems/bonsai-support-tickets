@@ -82,10 +82,15 @@ class BST_Settings {
 	/**
 	 * Sanitise and save raw input (from the settings screen).
 	 *
+	 * Partial input is fine: each settings tab posts only its own fields, and
+	 * anything not posted keeps its current value. Checkboxes post a hidden 0
+	 * so unticking still saves.
+	 *
 	 * @param array $input Unslashed input.
 	 */
 	public static function save( array $input ) {
 		$defaults = self::defaults();
+		$input    = array_merge( self::all(), $input );
 		$clean    = array();
 
 		$clean['ref_prefix']           = strtoupper( preg_replace( '/[^A-Za-z0-9]/', '', (string) ( $input['ref_prefix'] ?? '' ) ) );

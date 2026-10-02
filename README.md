@@ -24,7 +24,7 @@ Support ticketing for The Bonsai Digital Collective, built to replace Zendesk on
    | Submit a request | `[bst_submit_form]` |
    | Help | `[bst_help_centre]` |
 
-3. **Support → Settings**: choose those pages, and set the From address. Use an address on your own domain, not the Gmail one.
+3. **Support → Settings**: choose those pages on the **General** tab, and set the From address on **Outgoing email**. Use an address on your own domain, not the Gmail one.
 4. Clients can **register** themselves (see below), or you add them under **Users → Add New** with the role **Support Client** and fill in **Client name** on their profile.
 5. Add team members as **Support Agent**. Administrators are agents automatically.
 

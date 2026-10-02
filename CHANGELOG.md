@@ -12,6 +12,9 @@ All notable changes to this plugin are documented here. Format: [Keep a Changelo
 ### Changed
 - The auto-reply replaces the fixed "We have received your request" email. It's still only sent on ticket creation and never to unverified senders.
 - Plain-text email alternatives now show list items as `- ` bullets.
+- **Support → Settings** now has a left-hand tab nav (General, Outgoing email, Auto-reply, Incoming email, Front end), one tab per page load (`&tab=…`). Each tab saves only its own fields, and you return to the same tab after saving, Test connection or Check now.
+- `BST_Settings::save()` accepts partial input. Fields that aren't posted keep their saved values.
+- `BST_Admin_Settings::url()` takes an optional tab slug.
 
 ### Notes
 - A theme override of `emails/layout.php` must add the `$body_html` block, or the auto-reply text won't appear.

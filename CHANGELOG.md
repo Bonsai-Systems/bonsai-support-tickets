@@ -2,6 +2,20 @@
 
 All notable changes to this plugin are documented here. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Added
+- Editable auto-reply for new tickets (web form and email in), under **Support → Settings → Auto-reply**: on/off, subject and rich-text message, with `{{ticket.title}}`, `{{ticket.id}}` and `{{client.name}}` placeholders. Ships with the Bonsai wording as the default. Clearing a field restores the default.
+- `bst_email_placeholders` filter.
+- Email layout: `$body_html` slot for editable content. The heading is now optional.
+
+### Changed
+- The auto-reply replaces the fixed "We have received your request" email. It's still only sent on ticket creation and never to unverified senders.
+- Plain-text email alternatives now show list items as `- ` bullets.
+
+### Notes
+- A theme override of `emails/layout.php` must add the `$body_html` block, or the auto-reply text won't appear.
+
 ## [0.1.0] - 2026-10-01
 
 ### Added

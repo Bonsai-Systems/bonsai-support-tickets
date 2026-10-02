@@ -251,6 +251,8 @@ class BST_Admin_Settings {
 					</table>
 				</section>
 
+				<?php self::render_autoreply( $s ); ?>
+
 				<section class="bonsai-ui-card">
 					<h2 class="bonsai-ui-card__title"><?php esc_html_e( 'Incoming email', 'bonsai-support-tickets' ); ?></h2>
 					<p class="bonsai-ui-card__intro"><?php esc_html_e( 'Emails to the support mailbox become tickets, and replies to our emails are added to the right ticket. The mailbox is checked every two minutes.', 'bonsai-support-tickets' ); ?></p>
@@ -387,6 +389,69 @@ define( 'BST_IMAP_PASSWORD', 'abcd efgh ijkl mnop' ); // App password, not the a
 				</dl>
 			</section>
 		</div>
+		<?php
+	}
+
+	/**
+	 * Auto-reply card: the email a client gets when they raise a new ticket.
+	 *
+	 * @param array $s Settings.
+	 */
+	private static function render_autoreply( array $s ) {
+		$descriptions = array(
+			'{{ticket.title}}' => __( 'Ticket subject', 'bonsai-support-tickets' ),
+			'{{ticket.id}}'    => __( 'Ticket reference, e.g. BDC-1042', 'bonsai-support-tickets' ),
+			'{{client.name}}'  => __( 'Name of the person who raised it', 'bonsai-support-tickets' ),
+		);
+		?>
+		<section class="bonsai-ui-card">
+			<h2 class="bonsai-ui-card__title"><?php esc_html_e( 'Auto-reply', 'bonsai-support-tickets' ); ?></h2>
+			<p class="bonsai-ui-card__intro"><?php esc_html_e( 'Sent once, when a client raises a new request through the form or by email. Replies never trigger it, and unknown senders never get it. The ticket reference is always added to the start of the subject, and the client\'s message and a View your request button follow your text.', 'bonsai-support-tickets' ); ?></p>
+			<table class="form-table" role="presentation">
+				<tr>
+					<th scope="row"><?php esc_html_e( 'Send auto-reply', 'bonsai-support-tickets' ); ?></th>
+					<td>
+						<input type="hidden" name="bst[autoreply_enabled]" value="0">
+						<label for="bst-autoreply-enabled"><input type="checkbox" class="bonsai-ui-toggle" id="bst-autoreply-enabled" name="bst[autoreply_enabled]" value="1" <?php checked( $s['autoreply_enabled'] ); ?>> <?php esc_html_e( 'Email the client when a new ticket is created', 'bonsai-support-tickets' ); ?></label>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="bst-autoreply-subject"><?php esc_html_e( 'Subject', 'bonsai-support-tickets' ); ?></label></th>
+					<td><input type="text" id="bst-autoreply-subject" name="bst[autoreply_subject]" value="<?php echo esc_attr( $s['autoreply_subject'] ); ?>" class="large-text"></td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="bst_autoreply_body"><?php esc_html_e( 'Message', 'bonsai-support-tickets' ); ?></label></th>
+					<td>
+						<?php
+						wp_editor(
+							$s['autoreply_body'],
+							'bst_autoreply_body',
+							array(
+								'textarea_name' => 'bst[autoreply_body]',
+								'textarea_rows' => 16,
+								'media_buttons' => false,
+								'teeny'         => true,
+								// Keep <p> tags in the saved HTML; email has no wpautop().
+								'wpautop'       => false,
+							)
+						);
+						?>
+						<p class="description"><?php esc_html_e( 'Clear the subject or message and save to go back to the default.', 'bonsai-support-tickets' ); ?></p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><?php esc_html_e( 'Placeholders', 'bonsai-support-tickets' ); ?></th>
+					<td>
+						<dl class="bonsai-ui-status">
+							<?php foreach ( array_keys( BST_Mailer::placeholders() ) as $placeholder ) : ?>
+								<dt><code><?php echo esc_html( $placeholder ); ?></code></dt>
+								<dd><?php echo esc_html( $descriptions[ $placeholder ] ?? '' ); ?></dd>
+							<?php endforeach; ?>
+						</dl>
+					</td>
+				</tr>
+			</table>
+		</section>
 		<?php
 	}
 

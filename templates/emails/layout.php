@@ -8,6 +8,7 @@
  *
  * @var string      $heading      Main heading.
  * @var string      $intro        Line under the heading (plain text).
+ * @var string      $body_html    Editable HTML body, e.g. the auto-reply ('' = none).
  * @var object|null $message      Message row (author_name, body, created_at) or null.
  * @var bool        $internal     Message is an internal note.
  * @var string      $button_url   Call to action URL ('' = no button).
@@ -27,6 +28,7 @@ defined( 'ABSPATH' ) || exit;
 
 $bst_font    = "'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif";
 $bst_details = isset( $details ) && is_array( $details ) ? $details : array();
+$bst_body    = isset( $body_html ) ? (string) $body_html : '';
 ?>
 <!DOCTYPE html>
 <html lang="en-GB">
@@ -58,9 +60,11 @@ $bst_details = isset( $details ) && is_array( $details ) ? $details : array();
 									<?php echo esc_html( $ref ); ?>
 								</p>
 							<?php endif; ?>
-							<h1 style="margin:0 0 12px;font-size:24px;line-height:1.25;font-weight:600;color:#000000;">
-								<?php echo esc_html( $heading ); ?>
-							</h1>
+							<?php if ( $heading ) : ?>
+								<h1 style="margin:0 0 12px;font-size:24px;line-height:1.25;font-weight:600;color:#000000;">
+									<?php echo esc_html( $heading ); ?>
+								</h1>
+							<?php endif; ?>
 							<?php if ( $intro ) : ?>
 								<p style="margin:0 0 8px;font-size:15px;line-height:1.6;color:#333333;"><?php echo esc_html( $intro ); ?></p>
 							<?php endif; ?>
@@ -69,6 +73,14 @@ $bst_details = isset( $details ) && is_array( $details ) ? $details : array();
 							<?php endif; ?>
 						</td>
 					</tr>
+
+					<?php if ( $bst_body ) : ?>
+						<tr>
+							<td style="padding:16px 32px 8px;font-family:<?php echo esc_attr( $bst_font ); ?>;font-size:15px;line-height:1.6;color:#333333;">
+								<?php echo wp_kses_post( $bst_body ); ?>
+							</td>
+						</tr>
+					<?php endif; ?>
 
 					<?php if ( $bst_details ) : ?>
 						<tr>

@@ -22,7 +22,9 @@ Required by Bonsai testing rules: this plugin stores client data, sends email, a
 - [ ] Submit with an empty form → field errors, values kept.
 - [ ] Submit with subject, description and a PNG + PDF → lands on the ticket with "request has been sent".
 - [ ] Upload a `.php` or `.exe` renamed to `.jpg` → rejected.
-- [ ] "We have received your request" email arrives at the client inbox with the BDC reference.
+- [ ] Auto-reply arrives at the client inbox: subject `[BDC-…] Thank you for contacting The Bonsai Digital Collective Support – [subject]`, placeholders filled, bullet list intact, client's message and View your request button below.
+- [ ] Email the support mailbox from the client's address → new ticket gets the same auto-reply. Reply to it → no second auto-reply.
+- [ ] **Support → Settings → Auto-reply**: edit the subject and message, then raise a ticket → edited version arrives. Switch it off → no auto-reply. Clear both fields and save → defaults return.
 - [ ] Reply from the portal → appears in the thread. The agent gets "Client reply".
 - [ ] **Mark as solved** → status Solved, no "solved" email to the client.
 

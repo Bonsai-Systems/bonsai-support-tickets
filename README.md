@@ -66,6 +66,15 @@ Each person has their own account and sees only their own requests. Client name 
 - Auto-replies, bounces, mailing lists and duplicate emails are ignored.
 - Agents can reply from their inbox. Starting the reply with `#note` makes it an internal note.
 
+### Auto-reply
+
+When a client raises a new request, through the form or by emailing the support mailbox, they get an auto-reply. Edit the subject and message under **Support → Settings → Auto-reply**, or switch it off there.
+
+- It's sent once, when the ticket is created. Replies don't trigger it, and unknown senders never get it.
+- Placeholders: `{{ticket.title}}`, `{{ticket.id}}` (the reference, e.g. `BDC-1042`) and `{{client.name}}`. Add more with the `bst_email_placeholders` filter.
+- The `[BDC-1042]` reference is always added to the start of the subject, because reply matching depends on it. The client's message and a **View your request** button come after your text.
+- Clear the subject or message and save to go back to the default.
+
 ## Theming
 
 Copy any file from `templates/` to `your-theme/bonsai-support/` and edit it there. Keep the form field names, nonces and `action` inputs.
@@ -100,6 +109,7 @@ Template functions, all permission-checked:
 | `bst_allowed_attachment_types` | Extension → MIME map for uploads |
 | `bst_agent_notification_recipients` | Which agents get emailed |
 | `bst_email` | Change any outgoing email before it's sent |
+| `bst_email_placeholders` | Add `{{placeholders}}` for the auto-reply |
 | `bst_settings_defaults` | Change setting defaults |
 | `bst_ticket_created`, `bst_message_added`, `bst_status_changed`, `bst_ticket_assigned` | Actions for integrations (e.g. Slack later) |
 | `bst_registration_notify_recipients` | Who is emailed about new sign-ups |

@@ -41,6 +41,11 @@ class BST_Settings {
 				'from_email'           => '',
 				'email_logo_url'       => '',
 
+				// Auto-reply to a new ticket. See BST_Mailer::placeholders().
+				'autoreply_enabled'    => 1,
+				'autoreply_subject'    => self::default_autoreply_subject(),
+				'autoreply_body'       => self::default_autoreply_body(),
+
 				// Inbound email.
 				'inbound_address'      => 'bonsaisupport@gmail.com',
 				'plus_addressing'      => 1,
@@ -94,7 +99,13 @@ class BST_Settings {
 		$clean['from_name']            = sanitize_text_field( $input['from_name'] ?? '' );
 		$clean['from_email']           = sanitize_email( $input['from_email'] ?? '' );
 		$clean['email_logo_url']       = esc_url_raw( $input['email_logo_url'] ?? '' );
-		$clean['inbound_address']      = sanitize_email( $input['inbound_address'] ?? '' );
+		$clean['autoreply_enabled']    = empty( $input['autoreply_enabled'] ) ? 0 : 1;
+		$clean['autoreply_subject']    = sanitize_text_field( $input['autoreply_subject'] ?? '' );
+		$clean['autoreply_body']       = wp_kses_post( $input['autoreply_body'] ?? '' );
+		// Clearing a field restores the default rather than sending a blank email.
+		$clean['autoreply_subject']    = '' !== $clean['autoreply_subject'] ? $clean['autoreply_subject'] : $defaults['autoreply_subject'];
+		$clean['autoreply_body']       = '' !== trim( wp_strip_all_tags( $clean['autoreply_body'] ) ) ? $clean['autoreply_body'] : $defaults['autoreply_body'];
+		$clean['inbound_address']     = sanitize_email( $input['inbound_address'] ?? '' );
 		$clean['plus_addressing']      = empty( $input['plus_addressing'] ) ? 0 : 1;
 		$clean['imap_enabled']         = empty( $input['imap_enabled'] ) ? 0 : 1;
 		$clean['imap_host']            = sanitize_text_field( $input['imap_host'] ?? $defaults['imap_host'] );
@@ -104,6 +115,37 @@ class BST_Settings {
 		$clean['imap_processed_tag']   = sanitize_text_field( $input['imap_processed_tag'] ?? '' );
 
 		update_option( self::OPTION, $clean, false );
+	}
+
+	/**
+	 * Default auto-reply subject. Not translated: it's editable content, and
+	 * defaults() can run before the text domain loads.
+	 *
+	 * @return string
+	 */
+	public static function default_autoreply_subject() {
+		return 'Thank you for contacting The Bonsai Digital Collective Support – [{{ticket.title}}]';
+	}
+
+	/**
+	 * Default auto-reply body (HTML).
+	 *
+	 * @return string
+	 */
+	public static function default_autoreply_body() {
+		return '<p>Thank you for reaching out to The Bonsai Digital Collective Support with your message titled \'<strong>{{ticket.title}}</strong>\'.</p>' . "\n"
+			. '<p>This is an automated response confirming we have received your ticket. It has been assigned the unique tracking ID <strong>[{{ticket.id}}]</strong> – please keep this in the subject line of any email replies so we can assist you as quickly as possible.</p>' . "\n"
+			. '<p>To help us resolve your query efficiently, please ensure you’ve included:</p>' . "\n"
+			. '<ul>' . "\n"
+			. '<li>A full description of the issue or request</li>' . "\n"
+			. '<li>Any relevant website URLs or server names/addresses</li>' . "\n"
+			. '<li>Steps to reproduce any problems you have reported</li>' . "\n"
+			. '<li>Screenshots, if applicable</li>' . "\n"
+			. '</ul>' . "\n"
+			. '<p>Our team will review your ticket and respond as soon as possible.</p>' . "\n"
+			. '<p>Thank you for choosing The Bonsai Digital Collective.</p>' . "\n"
+			. '<p>The Bonsai Digital Collective Support Team<br>' . "\n"
+			. '<a href="https://bonsaidigitalcollective.co.uk/">https://bonsaidigitalcollective.co.uk/</a></p>';
 	}
 
 	/**

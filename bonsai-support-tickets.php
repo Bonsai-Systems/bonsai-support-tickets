@@ -71,6 +71,7 @@ require_once BST_DIR . 'includes/class-bst-imap-client.php';
 
 // Data and domain.
 require_once BST_DIR . 'includes/class-bst-settings.php';
+require_once BST_DIR . 'includes/class-bst-appearance.php';
 require_once BST_DIR . 'includes/class-bst-install.php';
 require_once BST_DIR . 'includes/class-bst-post-types.php';
 require_once BST_DIR . 'includes/class-bst-activity.php';

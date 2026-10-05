@@ -41,3 +41,4 @@ if ( ! defined( 'ABSPATH' ) ) {
 require_once dirname( __DIR__ ) . '/includes/class-bst-mime-parser.php';
 require_once dirname( __DIR__ ) . '/includes/class-bst-reply-parser.php';
 require_once dirname( __DIR__ ) . '/includes/class-bst-imap-client.php';
+require_once dirname( __DIR__ ) . '/includes/class-bst-appearance.php'; // Contrast maths only; the rest needs WordPress.

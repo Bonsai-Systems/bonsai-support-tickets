@@ -44,4 +44,34 @@ class SettingsTest extends WP_UnitTestCase {
 		$this->assertSame( 'ABC', BST_Settings::get( 'ref_prefix' ) );
 		$this->assertSame( 993, BST_Settings::get( 'imap_port' ) );
 	}
+
+	public function test_brand_colours_are_validated() {
+		BST_Settings::save(
+			array(
+				'color_accent'     => '0055AA',             // No hash, upper case.
+				'color_ink'        => 'red;}body{color:x', // CSS injection attempt.
+				'color_background' => '#FAF8F5',            // Same as the default.
+			)
+		);
+
+		$this->assertSame( '#0055aa', BST_Settings::get( 'color_accent' ) );
+		$this->assertSame( '', BST_Settings::get( 'color_ink' ) );
+		$this->assertSame( '', BST_Settings::get( 'color_background' ), 'Default values store blank so theme colours still apply.' );
+		$this->assertSame( '#000000', BST_Appearance::color( 'color_ink' ) );
+	}
+
+	public function test_only_saved_colours_reach_the_inline_css() {
+		$this->assertSame( '', BST_Appearance::inline_css() );
+
+		BST_Settings::save( array( 'color_accent' => '#0055aa' ) );
+
+		$this->assertSame( '.bst{--bst-accent:#0055aa;}', BST_Appearance::inline_css() );
+	}
+
+	public function test_other_tabs_keep_brand_colours() {
+		BST_Settings::save( array( 'color_accent' => '#0055aa' ) );
+		BST_Settings::save( array( 'from_name' => 'Acme Support' ) );
+
+		$this->assertSame( '#0055aa', BST_Settings::get( 'color_accent' ) );
+	}
 }

@@ -76,7 +76,13 @@ class BST_Admin_UI {
 
 		$screen = get_current_screen();
 		if ( self::is_full_page( $screen ) ) {
-			wp_enqueue_script( 'bst-admin', BST_URL . 'assets/admin/bst-admin.js', array( 'jquery' ), BST_VERSION, true );
+			$deps = array( 'jquery' );
+			// Core colour picker for Settings → Appearance.
+			if ( str_contains( (string) $screen->id, 'bst-settings' ) ) {
+				wp_enqueue_style( 'wp-color-picker' );
+				$deps[] = 'wp-color-picker';
+			}
+			wp_enqueue_script( 'bst-admin', BST_URL . 'assets/admin/bst-admin.js', $deps, BST_VERSION, true );
 		}
 		if ( $screen && BST_Post_Types::TICKET === $screen->post_type && 'post' === $screen->base ) {
 			wp_enqueue_script( 'bst-admin', BST_URL . 'assets/admin/bst-admin.js', array( 'jquery' ), BST_VERSION, true );

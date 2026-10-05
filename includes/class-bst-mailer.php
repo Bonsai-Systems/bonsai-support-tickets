@@ -388,6 +388,7 @@ class BST_Mailer {
 		$content['reply_marker'] = '';
 		$content['logo_url']     = BST_Settings::get( 'email_logo_url' ) ? BST_Settings::get( 'email_logo_url' ) : BST_URL . 'assets/bonsai-avatar.jpg';
 		$content['site_name']    = BST_Settings::get( 'from_name' ) ? BST_Settings::get( 'from_name' ) : get_bloginfo( 'name' );
+		$content['colors']       = BST_Appearance::email_colors();
 
 		$html = BST_Template::capture( 'emails/layout.php', $content );
 		$text = self::html_to_text( $html );
@@ -459,6 +460,7 @@ class BST_Mailer {
 		$content['reply_marker'] = $reply_to ? self::REPLY_MARKER : '';
 		$content['logo_url']     = BST_Settings::get( 'email_logo_url' ) ? BST_Settings::get( 'email_logo_url' ) : BST_URL . 'assets/bonsai-avatar.jpg';
 		$content['site_name']    = BST_Settings::get( 'from_name' ) ? BST_Settings::get( 'from_name' ) : get_bloginfo( 'name' );
+		$content['colors']       = BST_Appearance::email_colors();
 
 		$html = BST_Template::capture( 'emails/layout.php', $content );
 		$text = self::html_to_text( $html );

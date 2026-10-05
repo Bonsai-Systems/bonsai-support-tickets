@@ -46,6 +46,13 @@ class BST_Frontend {
 	public static function enqueue() {
 		wp_register_style( self::STYLE_HANDLE, BST_URL . 'assets/frontend/bst-frontend.css', array(), BST_VERSION );
 
+		// Brand colours from Support → Settings → Appearance. Attached to the
+		// registered handle, so ensure_style() picks it up too.
+		$brand_css = BST_Appearance::inline_css();
+		if ( $brand_css ) {
+			wp_add_inline_style( self::STYLE_HANDLE, $brand_css );
+		}
+
 		if ( ! apply_filters( 'bst_load_frontend_css', true ) ) {
 			return;
 		}

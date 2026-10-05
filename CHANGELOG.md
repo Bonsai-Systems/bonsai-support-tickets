@@ -8,6 +8,10 @@ All notable changes to this plugin are documented here. Format: [Keep a Changelo
 - Editable auto-reply for new tickets (web form and email in), under **Support → Settings → Auto-reply**: on/off, subject and rich-text message, with `{{ticket.title}}`, `{{ticket.id}}` and `{{client.name}}` placeholders. Ships with the Bonsai wording as the default. Clearing a field restores the default.
 - `bst_email_placeholders` filter.
 - Email layout: `$body_html` slot for editable content. The heading is now optional.
+- **Support → Settings → Appearance**: brand colours (accent, button hover, accent text, buttons and headings, body text, page background, cards) with the core colour picker, so the plugin can be rebranded per install. They drive the front-end CSS (printed inline after `bst-frontend.css`) and the HTML emails. Blank or default values fall back to the default, and on the front end they also let the theme's `--bonsai-*` colours through. Status colours stay fixed.
+- Contrast warnings on the Appearance tab when a chosen pair falls below WCAG AA (4.5:1).
+- `BST_Appearance` class: colour fields, `color()`, `inline_css()`, `email_colors()` and the contrast maths (unit tested).
+- Email layout: `$colors` variable.
 
 ### Changed
 - The auto-reply replaces the fixed "We have received your request" email. It's still only sent on ticket creation and never to unverified senders.
@@ -15,9 +19,10 @@ All notable changes to this plugin are documented here. Format: [Keep a Changelo
 - **Support → Settings** now has a left-hand tab nav (General, Outgoing email, Auto-reply, Incoming email, Front end), one tab per page load (`&tab=…`). Each tab saves only its own fields, and you return to the same tab after saving, Test connection or Check now.
 - `BST_Settings::save()` accepts partial input. Fields that aren't posted keep their saved values.
 - `BST_Admin_Settings::url()` takes an optional tab slug.
+- Front-end CSS: every colour is now a token in `.bst {}`. The input border moved to `--bst-input-border`.
 
 ### Notes
-- A theme override of `emails/layout.php` must add the `$body_html` block, or the auto-reply text won't appear.
+- A theme override of `emails/layout.php` must add the `$body_html` block, or the auto-reply text won't appear. It also needs to use `$colors` if the Appearance colours should reach emails.
 
 ## [0.1.0] - 2026-10-01
 

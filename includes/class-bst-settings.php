@@ -55,6 +55,8 @@ class BST_Settings {
 				'imap_mailbox'         => 'INBOX',
 				'imap_processed_tag'   => 'Bonsai Support/Processed',
 			)
+			// Brand colours. '' = default; see BST_Appearance.
+			+ array_fill_keys( array_keys( BST_Appearance::default_colors() ), '' )
 		);
 	}
 
@@ -118,6 +120,10 @@ class BST_Settings {
 		$clean['imap_port']            = $clean['imap_port'] ? $clean['imap_port'] : $defaults['imap_port'];
 		$clean['imap_mailbox']         = sanitize_text_field( $input['imap_mailbox'] ?? $defaults['imap_mailbox'] );
 		$clean['imap_processed_tag']   = sanitize_text_field( $input['imap_processed_tag'] ?? '' );
+
+		foreach ( array_keys( BST_Appearance::default_colors() ) as $color_key ) {
+			$clean[ $color_key ] = BST_Appearance::sanitize( $color_key, $input[ $color_key ] ?? '' );
+		}
 
 		update_option( self::OPTION, $clean, false );
 	}

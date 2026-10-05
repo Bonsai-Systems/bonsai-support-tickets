@@ -7,9 +7,15 @@
  * the message.
  *
  * Any screen: buttons with data-bst-confirm ask before submitting.
+ *
+ * Settings → Appearance: core colour pickers on the brand colour fields.
  */
 (function ($) {
 	'use strict';
+
+	if ($.fn.wpColorPicker) {
+		$('.bst-color-field').wpColorPicker();
+	}
 
 	// Confirm destructive actions (e.g. Reject on Sign-ups).
 	$(document).on('click.bonsai_bst', '[data-bst-confirm]', function (e) {

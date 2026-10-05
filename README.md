@@ -85,7 +85,16 @@ To turn off the plugin's front-end CSS:
 add_filter( 'bst_load_frontend_css', '__return_false' );
 ```
 
-The default CSS uses the Bonsai theme's custom properties (`--bonsai-accent`, `--bonsai-sans`, …) and falls back to the brand values when they aren't defined.
+The default CSS uses the Bonsai theme's custom properties (`--bonsai-accent`, `--bonsai-sans`, …) and falls back to the brand values when they aren't defined. Every colour is a token in `.bst {}`.
+
+### Brand colours
+
+To rebrand an install for another client, set the colours under **Support → Settings → Appearance**: accent, button hover, accent text, buttons and headings, body text, page background and cards. They apply to the front end, where they're printed as `.bst { --bst-… }` after the stylesheet, and to every email.
+
+- Leave a colour blank (Clear) to use the default. On the front end, blank also lets the theme's `--bonsai-*` colours through.
+- If a pair you pick drops below WCAG AA (4.5:1), the tab shows a warning.
+- Success, warning and error colours aren't editable, so they stay readable.
+- For the rest of a rebrand, see **Outgoing email** (from name, logo), **Auto-reply** (wording) and **General** (reference prefix).
 
 Template functions, all permission-checked:
 

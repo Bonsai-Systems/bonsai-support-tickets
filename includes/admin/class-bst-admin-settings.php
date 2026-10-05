@@ -41,28 +41,33 @@ class BST_Admin_Settings {
 	 */
 	public static function tabs() {
 		return array(
-			'general'   => array(
+			'general'    => array(
 				'label'  => __( 'General', 'bonsai-support-tickets' ),
 				'render' => array( __CLASS__, 'render_general' ),
 				'form'   => true,
 			),
-			'outgoing'  => array(
+			'appearance' => array(
+				'label'  => __( 'Appearance', 'bonsai-support-tickets' ),
+				'render' => array( __CLASS__, 'render_appearance' ),
+				'form'   => true,
+			),
+			'outgoing'   => array(
 				'label'  => __( 'Outgoing email', 'bonsai-support-tickets' ),
 				'render' => array( __CLASS__, 'render_outgoing' ),
 				'form'   => true,
 			),
-			'autoreply' => array(
+			'autoreply'  => array(
 				'label'  => __( 'Auto-reply', 'bonsai-support-tickets' ),
 				'render' => array( __CLASS__, 'render_autoreply' ),
 				'form'   => true,
 			),
-			'inbound'   => array(
+			'inbound'    => array(
 				'label'  => __( 'Incoming email', 'bonsai-support-tickets' ),
 				'render' => array( __CLASS__, 'render_inbound' ),
 				'form'   => true,
 				'after'  => array( __CLASS__, 'render_inbound_status' ),
 			),
-			'frontend'  => array(
+			'frontend'   => array(
 				'label'  => __( 'Front end', 'bonsai-support-tickets' ),
 				'render' => array( __CLASS__, 'render_frontend' ),
 				'form'   => false,
@@ -205,7 +210,7 @@ class BST_Admin_Settings {
 			<?php
 			BST_Admin_UI::header(
 				__( 'Support settings', 'bonsai-support-tickets' ),
-				__( 'Ticket references, the client portal pages, outgoing email and the support mailbox that replies come back to.', 'bonsai-support-tickets' ),
+				__( 'Ticket references, the client portal pages, brand colours, outgoing email and the support mailbox that replies come back to.', 'bonsai-support-tickets' ),
 				array(
 					array(
 						'label' => __( 'Tickets', 'bonsai-support-tickets' ),
@@ -319,6 +324,51 @@ class BST_Admin_Settings {
 						</p>
 					</td>
 				</tr>
+			</table>
+		</section>
+		<?php
+	}
+
+	/**
+	 * Appearance tab: brand colours for the front end and emails.
+	 *
+	 * @param array $s Settings.
+	 */
+	public static function render_appearance( array $s ) {
+		$warnings = BST_Appearance::contrast_warnings();
+		?>
+		<section class="bonsai-ui-card">
+			<h2 class="bonsai-ui-card__title"><?php esc_html_e( 'Brand colours', 'bonsai-support-tickets' ); ?></h2>
+			<p class="bonsai-ui-card__intro"><?php esc_html_e( 'Used by the client portal, forms, help centre and every email. Leave a colour blank (Clear) to use the default. On the front end, blank also lets the theme\'s own Bonsai colours through. Success, warning and error colours are fixed so they stay readable.', 'bonsai-support-tickets' ); ?></p>
+
+			<?php if ( $warnings ) : ?>
+				<div class="notice notice-warning inline">
+					<p><strong><?php esc_html_e( 'Some colour pairs are hard to read:', 'bonsai-support-tickets' ); ?></strong></p>
+					<ul>
+						<?php foreach ( $warnings as $warning ) : ?>
+							<li><?php echo esc_html( $warning ); ?></li>
+						<?php endforeach; ?>
+					</ul>
+				</div>
+			<?php endif; ?>
+
+			<table class="form-table" role="presentation">
+				<?php foreach ( BST_Appearance::fields() as $key => $field ) : ?>
+					<?php $id = 'bst-' . str_replace( '_', '-', $key ); ?>
+					<tr>
+						<th scope="row"><label for="<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $field['label'] ); ?></label></th>
+						<td>
+							<input type="text" id="<?php echo esc_attr( $id ); ?>" name="bst[<?php echo esc_attr( $key ); ?>]" value="<?php echo esc_attr( $s[ $key ] ?? '' ); ?>" class="bst-color-field" maxlength="7" placeholder="<?php echo esc_attr( $field['default'] ); ?>" data-default-color="<?php echo esc_attr( $field['default'] ); ?>">
+							<p class="description">
+								<?php
+								echo esc_html( $field['description'] ) . ' ';
+								/* translators: %s: default hex colour. */
+								echo esc_html( sprintf( __( 'Default: %s.', 'bonsai-support-tickets' ), $field['default'] ) );
+								?>
+							</p>
+						</td>
+					</tr>
+				<?php endforeach; ?>
 			</table>
 		</section>
 		<?php

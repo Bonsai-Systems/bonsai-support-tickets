@@ -56,13 +56,13 @@ if ( ! defined( 'BST_REMOVE_ALL_DATA' ) || true !== BST_REMOVE_ALL_DATA ) {
 	return;
 }
 
-// Posts (tickets and help articles) and their meta/terms.
-$bst_post_ids = $wpdb->get_col( "SELECT ID FROM {$wpdb->posts} WHERE post_type IN ('bst_ticket','bst_article')" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+// Posts (tickets, clients and help articles) and their meta/terms.
+$bst_post_ids = $wpdb->get_col( "SELECT ID FROM {$wpdb->posts} WHERE post_type IN ('bst_ticket','bst_company','bst_article')" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 foreach ( $bst_post_ids as $bst_post_id ) {
 	wp_delete_post( (int) $bst_post_id, true );
 }
 
-foreach ( array( 'bst_ticket_type', 'bst_article_topic' ) as $bst_taxonomy ) {
+foreach ( array( 'bst_ticket_type', 'bst_article_topic', 'bst_partner', 'bst_plan' ) as $bst_taxonomy ) {
 	$bst_terms = $wpdb->get_col( $wpdb->prepare( "SELECT term_id FROM {$wpdb->term_taxonomy} WHERE taxonomy = %s", $bst_taxonomy ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 	foreach ( $bst_terms as $bst_term_id ) {
 		wp_delete_term( (int) $bst_term_id, $bst_taxonomy );
@@ -95,7 +95,7 @@ if ( is_dir( $bst_dir ) ) {
 delete_option( 'bst_ref_counter' );
 
 // Client fields on user accounts (the accounts themselves are kept).
-foreach ( array( 'bst_client_name', 'bst_phone', 'bst_pending', 'bst_registered_via' ) as $bst_meta_key ) {
+foreach ( array( 'bst_client_name', 'bst_company_id', 'bst_phone', 'bst_pending', 'bst_registered_via' ) as $bst_meta_key ) {
 	delete_metadata( 'user', 0, $bst_meta_key, '', true );
 }
 

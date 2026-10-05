@@ -16,6 +16,11 @@ All notable changes to this plugin are documented here. Format: [Keep a Changelo
 - **Support → Settings → Slack**: on/off switch, status, **Send test message** and setup steps.
 - `bst_slack_ticket_payload` and `bst_slack_webhook_url` filters.
 - Integration tests for Slack (HTTP faked) and manual checklist steps.
+- **Support → Clients**: one record per business (post type `bst_company`), with partner, plan, monthly retainer hours, websites, notes, linked people and ticket counts. Partners and plans are admin-managed lists (`bst_partner`, `bst_plan`), linked from above the Clients list.
+- Tickets record their client (`_bst_company_id`). It's set when the ticket is created, follows the contact when relinked, and can be overridden on the ticket screen (logged). The ticket list has a client filter, and the Client column links to it.
+- Sign-up approval asks which client the person belongs to. It suggests close matches to the typed name, with a **New client** option.
+- `BST_Companies` (data) and `BST_Admin_Companies` (screens). `BST_Tickets::create()` accepts `company_id`. New `BST_Tickets::set_company()` and `BST_Clients::typed_name()`.
+- Integration tests for clients, the migration and permissions.
 
 ### Changed
 - The auto-reply replaces the fixed "We have received your request" email. It's still only sent on ticket creation and never to unverified senders.
@@ -24,6 +29,9 @@ All notable changes to this plugin are documented here. Format: [Keep a Changelo
 - `BST_Settings::save()` accepts partial input. Fields that aren't posted keep their saved values.
 - `BST_Admin_Settings::url()` takes an optional tab slug.
 - Front-end CSS: every colour is now a token in `.bst {}`. The input border moved to `--bst-input-border`.
+- The free-text **Client name** on user profiles is replaced by a **Client** dropdown. `BST_Clients::client_name()` and `bst_get_client_name()` return the client record's name, falling back to the name typed at sign-up.
+- Ticket screen: the person field is now **Contact**, grouped by client, with a separate **Client** field. Slack posts show "Client — Contact".
+- DB version 3. On upgrade, existing client names become client records (matched ignoring case and spacing). People are linked, tickets are backfilled, pending sign-ups are skipped, and a notice reports the counts. The old `bst_client_name` meta is kept.
 
 ### Notes
 - A theme override of `emails/layout.php` must add the `$body_html` block, or the auto-reply text won't appear. It also needs to use `$colors` if the Appearance colours should reach emails.

@@ -43,10 +43,10 @@ class BST_Admin_UI {
 		if ( ! $screen ) {
 			return false;
 		}
-		if ( in_array( $screen->post_type, array( BST_Post_Types::TICKET, BST_Post_Types::ARTICLE ), true ) ) {
+		if ( in_array( $screen->post_type, array( BST_Post_Types::TICKET, BST_Post_Types::ARTICLE, BST_Post_Types::COMPANY ), true ) ) {
 			return true;
 		}
-		if ( in_array( $screen->taxonomy, array( BST_Post_Types::TICKET_TYPE, BST_Post_Types::ARTICLE_TOPIC ), true ) ) {
+		if ( in_array( $screen->taxonomy, array( BST_Post_Types::TICKET_TYPE, BST_Post_Types::ARTICLE_TOPIC, BST_Post_Types::PARTNER, BST_Post_Types::PLAN ), true ) ) {
 			return true;
 		}
 		return str_contains( (string) $screen->id, 'bst-settings' ) || str_contains( (string) $screen->id, 'bst-signups' );
@@ -145,6 +145,11 @@ class BST_Admin_UI {
 				'label'   => __( 'Tickets', 'bonsai-support-tickets' ),
 				'url'     => admin_url( 'edit.php?post_type=' . BST_Post_Types::TICKET ),
 				'current' => $screen && BST_Post_Types::TICKET === $screen->post_type && ! $screen->taxonomy,
+			),
+			array(
+				'label'   => __( 'Clients', 'bonsai-support-tickets' ),
+				'url'     => admin_url( 'edit.php?post_type=' . BST_Post_Types::COMPANY ),
+				'current' => $screen && BST_Post_Types::COMPANY === $screen->post_type,
 			),
 			array(
 				'label'   => __( 'Help articles', 'bonsai-support-tickets' ),

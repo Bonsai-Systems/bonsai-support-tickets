@@ -97,13 +97,14 @@ class BST_Slack {
 		$link       = '<' . BST_Tickets::admin_url( $ticket_id ) . '|' . self::escape( $ref ) . '>';
 		$unverified = BST_Tickets::is_unverified( $ticket_id );
 
-		$client_id = BST_Tickets::client_id( $ticket_id );
-		$client    = $client_id ? BST_Clients::label( $client_id ) : '';
-		if ( '' === $client ) {
-			$client = BST_Tickets::contact_name( $ticket_id );
-			$email  = BST_Tickets::contact_email( $ticket_id );
-			$client = $email && $email !== $client ? $client . ' (' . $email . ')' : $client;
+		// "The Ley Arms — Jane Smith", or the sender for unknown email tickets.
+		$company = BST_Companies::name( BST_Companies::for_ticket( $ticket_id ) );
+		$person  = BST_Tickets::contact_name( $ticket_id );
+		$email   = BST_Tickets::contact_email( $ticket_id );
+		if ( ! BST_Tickets::client_id( $ticket_id ) && $email && $email !== $person ) {
+			$person .= ' (' . $email . ')';
 		}
+		$client = '' !== $company ? $company . ' — ' . $person : $person;
 
 		$sources = array(
 			'web'   => __( 'Web form', 'bonsai-support-tickets' ),

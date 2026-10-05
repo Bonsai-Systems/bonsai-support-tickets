@@ -25,7 +25,7 @@ Support ticketing for The Bonsai Digital Collective, built to replace Zendesk on
    | Help | `[bst_help_centre]` |
 
 3. **Support → Settings**: choose those pages on the **General** tab, and set the From address on **Outgoing email**. Use an address on your own domain, not the Gmail one.
-4. Clients can **register** themselves (see below), or you add them under **Users → Add New** with the role **Support Client** and fill in **Client name** on their profile.
+4. Add your clients (the businesses) under **Support → Clients**. People can **register** themselves (see below), or you add them under **Users → Add New** with the role **Support Client** and choose their **Client** on their profile.
 5. Add team members as **Support Agent**. Administrators are agents automatically.
 
 ### Client registration
@@ -34,9 +34,25 @@ The log-in box on the portal and submit pages has a **Register** link (switch it
 
 1. The account is created as a **Support Client**, *awaiting approval*. It can't log in or reset its password yet, and email from that address is treated as unknown (Unverified ticket).
 2. The applicant gets a "we've received your registration" email, and everyone who can approve gets a "new sign-up" email.
-3. **Support → Sign-ups** (agents and admins): **Approve** emails the client a link to set their password. **Reject** deletes the account (only pending, ticket-less client accounts can be deleted this way).
+3. **Support → Sign-ups** (agents and admins): choose which client the person belongs to (a close match to the name they typed is suggested, or **New client**), then **Approve**. That emails them a link to set their password. **Reject** deletes the account (only pending, ticket-less client accounts can be deleted this way).
 
-Each person has their own account and sees only their own requests. Client name is a label shown in the ticket list, ticket header, Client dropdown and Users list. Spam protection is a honeypot, a minimum fill time and 5 sign-ups per IP per hour, so there's no CAPTCHA. `[bst_register]` puts the form on a page of its own.
+Each person has their own account and sees only their own requests, even if colleagues share a client. Spam protection is a honeypot, a minimum fill time and 5 sign-ups per IP per hour, so there's no CAPTCHA. `[bst_register]` puts the form on a page of its own.
+
+### Clients
+
+**Support → Clients** holds one record per business, e.g. *The Ley Arms*. Each record has:
+
+- **Partner** and **Plan**, picked from lists that admins edit. The links are above the Clients list.
+- **Retainer** hours a month. Time tracking against it comes later.
+- **Websites**, one per line.
+- **Notes**, visible to the team only.
+- The **People** linked to it, and its ticket counts.
+
+Each person belongs to one client, set on their user profile or when you approve their sign-up. Tickets record the client they were raised for. That's stamped from the person when the ticket is created and updated if you change the ticket's **Contact**. You can also override it with the ticket's **Client** field. A ticket keeps its client if the person later moves, so reports stay right. You can filter the ticket list by client.
+
+Clients don't change permissions: people only ever see their own tickets.
+
+**Upgrading from 0.1:** on the first admin page load after updating, every distinct *Client name* typed on a user becomes a client record. Names are matched ignoring case and spacing, so "the ley arms " joins "The Ley Arms". People are linked and their existing tickets are stamped. Pending sign-ups are left for approval. A notice reports the counts. Check **Support → Clients** for near-duplicates such as "Ley Arms" and "The Ley Arms", and move people between them on their profile.
 
 ### Incoming email (Gmail)
 
@@ -120,7 +136,7 @@ Template functions, all permission-checked:
 | `bst_user_can_view_ticket( $ticket_id )` | bool |
 | `bst_get_ticket_ref()`, `bst_get_ticket_status()`, `bst_get_status_label()` | Ticket details |
 | `bst_get_ticket_url()`, `bst_get_portal_url()`, `bst_get_submit_url()`, `bst_get_register_url()` | URLs (register is `''` when switched off) |
-| `bst_get_client_name( $user_id )` | Client (business) name |
+| `bst_get_client_name( $user_id )` | Client (business) name: their client record, or the name typed at sign-up |
 | `bst_get_message_attachments()`, `bst_get_attachment_url()` | Files |
 | `bst_get_template( $name, $args )` | Renders a template (with theme override) |
 

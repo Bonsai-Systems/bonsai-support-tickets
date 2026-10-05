@@ -1,11 +1,12 @@
 <?php
 /**
- * Client accounts: client name and phone fields, the "awaiting approval"
+ * Client accounts (people): their company, phone, the "awaiting approval"
  * state for self-registered accounts, and how clients are labelled.
  *
- * Client name is the business the person works for ("The Ley Arms").
- * It is a label on each person, not a shared company record: every
- * account still only sees its own requests.
+ * The business a person works for is a company record (BST_Companies),
+ * linked by user meta. Every account still only sees its own requests.
+ * The bst_client_name text is what they typed at sign-up; it is only
+ * shown while they have no company (pending sign-ups, pre-0.2 data).
  *
  * Pending accounts (registered, not yet approved):
  *  - cannot log in or reset their password;
@@ -54,12 +55,27 @@ class BST_Clients {
 	*/
 
 	/**
-	 * Client (business) name for a user.
+	 * Client (business) name for a user: their company's name, or the name
+	 * they typed at sign-up when they aren't linked to one yet.
 	 *
 	 * @param int $user_id User ID.
 	 * @return string
 	 */
 	public static function client_name( $user_id ) {
+		if ( ! $user_id ) {
+			return '';
+		}
+		$company = BST_Companies::for_user( $user_id );
+		return $company ? BST_Companies::name( $company ) : self::typed_name( $user_id );
+	}
+
+	/**
+	 * The client name a person typed when they registered.
+	 *
+	 * @param int $user_id User ID.
+	 * @return string
+	 */
+	public static function typed_name( $user_id ) {
 		return $user_id ? (string) get_user_meta( (int) $user_id, self::META_CLIENT_NAME, true ) : '';
 	}
 
@@ -192,13 +208,34 @@ class BST_Clients {
 		}
 		wp_nonce_field( 'bst_client_profile_' . $user->ID, 'bst_client_profile_nonce' );
 		?>
+		<?php
+		$company = BST_Companies::for_user( $user->ID );
+		$typed   = self::typed_name( $user->ID );
+		?>
 		<h2><?php esc_html_e( 'Support client', 'bonsai-support-tickets' ); ?></h2>
 		<table class="form-table" role="presentation">
 			<tr>
-				<th><label for="bst-client-name"><?php esc_html_e( 'Client name', 'bonsai-support-tickets' ); ?></label></th>
+				<th><label for="bst-company"><?php esc_html_e( 'Client', 'bonsai-support-tickets' ); ?></label></th>
 				<td>
-					<input type="text" name="bst_client_name" id="bst-client-name" class="regular-text" value="<?php echo esc_attr( self::client_name( $user->ID ) ); ?>">
-					<p class="description"><?php esc_html_e( 'The business this person works for, e.g. The Ley Arms.', 'bonsai-support-tickets' ); ?></p>
+					<select name="bst_company_id" id="bst-company">
+						<option value="0"><?php esc_html_e( 'Not linked', 'bonsai-support-tickets' ); ?></option>
+						<?php foreach ( BST_Companies::all() as $option ) : ?>
+							<option value="<?php echo esc_attr( $option->ID ); ?>" <?php selected( $company, $option->ID ); ?>><?php echo esc_html( $option->post_title ); ?></option>
+						<?php endforeach; ?>
+					</select>
+					<?php if ( $company && current_user_can( 'edit_post', $company ) ) : ?>
+						<a href="<?php echo esc_url( get_edit_post_link( $company ) ); ?>"><?php esc_html_e( 'Edit client', 'bonsai-support-tickets' ); ?></a>
+					<?php endif; ?>
+					<p class="description">
+						<?php
+						esc_html_e( 'The business this person works for. Their new tickets are recorded against it.', 'bonsai-support-tickets' );
+						if ( '' !== $typed ) {
+							echo ' ';
+							/* translators: %s: client name typed at sign-up. */
+							echo esc_html( sprintf( __( 'They typed "%s" when they signed up.', 'bonsai-support-tickets' ), $typed ) );
+						}
+						?>
+					</p>
 				</td>
 			</tr>
 			<tr>
@@ -235,7 +272,9 @@ class BST_Clients {
 		if ( ! current_user_can( 'edit_user', $user_id ) ) {
 			return;
 		}
-		update_user_meta( $user_id, self::META_CLIENT_NAME, sanitize_text_field( wp_unslash( $_POST['bst_client_name'] ?? '' ) ) );
+		if ( isset( $_POST['bst_company_id'] ) ) {
+			BST_Companies::set_user_company( $user_id, absint( $_POST['bst_company_id'] ) );
+		}
 		update_user_meta( $user_id, self::META_PHONE, sanitize_text_field( wp_unslash( $_POST['bst_phone'] ?? '' ) ) );
 	}
 
@@ -268,7 +307,12 @@ class BST_Clients {
 		if ( 'bst_client_name' !== $column ) {
 			return $output;
 		}
-		$output = esc_html( self::client_name( $user_id ) );
+		$company = BST_Companies::for_user( $user_id );
+		if ( $company && current_user_can( 'edit_post', $company ) ) {
+			$output = '<a href="' . esc_url( get_edit_post_link( $company ) ) . '">' . esc_html( BST_Companies::name( $company ) ) . '</a>';
+		} else {
+			$output = esc_html( self::client_name( $user_id ) );
+		}
 		if ( self::is_pending( $user_id ) ) {
 			$output .= ' <em>' . esc_html__( '(awaiting approval)', 'bonsai-support-tickets' ) . '</em>';
 		}

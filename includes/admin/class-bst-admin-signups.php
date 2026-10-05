@@ -5,6 +5,9 @@
  * Lives under Support (not Users) so Support Agents can approve without
  * having user-management capabilities. Gated by bst_approve_clients.
  *
+ * Approving also links the person to a Client record: a suggested match
+ * for the name they typed, any other client, or a new one.
+ *
  * @package Bonsai_Support_Tickets
  */
 
@@ -75,18 +78,97 @@ class BST_Admin_Signups {
 	 */
 	public static function handle_approve() {
 		$user_id = self::guard( 'bst_approve_client' );
+		$choice  = sanitize_key( wp_unslash( $_POST['bst_company'] ?? 'new' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- verified in guard().
 		$result  = BST_Registration::approve( $user_id );
 
 		if ( is_wp_error( $result ) ) {
 			BST_Admin_UI::flash( $result->get_error_message(), 'error' );
 		} else {
-			$user = get_userdata( $user_id );
+			// Link after approval succeeds, so a failed approval never leaves an empty client behind.
+			$linked = self::link_company( $user_id, $choice );
+			$user   = get_userdata( $user_id );
 			/* translators: %s: client label. */
 			BST_Admin_UI::flash( sprintf( __( 'Approved %s. They have been emailed a link to set their password.', 'bonsai-support-tickets' ), BST_Clients::label( $user ) ) );
+			if ( is_wp_error( $linked ) ) {
+				BST_Admin_UI::flash( $linked->get_error_message(), 'error' );
+			}
 		}
 
 		wp_safe_redirect( self::url() );
 		exit;
+	}
+
+	/**
+	 * Link an approved person to the chosen client, creating it if asked.
+	 *
+	 * @param int    $user_id User ID.
+	 * @param string $choice  Company ID, or 'new' to create one from the typed name.
+	 * @return int|WP_Error Company ID.
+	 */
+	private static function link_company( $user_id, $choice ) {
+		if ( 'new' === $choice ) {
+			$typed = BST_Clients::typed_name( $user_id );
+			// Don't create a duplicate if someone added the same name in the meantime.
+			$company_id = BST_Companies::find_by_name( $typed );
+			if ( ! $company_id ) {
+				$company_id = BST_Companies::create( '' !== $typed ? $typed : get_userdata( $user_id )->display_name );
+			}
+		} else {
+			$company_id = absint( $choice );
+		}
+
+		if ( is_wp_error( $company_id ) || ! BST_Companies::set_user_company( $user_id, (int) $company_id ) ) {
+			return new WP_Error( 'bst_link_failed', __( 'They were approved, but could not be linked to a client. Choose one on their user profile.', 'bonsai-support-tickets' ) );
+		}
+
+		return (int) $company_id;
+	}
+
+	/**
+	 * Client choices for one sign-up: suggestions first, then a new client,
+	 * then everyone else. Exact (normalised) name matches are pre-selected.
+	 *
+	 * @param WP_User $user Pending user.
+	 */
+	private static function company_select( $user ) {
+		$typed       = BST_Clients::typed_name( $user->ID );
+		$suggestions = BST_Companies::suggest( $typed );
+		$exact       = BST_Companies::find_by_name( $typed );
+		$suggested   = wp_list_pluck( $suggestions, 'ID' );
+		$id          = 'bst-company-' . $user->ID;
+		?>
+		<label for="<?php echo esc_attr( $id ); ?>" class="screen-reader-text">
+			<?php
+			/* translators: %s: person's name. */
+			echo esc_html( sprintf( __( 'Client for %s', 'bonsai-support-tickets' ), $user->display_name ) );
+			?>
+		</label>
+		<select name="bst_company" id="<?php echo esc_attr( $id ); ?>" form="<?php echo esc_attr( 'bst-approve-' . $user->ID ); ?>" class="bst-signups__company">
+			<?php if ( $suggestions ) : ?>
+				<optgroup label="<?php esc_attr_e( 'Looks like', 'bonsai-support-tickets' ); ?>">
+					<?php foreach ( $suggestions as $company ) : ?>
+						<option value="<?php echo esc_attr( $company->ID ); ?>" <?php selected( $exact, $company->ID ); ?>><?php echo esc_html( $company->post_title ); ?></option>
+					<?php endforeach; ?>
+				</optgroup>
+			<?php endif; ?>
+			<option value="new" <?php selected( ! $exact ); ?>>
+				<?php
+				/* translators: %s: client name typed at sign-up. */
+				echo esc_html( sprintf( __( 'New client: %s', 'bonsai-support-tickets' ), '' !== $typed ? $typed : $user->display_name ) );
+				?>
+			</option>
+			<optgroup label="<?php esc_attr_e( 'All clients', 'bonsai-support-tickets' ); ?>">
+				<?php foreach ( BST_Companies::all() as $company ) : ?>
+					<?php
+					if ( in_array( $company->ID, $suggested, true ) ) {
+						continue;
+					}
+					?>
+					<option value="<?php echo esc_attr( $company->ID ); ?>"><?php echo esc_html( $company->post_title ); ?></option>
+				<?php endforeach; ?>
+			</optgroup>
+		</select>
+		<?php
 	}
 
 	/**
@@ -147,6 +229,7 @@ class BST_Admin_Signups {
 				<?php if ( ! $pending ) : ?>
 					<p class="bonsai-ui-card__intro"><?php esc_html_e( 'No one is waiting. New sign-ups appear here, and everyone who can approve them is emailed.', 'bonsai-support-tickets' ); ?></p>
 				<?php else : ?>
+					<p class="bonsai-ui-card__intro"><?php esc_html_e( 'Choose which client each person belongs to before approving. A close match is suggested; pick "New client" only if it really is a new business.', 'bonsai-support-tickets' ); ?></p>
 					<table class="widefat striped bst-signups">
 						<thead>
 							<tr>
@@ -162,7 +245,10 @@ class BST_Admin_Signups {
 						<tbody>
 							<?php foreach ( $pending as $user ) : ?>
 								<tr>
-									<td><strong><?php echo esc_html( BST_Clients::client_name( $user->ID ) ); ?></strong></td>
+									<td>
+										<strong><?php echo esc_html( BST_Clients::typed_name( $user->ID ) ); ?></strong><br>
+										<?php self::company_select( $user ); ?>
+									</td>
 									<td><?php echo esc_html( $user->display_name ); ?></td>
 									<td><a href="mailto:<?php echo esc_attr( $user->user_email ); ?>"><?php echo esc_html( $user->user_email ); ?></a></td>
 									<td>
@@ -173,7 +259,7 @@ class BST_Admin_Signups {
 									<td><?php echo esc_html( BST_Clients::phone( $user->ID ) ); ?></td>
 									<td><?php echo esc_html( bst_format_datetime( $user->user_registered ) ); ?></td>
 									<td class="bst-signups__actions">
-										<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+										<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" id="<?php echo esc_attr( 'bst-approve-' . $user->ID ); ?>">
 											<input type="hidden" name="action" value="bst_approve_client">
 											<input type="hidden" name="user_id" value="<?php echo esc_attr( $user->ID ); ?>">
 											<?php wp_nonce_field( 'bst_approve_client_' . $user->ID ); ?>

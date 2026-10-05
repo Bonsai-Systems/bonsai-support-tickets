@@ -36,7 +36,7 @@ if ( defined( 'BST_VERSION' ) ) {
 }
 
 define( 'BST_VERSION', '0.1.0' );
-define( 'BST_DB_VERSION', '2' ); // 2: bst_approve_clients capability.
+define( 'BST_DB_VERSION', '3' ); // 2: bst_approve_clients capability. 3: Client records.
 define( 'BST_FILE', __FILE__ );
 define( 'BST_DIR', plugin_dir_path( __FILE__ ) );
 define( 'BST_URL', plugin_dir_url( __FILE__ ) );
@@ -79,6 +79,7 @@ require_once BST_DIR . 'includes/class-bst-messages.php';
 require_once BST_DIR . 'includes/class-bst-attachments.php';
 require_once BST_DIR . 'includes/class-bst-tickets.php';
 require_once BST_DIR . 'includes/class-bst-clients.php';
+require_once BST_DIR . 'includes/class-bst-companies.php';
 
 // Email.
 require_once BST_DIR . 'includes/class-bst-mailer.php';
@@ -98,6 +99,7 @@ require_once BST_DIR . 'includes/admin/class-bst-admin-ui.php';
 require_once BST_DIR . 'includes/admin/class-bst-admin-tickets.php';
 require_once BST_DIR . 'includes/admin/class-bst-admin-settings.php';
 require_once BST_DIR . 'includes/admin/class-bst-admin-signups.php';
+require_once BST_DIR . 'includes/admin/class-bst-admin-companies.php';
 
 register_activation_hook( __FILE__, array( 'BST_Install', 'activate' ) );
 register_deactivation_hook( __FILE__, array( 'BST_Install', 'deactivate' ) );
@@ -124,6 +126,7 @@ add_action(
 			BST_Admin_Tickets::init();
 			BST_Admin_Settings::init();
 			BST_Admin_Signups::init();
+			BST_Admin_Companies::init();
 		}
 	}
 );

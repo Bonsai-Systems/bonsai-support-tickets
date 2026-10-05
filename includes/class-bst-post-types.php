@@ -1,7 +1,7 @@
 <?php
 /**
- * Post types and taxonomies: tickets (private, admin only) and help
- * centre articles (public).
+ * Post types and taxonomies: tickets and client companies (private, admin
+ * only) and help centre articles (public).
  *
  * @package Bonsai_Support_Tickets
  */
@@ -17,6 +17,9 @@ class BST_Post_Types {
 	const TICKET_TYPE   = 'bst_ticket_type';
 	const ARTICLE       = 'bst_article';
 	const ARTICLE_TOPIC = 'bst_article_topic';
+	const COMPANY       = 'bst_company';
+	const PARTNER       = 'bst_partner';
+	const PLAN          = 'bst_plan';
 
 	/**
 	 * Hooks.
@@ -31,6 +34,7 @@ class BST_Post_Types {
 	 */
 	public static function register() {
 		self::register_ticket();
+		self::register_company();
 		self::register_article();
 	}
 
@@ -95,6 +99,85 @@ class BST_Post_Types {
 				),
 			)
 		);
+	}
+
+	/**
+	 * Client companies ("Clients" in the UI): the business a client account
+	 * belongs to. Same capabilities as tickets, so agents manage them and
+	 * only admins delete them. Slug is bst_company because bst_client is
+	 * already the Support Client role.
+	 *
+	 * Partner and plan are managed lists (taxonomies) so later features
+	 * (SLAs, partner branding) can hang settings off each term. One of each
+	 * per client, chosen from a select in the Details box.
+	 */
+	private static function register_company() {
+		register_post_type(
+			self::COMPANY,
+			array(
+				'labels'              => array(
+					'name'               => __( 'Clients', 'bonsai-support-tickets' ),
+					'singular_name'      => __( 'Client', 'bonsai-support-tickets' ),
+					'all_items'          => __( 'Clients', 'bonsai-support-tickets' ),
+					'add_new'            => __( 'Add client', 'bonsai-support-tickets' ),
+					'add_new_item'       => __( 'Add client', 'bonsai-support-tickets' ),
+					'edit_item'          => __( 'Edit client', 'bonsai-support-tickets' ),
+					'search_items'       => __( 'Search clients', 'bonsai-support-tickets' ),
+					'not_found'          => __( 'No clients found.', 'bonsai-support-tickets' ),
+					'not_found_in_trash' => __( 'No clients in the bin.', 'bonsai-support-tickets' ),
+				),
+				'public'              => false,
+				'publicly_queryable'  => false,
+				'exclude_from_search' => true,
+				'show_ui'             => true,
+				'show_in_menu'        => 'edit.php?post_type=' . self::TICKET,
+				'show_in_rest'        => false,
+				'supports'            => array( 'title' ),
+				'capability_type'     => array( 'bst_ticket', 'bst_tickets' ),
+				'map_meta_cap'        => true,
+				'rewrite'             => false,
+				'query_var'           => false,
+			)
+		);
+
+		$lists = array(
+			self::PARTNER => array(
+				'name'          => __( 'Partners', 'bonsai-support-tickets' ),
+				'singular_name' => __( 'Partner', 'bonsai-support-tickets' ),
+				'add_new_item'  => __( 'Add partner', 'bonsai-support-tickets' ),
+				'back_to_items' => __( '&larr; Back to partners', 'bonsai-support-tickets' ),
+			),
+			self::PLAN    => array(
+				'name'          => __( 'Plans', 'bonsai-support-tickets' ),
+				'singular_name' => __( 'Plan', 'bonsai-support-tickets' ),
+				'add_new_item'  => __( 'Add plan', 'bonsai-support-tickets' ),
+				'back_to_items' => __( '&larr; Back to plans', 'bonsai-support-tickets' ),
+			),
+		);
+
+		foreach ( $lists as $taxonomy => $labels ) {
+			register_taxonomy(
+				$taxonomy,
+				self::COMPANY,
+				array(
+					'labels'            => $labels,
+					'public'            => false,
+					'show_ui'           => true,
+					'show_in_menu'      => false, // Linked from the Clients screen instead.
+					'show_in_rest'      => false,
+					'show_admin_column' => true,
+					'hierarchical'      => false,
+					'meta_box_cb'       => false, // Single select in the Details box.
+					'rewrite'           => false,
+					'capabilities'      => array(
+						'manage_terms' => 'bst_manage_settings',
+						'edit_terms'   => 'bst_manage_settings',
+						'delete_terms' => 'bst_manage_settings',
+						'assign_terms' => 'edit_bst_tickets',
+					),
+				)
+			);
+		}
 	}
 
 	/**

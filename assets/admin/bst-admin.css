@@ -428,6 +428,18 @@
 	border-bottom: 0;
 }
 
+/* Client (company) screen ---------------------------------------------- */
+
+.bst-company-people {
+	margin: 0 0 12px;
+}
+
+.bst-company-people li {
+	margin: 0;
+	padding: 8px 0;
+	border-bottom: 1px solid var(--bst-line-soft);
+}
+
 /* Settings page -------------------------------------------------------- */
 
 /* Left-hand tab nav, one tab per page load. Mobile first: a scrolling row
@@ -522,6 +534,11 @@
 }
 
 /* Sign-ups ------------------------------------------------------------- */
+
+.bst-signups__company {
+	max-width: 240px;
+	margin-top: 6px;
+}
 
 .bst-signups td {
 	vertical-align: middle;

@@ -37,6 +37,8 @@ Required by Bonsai testing rules: this plugin stores client data, sends email, a
 - [ ] Emailing support@ from that address before approval → Unverified ticket, no auto email.
 - [ ] Support → Sign-ups shows the count bubble and the person. **Approve** → they get "Your support account is ready" with Set your password; the link sets a password and lands on My requests after login.
 - [ ] Ticket Client dropdown, ticket list and ticket header show "The Ley Arms".
+- [ ] Sign-up typed "Ley Arms" when "The Ley Arms" exists → the client dropdown suggests The Ley Arms. Approve with it → the person appears under that client's People.
+- [ ] Sign-up with a brand-new name → **New client: …** is pre-selected. Approve → a new client record exists with that name.
 - [ ] **Reject** asks to confirm, then deletes the sign-up.
 - [ ] Settings → untick Client registration → Register link disappears.
 
@@ -57,6 +59,14 @@ Required by Bonsai testing rules: this plugin stores client data, sends email, a
 - [ ] Email with a PDF attachment → attachment on the ticket and downloadable.
 - [ ] Agent replies to a notification starting with `#note` → internal note.
 - [ ] Processed emails are marked read and labelled "Bonsai Support/Processed" in Gmail.
+
+## Clients
+- [ ] Upgrade a 0.1 site with typed client names → notice reports clients created and people/tickets linked. "the ley arms" and "The Ley Arms" became one client.
+- [ ] Support → Clients: add a partner and a plan from the links above the list, set them on a client with retainer hours and websites, save → values stick. The list shows partner, plan, retainer, people and active tickets.
+- [ ] Two people at the same client: each sees only their own tickets in the portal.
+- [ ] New ticket from a linked person → ticket list shows the client name above the person. Filter by client works.
+- [ ] Ticket screen: change **Contact** to someone at another client → **Client** follows. Change **Client** directly → it sticks, and Activity says "moved the ticket to …".
+- [ ] Move a person to a different client on their profile → their old tickets keep the old client.
 
 ## Slack
 - [ ] `BST_SLACK_WEBHOOK_URL` in wp-config.php → Settings → Slack shows **On**; Send test message arrives in the channel.

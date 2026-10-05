@@ -67,6 +67,9 @@ class BST_Install {
 
 		BST_Cron::schedule();
 
+		// Reactivating over pre-0.2 data: turn client names into Client records.
+		BST_Companies::migrate_legacy_names();
+
 		update_option( 'bst_db_version', BST_DB_VERSION, false );
 	}
 
@@ -85,10 +88,44 @@ class BST_Install {
 		if ( get_option( 'bst_db_version' ) === BST_DB_VERSION ) {
 			return;
 		}
+		$from = (int) get_option( 'bst_db_version' );
+
 		self::create_tables();
 		self::create_roles();
 		self::create_private_dir();
+
+		// 3: client names become Client records.
+		if ( $from < 3 ) {
+			self::migrate_companies();
+		}
+
 		update_option( 'bst_db_version', BST_DB_VERSION, false );
+	}
+
+	/**
+	 * Run the client-name migration and tell whoever triggered it what
+	 * happened, so near-duplicates can be tidied up under Support → Clients.
+	 */
+	private static function migrate_companies() {
+		try {
+			BST_Post_Types::register(); // admin_init runs after init, but be explicit.
+			$result = BST_Companies::migrate_legacy_names();
+		} catch ( Throwable $e ) {
+			error_log( 'Bonsai Support Tickets: client migration failed: ' . $e->getMessage() );
+			return;
+		}
+
+		if ( $result['created'] || $result['linked'] ) {
+			BST_Admin_UI::flash(
+				sprintf(
+					/* translators: 1: clients created, 2: people linked, 3: tickets updated. */
+					__( 'Support now has Client records. Created %1$d from existing client names, linked %2$d people and %3$d tickets. Check Support → Clients for near-duplicates (e.g. "Ley Arms" and "The Ley Arms") and move people between them on their user profile.', 'bonsai-support-tickets' ),
+					$result['created'],
+					$result['linked'],
+					$result['tickets']
+				)
+			);
+		}
 	}
 
 	/**

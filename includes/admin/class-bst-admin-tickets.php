@@ -91,9 +91,13 @@ class BST_Admin_Tickets {
 				break;
 
 			case 'bst_client':
-				$client_name = BST_Clients::client_name( BST_Tickets::client_id( $post_id ) );
-				if ( '' !== $client_name ) {
-					echo '<strong>' . esc_html( $client_name ) . '</strong><br>';
+				$company = BST_Companies::for_ticket( $post_id );
+				if ( $company ) {
+					printf(
+						'<a href="%1$s"><strong>%2$s</strong></a><br>',
+						esc_url( BST_Admin_Companies::tickets_url( $company ) ),
+						esc_html( BST_Companies::name( $company ) )
+					);
 				}
 				echo esc_html( BST_Tickets::contact_name( $post_id ) );
 				if ( BST_Tickets::is_unverified( $post_id ) ) {
@@ -299,6 +303,7 @@ class BST_Admin_Tickets {
 		$priority = isset( $_GET['bst_priority'] ) ? sanitize_key( wp_unslash( $_GET['bst_priority'] ) ) : '';
 		$assignee = isset( $_GET['bst_assignee'] ) ? sanitize_key( wp_unslash( $_GET['bst_assignee'] ) ) : '';
 		$type     = isset( $_GET['bst_type'] ) ? absint( $_GET['bst_type'] ) : 0;
+		$company  = isset( $_GET['bst_company'] ) ? absint( $_GET['bst_company'] ) : 0;
 		$view     = isset( $_GET['bst_view'] ) ? sanitize_key( wp_unslash( $_GET['bst_view'] ) ) : '';
 		// phpcs:enable
 
@@ -327,6 +332,14 @@ class BST_Admin_Tickets {
 			<option value=""><?php esc_html_e( 'Anyone', 'bonsai-support-tickets' ); ?></option>
 			<?php foreach ( BST_Tickets::agents() as $agent ) : ?>
 				<option value="<?php echo esc_attr( $agent->ID ); ?>" <?php selected( $assignee, (string) $agent->ID ); ?>><?php echo esc_html( $agent->display_name ); ?></option>
+			<?php endforeach; ?>
+		</select>
+
+		<label class="screen-reader-text" for="bst-filter-company"><?php esc_html_e( 'Filter by client', 'bonsai-support-tickets' ); ?></label>
+		<select name="bst_company" id="bst-filter-company">
+			<option value="0"><?php esc_html_e( 'All clients', 'bonsai-support-tickets' ); ?></option>
+			<?php foreach ( BST_Companies::all() as $option ) : ?>
+				<option value="<?php echo esc_attr( $option->ID ); ?>" <?php selected( $company, $option->ID ); ?>><?php echo esc_html( $option->post_title ); ?></option>
 			<?php endforeach; ?>
 		</select>
 
@@ -381,6 +394,15 @@ class BST_Admin_Tickets {
 			$meta_query[] = array(
 				'key'   => BST_Tickets::META_ASSIGNEE,
 				'value' => $assignee,
+				'type'  => 'NUMERIC',
+			);
+		}
+
+		$company = isset( $_GET['bst_company'] ) ? absint( $_GET['bst_company'] ) : 0;
+		if ( $company ) {
+			$meta_query[] = array(
+				'key'   => BST_Companies::META_TICKET,
+				'value' => $company,
 				'type'  => 'NUMERIC',
 			);
 		}
@@ -596,9 +618,13 @@ class BST_Admin_Tickets {
 		?>
 		<div class="bst-ticket-meta">
 			<strong class="bst-ref"><?php echo esc_html( BST_Tickets::ref( $post->ID ) ); ?></strong>
-			<?php $client_name = BST_Clients::client_name( BST_Tickets::client_id( $post->ID ) ); ?>
-			<?php if ( '' !== $client_name ) : ?>
-				<strong><?php echo esc_html( $client_name ); ?></strong>
+			<?php $company = BST_Companies::for_ticket( $post->ID ); ?>
+			<?php if ( $company ) : ?>
+				<?php if ( current_user_can( 'edit_post', $company ) ) : ?>
+					<a href="<?php echo esc_url( get_edit_post_link( $company ) ); ?>"><strong><?php echo esc_html( BST_Companies::name( $company ) ); ?></strong></a>
+				<?php else : ?>
+					<strong><?php echo esc_html( BST_Companies::name( $company ) ); ?></strong>
+				<?php endif; ?>
 			<?php endif; ?>
 			<span><?php echo esc_html( BST_Tickets::contact_name( $post->ID ) ); ?> &lt;<?php echo esc_html( BST_Tickets::contact_email( $post->ID ) ); ?>&gt;</span>
 			<?php if ( $site ) : ?>
@@ -637,6 +663,7 @@ class BST_Admin_Tickets {
 		$priority = $is_new ? 'normal' : BST_Tickets::priority( $post->ID );
 		$assignee = $is_new ? get_current_user_id() : BST_Tickets::assignee( $post->ID );
 		$client   = $is_new ? 0 : BST_Tickets::client_id( $post->ID );
+		$company  = $is_new ? 0 : BST_Companies::for_ticket( $post->ID );
 		$terms    = wp_get_object_terms( $post->ID, BST_Post_Types::TICKET_TYPE, array( 'fields' => 'ids' ) );
 		$type     = ( ! is_wp_error( $terms ) && $terms ) ? (int) $terms[0] : 0;
 		$site     = (string) get_post_meta( $post->ID, BST_Tickets::META_SITE_URL, true );
@@ -683,20 +710,52 @@ class BST_Admin_Tickets {
 			</select>
 		</div>
 
+		<input type="hidden" name="bst_original_company" value="<?php echo esc_attr( $company ); ?>">
 		<div class="bst-field">
-			<label for="bst-client"><?php esc_html_e( 'Client', 'bonsai-support-tickets' ); ?></label>
+			<label for="bst-company"><?php esc_html_e( 'Client', 'bonsai-support-tickets' ); ?></label>
+			<select name="bst_company" id="bst-company" class="widefat">
+				<option value="0"><?php esc_html_e( 'From the contact', 'bonsai-support-tickets' ); ?></option>
+				<?php foreach ( BST_Companies::all() as $option ) : ?>
+					<option value="<?php echo esc_attr( $option->ID ); ?>" <?php selected( $company, $option->ID ); ?>><?php echo esc_html( $option->post_title ); ?></option>
+				<?php endforeach; ?>
+			</select>
+			<p class="description"><?php esc_html_e( 'The business this ticket is for. Changing the contact moves it to their client automatically.', 'bonsai-support-tickets' ); ?></p>
+		</div>
+
+		<div class="bst-field">
+			<label for="bst-client"><?php esc_html_e( 'Contact', 'bonsai-support-tickets' ); ?></label>
 			<select name="bst_client" id="bst-client" class="widefat">
-				<option value="0"><?php echo $is_new ? esc_html__( 'Choose a client', 'bonsai-support-tickets' ) : esc_html__( 'Not linked', 'bonsai-support-tickets' ); ?></option>
-				<?php foreach ( BST_Tickets::clients() as $user ) : ?>
-					<option value="<?php echo esc_attr( $user->ID ); ?>" <?php selected( $client, $user->ID ); ?>>
-						<?php
-						$label = BST_Clients::label( $user ) . ' (' . $user->user_email . ')';
-						if ( BST_Clients::is_pending( $user->ID ) ) {
-							$label .= ' — ' . __( 'awaiting approval', 'bonsai-support-tickets' );
+				<option value="0"><?php echo $is_new ? esc_html__( 'Choose a person', 'bonsai-support-tickets' ) : esc_html__( 'Not linked', 'bonsai-support-tickets' ); ?></option>
+				<?php
+				// Grouped by client so a business's people sit together; people with no client last.
+				$groups = array();
+				foreach ( BST_Tickets::clients() as $user ) {
+					$groups[ BST_Clients::client_name( $user->ID ) ][] = $user;
+				}
+				uksort(
+					$groups,
+					function ( $a, $b ) {
+						if ( '' === (string) $a || '' === (string) $b ) {
+							return '' === (string) $a ? 1 : -1;
 						}
-						echo esc_html( $label );
-						?>
-					</option>
+						return strcasecmp( $a, $b );
+					}
+				);
+				?>
+				<?php foreach ( $groups as $group => $users ) : ?>
+					<optgroup label="<?php echo esc_attr( '' !== (string) $group ? $group : __( 'No client', 'bonsai-support-tickets' ) ); ?>">
+						<?php foreach ( $users as $user ) : ?>
+							<option value="<?php echo esc_attr( $user->ID ); ?>" <?php selected( $client, $user->ID ); ?>>
+								<?php
+								$label = $user->display_name . ' (' . $user->user_email . ')';
+								if ( BST_Clients::is_pending( $user->ID ) ) {
+									$label .= ' — ' . __( 'awaiting approval', 'bonsai-support-tickets' );
+								}
+								echo esc_html( $label );
+								?>
+							</option>
+						<?php endforeach; ?>
+					</optgroup>
 				<?php endforeach; ?>
 			</select>
 			<?php if ( BST_Tickets::is_unverified( $post->ID ) ) : ?>
@@ -707,7 +766,7 @@ class BST_Admin_Tickets {
 					?>
 				</p>
 			<?php endif; ?>
-			<p class="description"><?php esc_html_e( 'Clients register on the support site (approve them under Support → Sign-ups), or add them under Users with the Support Client role.', 'bonsai-support-tickets' ); ?></p>
+			<p class="description"><?php esc_html_e( 'The person we email. Clients register on the support site (approve them under Support → Sign-ups), or add them under Users with the Support Client role.', 'bonsai-support-tickets' ); ?></p>
 		</div>
 
 		<div class="bst-field">
@@ -918,7 +977,20 @@ class BST_Admin_Tickets {
 			// Client first, so a reply in the same save goes to the right person.
 			$client = absint( $_POST['bst_client'] ?? 0 );
 			if ( $client ) {
-				BST_Tickets::set_client( $post_id, $client );
+				BST_Tickets::set_client( $post_id, $client ); // Also moves the ticket to the contact's client.
+			}
+
+			// An explicit Client choice wins over the contact's, but only if the agent changed it.
+			$company          = absint( $_POST['bst_company'] ?? 0 );
+			$original_company = absint( $_POST['bst_original_company'] ?? 0 );
+			if ( $company && $company !== $original_company ) {
+				BST_Tickets::set_company( $post_id, $company );
+			} elseif ( ! $company && $original_company ) {
+				// Switched back to "From the contact".
+				BST_Tickets::set_company( $post_id, BST_Companies::for_user( BST_Tickets::client_id( $post_id ) ) );
+			} elseif ( ! BST_Companies::for_ticket( $post_id ) ) {
+				// New ticket, or no client yet: follow the contact.
+				BST_Companies::stamp_ticket( $post_id, BST_Companies::for_user( BST_Tickets::client_id( $post_id ) ) );
 			}
 
 			// Message before field changes — see class docblock.

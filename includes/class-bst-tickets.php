@@ -482,6 +482,7 @@ class BST_Tickets {
 	 *     @type string  $priority         Priority slug.
 	 *     @type string  $site_url         Site/page the issue is on.
 	 *     @type string  $source           web|email|admin.
+	 *     @type int     $company_id       Client company. Defaults to the client's company.
 	 *     @type int     $actor_id         Who is creating it (client, or agent on their behalf). Defaults to client_id.
 	 *     @type string  $email_message_id Inbound Message-ID (dedupe).
 	 *     @type array[] $uploads          Normalised $_FILES entries (already validated).
@@ -502,6 +503,7 @@ class BST_Tickets {
 				'priority'         => 'normal',
 				'site_url'         => '',
 				'source'           => 'web',
+				'company_id'       => 0,
 				'actor_id'         => null,
 				'email_message_id' => '',
 				'uploads'          => array(),
@@ -549,6 +551,9 @@ class BST_Tickets {
 			update_post_meta( $ticket_id, self::META_CONTACT_NAME, sanitize_text_field( $args['contact_name'] ) );
 			update_post_meta( $ticket_id, self::META_UNVERIFIED, 1 );
 		}
+
+		// Record the company now, so it stays right if the person moves on later.
+		BST_Companies::stamp_ticket( $ticket_id, $args['company_id'] ? (int) $args['company_id'] : BST_Companies::for_user( $client_id ) );
 
 		if ( $args['type_id'] && term_exists( (int) $args['type_id'], BST_Post_Types::TICKET_TYPE ) ) {
 			wp_set_object_terms( $ticket_id, array( (int) $args['type_id'] ), BST_Post_Types::TICKET_TYPE );
@@ -817,7 +822,8 @@ class BST_Tickets {
 
 	/**
 	 * Link a ticket to a client account. Clears the unverified flag, so the
-	 * client starts receiving emails about it.
+	 * client starts receiving emails about it, and moves the ticket to the
+	 * client's company (if they have one).
 	 *
 	 * @param int $ticket_id Ticket ID.
 	 * @param int $client_id Client user ID.
@@ -837,6 +843,30 @@ class BST_Tickets {
 
 		delete_post_meta( $ticket_id, self::META_UNVERIFIED );
 		BST_Activity::log( $ticket_id, 'client', (string) $old, (string) $client_id );
+
+		$company_id = BST_Companies::for_user( $client_id );
+		if ( $company_id ) {
+			self::set_company( $ticket_id, $company_id );
+		}
+		return true;
+	}
+
+	/**
+	 * Set the company a ticket is for (0 clears it). Logged.
+	 *
+	 * @param int $ticket_id  Ticket ID.
+	 * @param int $company_id Company ID or 0.
+	 * @return bool Whether it changed.
+	 */
+	public static function set_company( $ticket_id, $company_id ) {
+		$company_id = (int) $company_id;
+		$old        = BST_Companies::for_ticket( $ticket_id );
+		if ( $old === $company_id || ( $company_id && ! BST_Companies::exists( $company_id ) ) ) {
+			return false;
+		}
+
+		BST_Companies::stamp_ticket( $ticket_id, $company_id );
+		BST_Activity::log( $ticket_id, 'company', (string) $old, (string) $company_id );
 		return true;
 	}
 

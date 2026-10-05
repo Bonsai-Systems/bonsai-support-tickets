@@ -120,6 +120,18 @@ class BST_Activity {
 				/* translators: %s: email address. */
 				return sprintf( __( 'Email received from %s', 'bonsai-support-tickets' ), $event->new_value );
 
+			case 'time':
+				/* translators: 1: person, 2: duration, e.g. 1h 30m. */
+				return sprintf( __( '%1$s logged %2$s', 'bonsai-support-tickets' ), $actor, BST_Duration::format( (int) $event->new_value ) );
+
+			case 'time_edit':
+				/* translators: 1: person, 2: old duration, 3: new duration. */
+				return sprintf( __( '%1$s edited a time entry (%2$s → %3$s)', 'bonsai-support-tickets' ), $actor, BST_Duration::format( (int) $event->old_value ), BST_Duration::format( (int) $event->new_value ) );
+
+			case 'time_delete':
+				/* translators: 1: person, 2: duration. */
+				return sprintf( __( '%1$s deleted a time entry (%2$s)', 'bonsai-support-tickets' ), $actor, BST_Duration::format( (int) $event->old_value ) );
+
 			case 'auto_closed':
 				return __( 'Closed automatically after being solved', 'bonsai-support-tickets' );
 

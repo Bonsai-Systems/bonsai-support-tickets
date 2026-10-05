@@ -24,6 +24,7 @@ class BST_Install {
 		'bst_add_internal_notes',
 		'bst_assign_tickets',
 		'bst_approve_clients',
+		'bst_log_time',
 		'edit_bst_tickets',
 		'edit_others_bst_tickets',
 		'edit_published_bst_tickets',
@@ -36,6 +37,7 @@ class BST_Install {
 	 */
 	const ADMIN_CAPS = array(
 		'bst_manage_settings',
+		'bst_manage_time',
 		'delete_bst_tickets',
 		'delete_others_bst_tickets',
 		'delete_published_bst_tickets',
@@ -207,6 +209,22 @@ class BST_Install {
 			created_at datetime NOT NULL,
 			PRIMARY KEY  (id),
 			KEY ticket_id (ticket_id)
+		) $charset;
+		CREATE TABLE {$wpdb->prefix}bst_time_entries (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			ticket_id bigint(20) unsigned NOT NULL,
+			company_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			user_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			minutes int(10) unsigned NOT NULL DEFAULT 0,
+			billable tinyint(1) NOT NULL DEFAULT 1,
+			note varchar(255) NOT NULL DEFAULT '',
+			work_date date NOT NULL,
+			created_at datetime NOT NULL,
+			updated_at datetime NOT NULL,
+			PRIMARY KEY  (id),
+			KEY ticket_id (ticket_id),
+			KEY company_date (company_id,work_date),
+			KEY user_date (user_id,work_date)
 		) $charset;";
 
 		dbDelta( $sql );

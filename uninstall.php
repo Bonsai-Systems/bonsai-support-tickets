@@ -33,6 +33,8 @@ $bst_caps = array(
 	'bst_assign_tickets',
 	'bst_approve_clients',
 	'bst_manage_settings',
+	'bst_log_time',
+	'bst_manage_time',
 	'edit_bst_tickets',
 	'edit_others_bst_tickets',
 	'edit_published_bst_tickets',
@@ -80,7 +82,7 @@ foreach ( array( 'bst_ticket_type', 'bst_article_topic', 'bst_partner', 'bst_pla
 }
 
 // Custom tables.
-foreach ( array( 'bst_messages', 'bst_attachments', 'bst_activity' ) as $bst_table ) {
+foreach ( array( 'bst_messages', 'bst_attachments', 'bst_activity', 'bst_time_entries' ) as $bst_table ) {
 	$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}{$bst_table}" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 }
 

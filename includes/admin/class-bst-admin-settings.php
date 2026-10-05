@@ -76,6 +76,11 @@ class BST_Admin_Settings {
 				'form'   => true,
 				'after'  => array( __CLASS__, 'render_slack_status' ),
 			),
+			'time'       => array(
+				'label'  => __( 'Time tracking', 'bonsai-support-tickets' ),
+				'render' => array( 'BST_Admin_Time', 'render_settings' ),
+				'form'   => true,
+			),
 			'monitoring' => array(
 				'label'  => __( 'Uptime monitoring', 'bonsai-support-tickets' ),
 				'render' => array( __CLASS__, 'render_monitoring' ),

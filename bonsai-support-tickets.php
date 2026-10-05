@@ -49,7 +49,7 @@ if ( ! defined( 'BST_MONITOR_PROMO_URL' ) ) {
 }
 
 define( 'BST_VERSION', '0.1.0' );
-define( 'BST_DB_VERSION', '5' ); // 2: bst_approve_clients capability. 3: Client records. 4: neutral defaults. 5: canned responses.
+define( 'BST_DB_VERSION', '6' ); // 2: bst_approve_clients capability. 3: Client records. 4: neutral defaults. 5: canned responses. 6: time tracking.
 define( 'BST_FILE', __FILE__ );
 define( 'BST_DIR', plugin_dir_path( __FILE__ ) );
 define( 'BST_URL', plugin_dir_url( __FILE__ ) );
@@ -100,6 +100,8 @@ require_once BST_DIR . 'includes/class-bst-tickets.php';
 require_once BST_DIR . 'includes/class-bst-clients.php';
 require_once BST_DIR . 'includes/class-bst-companies.php';
 require_once BST_DIR . 'includes/class-bst-canned.php';
+require_once BST_DIR . 'includes/class-bst-duration.php';
+require_once BST_DIR . 'includes/class-bst-time.php';
 
 // Email.
 require_once BST_DIR . 'includes/class-bst-mailer.php';
@@ -123,6 +125,7 @@ require_once BST_DIR . 'includes/admin/class-bst-admin-setup.php';
 require_once BST_DIR . 'includes/admin/class-bst-admin-signups.php';
 require_once BST_DIR . 'includes/admin/class-bst-admin-companies.php';
 require_once BST_DIR . 'includes/admin/class-bst-admin-canned.php';
+require_once BST_DIR . 'includes/admin/class-bst-admin-time.php';
 
 register_activation_hook( __FILE__, array( 'BST_Install', 'activate' ) );
 register_deactivation_hook( __FILE__, array( 'BST_Install', 'deactivate' ) );
@@ -140,6 +143,7 @@ add_action(
 		BST_Mailer::init();
 		BST_Slack::init();
 		BST_Monitoring::init();
+		BST_Time::init();
 		BST_Cron::init();
 		BST_Forms::init();
 		BST_Registration::init();
@@ -153,6 +157,7 @@ add_action(
 			BST_Admin_Signups::init();
 			BST_Admin_Companies::init();
 			BST_Admin_Canned::init();
+			BST_Admin_Time::init();
 		}
 	}
 );

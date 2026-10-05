@@ -65,6 +65,12 @@ class BST_Settings {
 				'monitor_secret'       => '',
 				'uptimerobot_enabled'  => 0,
 				'uptimerobot_key'      => '',
+
+				// Time tracking. Off by default; see BST_Time.
+				'time_enabled'         => 0,
+				'time_portal'          => 0, // Clients see this month's hours in the portal.
+				'time_alerts'          => 1, // Team alert at 80% and 100% of a retainer.
+				'time_default_billable' => 1,
 			)
 			// Brand colours. '' = default; see BST_Appearance.
 			+ array_fill_keys( array_keys( BST_Appearance::default_colors() ), '' )
@@ -137,6 +143,10 @@ class BST_Settings {
 		$clean['monitor_secret']       = preg_replace( '/[^A-Za-z0-9]/', '', (string) ( $input['monitor_secret'] ?? '' ) );
 		$clean['uptimerobot_enabled']  = empty( $input['uptimerobot_enabled'] ) ? 0 : 1;
 		$clean['uptimerobot_key']      = preg_replace( '/[^A-Za-z0-9]/', '', (string) ( $input['uptimerobot_key'] ?? '' ) );
+		$clean['time_enabled']         = empty( $input['time_enabled'] ) ? 0 : 1;
+		$clean['time_portal']          = empty( $input['time_portal'] ) ? 0 : 1;
+		$clean['time_alerts']          = empty( $input['time_alerts'] ) ? 0 : 1;
+		$clean['time_default_billable'] = empty( $input['time_default_billable'] ) ? 0 : 1;
 
 		foreach ( array_keys( BST_Appearance::default_colors() ) as $color_key ) {
 			$clean[ $color_key ] = BST_Appearance::sanitize( $color_key, $input[ $color_key ] ?? '' );

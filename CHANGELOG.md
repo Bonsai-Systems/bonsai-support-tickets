@@ -42,6 +42,16 @@ All notable changes to this plugin are documented here. Format: [Keep a Changelo
   - Plain-text reply editor with a placeholder reference.
   - Six neutral starter replies, created once (`bst_default_canned_responses` filter).
 - `BST_Canned` (data) and `BST_Admin_Canned` (screens and picker). Integration tests.
+- **Time tracking and retainers** (off by default; **Support → Settings → Time tracking**):
+  - `bst_time_entries` table: ticket, client (stamped at logging), agent, minutes, billable, note, work date.
+  - **Log time** in the reply box (`30m`, `1h 15m`, `1:30`, `1.5`), saved with or without a reply. **Time** box on tickets with edit/delete (own entries for agents, any for admins).
+  - Monthly retainer use (billable only, resets on the 1st) on the client screen, the Clients list and the ticket's Time box.
+  - Team alerts at 80% and 100% (email + Slack if on), once per threshold per month.
+  - **Support → Time**: monthly summary per client, client drill-down, entry editing, summary and entries CSV export. Agents see their own time.
+  - Optional client portal panel with this month's used and remaining hours (totals only).
+  - `BST_Time`, `BST_Duration` (unit tested), `BST_Admin_Time`. Capabilities `bst_log_time` (agents) and `bst_manage_time` (admins).
+  - `bst_time_alert_recipients` filter, `bst_time_logged` and `bst_ticket_company_changed` actions.
+  - Unit and integration tests.
 
 ### Changed
 - The auto-reply replaces the fixed "We have received your request" email. It's still only sent on ticket creation and never to unverified senders.
@@ -58,6 +68,7 @@ All notable changes to this plugin are documented here. Format: [Keep a Changelo
 - Theme template overrides now live in `your-theme/support-desk/` (was `bonsai-support/`).
 - Front-end CSS no longer reads the theme's `--bonsai-*` properties. The font follows `--bst-font-family`.
 - Admin screens use the product palette (overriding the shared admin design system's tokens, not the file).
+- DB version 6: time entries table and time capabilities.
 - DB version 5: canned response capabilities for agents and admins, plus the starter replies on upgrade.
 - DB version 4. Development builds keep the original Bonsai site's branding through the upgrade (`includes/legacy/`, excluded from the product zip): prefix, names, mailbox, Gmail label, auto-reply wording, colours and logo (copied into the Media Library) are saved explicitly where they weren't already.
 - DB version 3. On upgrade, existing client names become client records (matched ignoring case and spacing). People are linked, tickets are backfilled, pending sign-ups are skipped, and a notice reports the counts. The old `bst_client_name` meta is kept.

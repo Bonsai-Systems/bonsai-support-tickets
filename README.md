@@ -115,6 +115,18 @@ Monitor tickets have no client account, so clients are never emailed. Agents get
 
 Endpoints: `POST /wp-json/bst/v1/monitor/status` and `POST /wp-json/bst/v1/monitor/uptimerobot?key=…`. A "Don't have uptime monitoring yet?" link appears on the tab once `BST_MONITOR_PROMO_URL` is set (or via the `bst_monitor_promo_url` filter).
 
+### Time tracking and retainers
+
+Off by default. Turn it on under **Support → Settings → Time tracking**. Turning it off hides every time screen and field; logged time is kept.
+
+- **Log time** sits in the ticket reply box. Type `30m`, `1h 15m`, `1:30` or `1.5` (a bare number means hours, so `30` is rejected as 30 hours), pick the date and tick **Billable** or not. Add an optional team-only note. It's saved with your reply, or on its own if the message is empty.
+- Each ticket has a **Time** box listing its entries and the client's retainer this month. Agents edit and delete their own entries; administrators can edit and delete anyone's.
+- **Retainer hours a month** is set on each client (Support → Clients). Only **billable** time counts against it, and it resets on the 1st (site timezone). The client screen and the Clients list show used and remaining time, with a bar that turns amber at 80% and red at 100%.
+- Entries are stamped with the ticket's client when logged, so a ticket moving client later doesn't rewrite past months. Time logged while a ticket had no client follows it to its first client.
+- **Alerts:** administrators are emailed (and Slack gets a post, if it's on) the first time a client reaches 80% and 100% in the current month. Back-dated time doesn't alert. Clients aren't told. Change recipients with `bst_time_alert_recipients`.
+- **Support → Time** (administrators): each month's clients with retainer, billable, non-billable and usage. Click a client for their entries. **Export summary (CSV)** and **Export all entries / Export CSV** produce invoicing spreadsheets (decimal hours, UTF-8, formula-safe). Agents see their own month's time there.
+- **Client portal** (optional, its own switch): clients on a retainer see "Support hours · October 2026 — 9h 45m of 10h used, 15m left" on My requests. Totals only, never entries or notes.
+
 ### Canned responses
 
 Saved replies the team inserts into the ticket reply box. Manage them under **Support → Canned responses**; group them with **Tags** (linked above the list).
@@ -179,6 +191,9 @@ Template functions, all permission-checked:
 | `bst_email` | Change any outgoing email before it's sent |
 | `bst_email_placeholders` | Add `{{placeholders}}` for the auto-reply and canned responses |
 | `bst_default_canned_responses` | Starter canned responses created on first install |
+| `bst_time_alert_recipients` | Email addresses for retainer alerts (default: users with `bst_manage_time`) |
+| `bst_time_logged` | Action after time is logged (entry ID, entry row) |
+| `bst_ticket_company_changed` | Action when a ticket moves client (ticket ID, old, new) |
 | `bst_settings_defaults` | Change setting defaults |
 | `bst_ticket_created`, `bst_message_added`, `bst_status_changed`, `bst_ticket_assigned` | Actions for integrations (the Slack post listens to `bst_ticket_created`) |
 | `bst_monitor_promo_url` | "Get uptime monitoring" link on the Uptime monitoring tab (`''` hides it) |

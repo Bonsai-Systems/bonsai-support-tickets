@@ -198,6 +198,86 @@
 	border: 1px solid var(--bst-grey-light);
 }
 
+/* Support hours (retainer) -------------------------------------------- */
+
+.bst .bst-hours {
+	margin: 0 0 2rem;
+	padding: 1.25rem 1.5rem;
+	background: var(--bst-white);
+	border: 1px solid var(--bst-grey-light);
+	border-left: 4px solid var(--bst-accent);
+}
+
+.bst .bst-hours--warning {
+	border-left-color: var(--bst-warning);
+}
+
+.bst .bst-hours--over {
+	border-left-color: var(--bst-error);
+}
+
+.bst .bst-hours__title {
+	margin: 0 0 0.25rem;
+	font-size: 0.875rem;
+	font-weight: 600;
+	letter-spacing: 0.02em;
+	color: var(--bst-grey-dark);
+}
+
+.bst .bst-hours__figures {
+	margin: 0 0 0.75rem;
+	font-size: 1.25rem;
+	font-weight: 600;
+	color: var(--bst-black);
+}
+
+.bst .bst-hours__bar {
+	display: block;
+	width: 100%;
+	height: 0.5rem;
+	appearance: none;
+	background: var(--bst-grey-light);
+	border: 0;
+	border-radius: 999px;
+	overflow: hidden;
+}
+
+.bst .bst-hours__bar::-webkit-progress-bar {
+	background: var(--bst-grey-light);
+	border-radius: 999px;
+}
+
+.bst .bst-hours__bar::-webkit-progress-value {
+	background: var(--bst-accent);
+	border-radius: 999px;
+}
+
+.bst .bst-hours__bar::-moz-progress-bar {
+	background: var(--bst-accent);
+	border-radius: 999px;
+}
+
+.bst .bst-hours--warning .bst-hours__bar::-webkit-progress-value {
+	background: var(--bst-warning);
+}
+
+.bst .bst-hours--warning .bst-hours__bar::-moz-progress-bar {
+	background: var(--bst-warning);
+}
+
+.bst .bst-hours--over .bst-hours__bar::-webkit-progress-value {
+	background: var(--bst-error);
+}
+
+.bst .bst-hours--over .bst-hours__bar::-moz-progress-bar {
+	background: var(--bst-error);
+}
+
+.bst .bst-hours__note {
+	margin: 0.75rem 0 0;
+	font-size: 0.875rem;
+}
+
 /* Badges --------------------------------------------------------------- */
 
 .bst-badge {

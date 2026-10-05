@@ -149,7 +149,7 @@ class BST_Admin_Companies {
 				<td>
 					<input type="number" name="bst_retainer_hours" id="bst-company-retainer" class="small-text" min="0" max="1000" step="0.25" value="<?php echo esc_attr( '' !== $retainer ? $retainer : '' ); ?>">
 					<?php esc_html_e( 'hours a month', 'bonsai-support-tickets' ); ?>
-					<p class="description"><?php esc_html_e( 'Blank or 0 for no retainer. Time tracking against it is coming later.', 'bonsai-support-tickets' ); ?></p>
+					<p class="description"><?php echo BST_Time::enabled() ? esc_html__( 'Blank or 0 for no retainer. Billable time logged on this client\'s tickets counts against it, resetting on the 1st of each month.', 'bonsai-support-tickets' ) : esc_html__( 'Blank or 0 for no retainer. Turn on time tracking (Support → Settings → Time tracking) to log time against it.', 'bonsai-support-tickets' ); ?></p>
 				</td>
 			</tr>
 			<tr>
@@ -304,6 +304,12 @@ class BST_Admin_Companies {
 	public static function column( $column, $post_id ) {
 		switch ( $column ) {
 			case 'bst_retainer':
+				// With time tracking on: this month's use against the allowance.
+				$usage_html = BST_Admin_Time::company_column( $post_id );
+				if ( '' !== $usage_html ) {
+					echo $usage_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in usage_bar().
+					break;
+				}
 				$hours = BST_Companies::retainer_hours( $post_id );
 				/* translators: %s: hours. */
 				echo $hours ? esc_html( sprintf( __( '%s h/month', 'bonsai-support-tickets' ), number_format_i18n( $hours, floor( $hours ) === $hours ? 0 : 2 ) ) ) : '<span class="bst-muted">—</span>';

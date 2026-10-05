@@ -847,6 +847,8 @@ class BST_Admin_Tickets {
 				<?php endif; ?>
 			</div>
 
+			<?php BST_Admin_Time::reply_fields( $post ); ?>
+
 			<div class="bst-reply-box__actions">
 				<button type="submit" name="<?php echo esc_attr( self::submit_name( $post ) ); ?>" value="1" class="button button-primary bst-send"><?php echo $is_new ? esc_html__( 'Create ticket', 'bonsai-support-tickets' ) : esc_html__( 'Send reply', 'bonsai-support-tickets' ); ?></button>
 			</div>
@@ -999,6 +1001,9 @@ class BST_Admin_Tickets {
 
 			// Message before field changes — see class docblock.
 			self::save_message( $post_id );
+
+			// Time is independent of the message: it can be logged without one.
+			BST_Admin_Time::save_from_ticket( $post_id );
 
 			$status   = sanitize_key( wp_unslash( $_POST['bst_status'] ?? '' ) );
 			$original = sanitize_key( wp_unslash( $_POST['bst_original_status'] ?? '' ) );

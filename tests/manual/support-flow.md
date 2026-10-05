@@ -86,6 +86,20 @@ Required because this plugin stores client data, sends email, and has custom tab
 - [ ] Toggle off and save → new ticket doesn't post. Toggle back on.
 - [ ] Wrong webhook URL → Send test message shows an error; ticket submission still works and is not slowed down.
 
+## Time tracking
+- [ ] Fresh install: no Log time field, no Time box, no Support → Time until Settings → Time tracking is switched on.
+- [ ] Client "Ley Arms" with 10 retainer hours. On one of its tickets, reply with Log time `1h 30m` → reply sent, "1h 30m logged", Time box shows it and "1h 30m of 10h".
+- [ ] Log time with the message empty → time saved, nothing sent to the client.
+- [ ] Type `30` → error explaining it would be 30 hours; nothing logged. `1:30` and `1.5` both log 1h 30m.
+- [ ] Untick Billable → entry shows Non-billable and doesn't move the retainer bar.
+- [ ] Reach 80% → one email to admins (and Slack if on) naming the client. Log more → no repeat. Reach 100% → one more. The client gets nothing.
+- [ ] Log time dated last month → no alert; it appears under last month in Support → Time.
+- [ ] As an agent: can edit/delete own entries, not another agent's. Support → Time shows only their own time, no export.
+- [ ] Support → Time → Export summary and Export CSV open in Excel with £/accents intact and decimal hours that add up.
+- [ ] Turn on "Show clients their hours" → client sees "Support hours" on My requests with used/left; no entries or notes. Client with no retainer sees nothing.
+- [ ] Move a ticket with logged time to another client → last month's report for the old client is unchanged.
+- [ ] Switch time tracking off → all time UI disappears; switch on → entries are still there.
+
 ## Canned responses
 - [ ] Fresh install: Support → Canned responses lists the six starter replies, with tags. Nothing mentions a company.
 - [ ] On a ticket: **Insert a canned response** → reply appears in the box with the client's name, the ticket reference and your name filled in; the dropdown resets.

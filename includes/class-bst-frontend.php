@@ -163,6 +163,7 @@ class BST_Frontend {
 				'active'     => BST_Tickets::client_tickets( $user_id, 'active' ),
 				'resolved'   => BST_Tickets::client_tickets( $user_id, 'resolved' ),
 				'submit_url' => BST_Tickets::submit_url(),
+				'hours'      => BST_Time::portal_usage( $user_id ),
 			)
 		);
 	}

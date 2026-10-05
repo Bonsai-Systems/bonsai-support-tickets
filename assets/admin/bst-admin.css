@@ -352,6 +352,142 @@
 	border-color: var(--bst-note-line);
 }
 
+/* Time tracking --------------------------------------------------------- */
+
+.bst-admin-screen {
+	--bst-usage-ok: var(--bst-accent);
+	--bst-usage-warning: #b45309; /* 3:1+ against the track for a non-text bar. */
+	--bst-usage-over: #b0122c;
+}
+
+.bst-log-time {
+	margin: 12px 0;
+	padding: 10px 12px 4px;
+	background: var(--bst-subtle);
+	border: 1px solid var(--bst-line);
+	border-radius: var(--bst-radius-sm);
+}
+
+.bst-log-time legend {
+	padding: 0 4px;
+	font-weight: 600;
+}
+
+.bst-log-time__fields {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+	gap: 8px 20px;
+}
+
+.bst-log-time__fields p {
+	margin: 0 0 6px;
+}
+
+.bst-log-time__fields label {
+	display: block;
+	margin-bottom: 2px;
+}
+
+.bst-log-time__note {
+	flex: 1 1 220px;
+}
+
+.bst-log-time__billable label {
+	display: inline;
+}
+
+.bst-log-time .bst-log-time__duration {
+	width: 7em;
+}
+
+.bst-usage {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	min-width: 160px;
+}
+
+.bst-usage__bar {
+	width: 100%;
+	height: 8px;
+	appearance: none;
+	background: var(--bst-line-soft);
+	border: 0;
+	border-radius: 999px;
+	overflow: hidden;
+}
+
+.bst-usage__bar::-webkit-progress-bar {
+	background: var(--bst-line-soft);
+	border-radius: 999px;
+}
+
+.bst-usage__bar::-webkit-progress-value {
+	background: var(--bst-usage-ok);
+	border-radius: 999px;
+}
+
+.bst-usage__bar::-moz-progress-bar {
+	background: var(--bst-usage-ok);
+	border-radius: 999px;
+}
+
+.bst-usage--warning .bst-usage__bar::-webkit-progress-value {
+	background: var(--bst-usage-warning);
+}
+
+.bst-usage--warning .bst-usage__bar::-moz-progress-bar {
+	background: var(--bst-usage-warning);
+}
+
+.bst-usage--over .bst-usage__bar::-webkit-progress-value {
+	background: var(--bst-usage-over);
+}
+
+.bst-usage--over .bst-usage__bar::-moz-progress-bar {
+	background: var(--bst-usage-over);
+}
+
+.bst-usage__text {
+	font-size: 12px;
+	color: var(--bst-muted);
+}
+
+.bst-usage--over .bst-usage__text {
+	font-weight: 600;
+	color: var(--bst-usage-over);
+}
+
+.bst-time-list {
+	margin: 8px 0 0;
+}
+
+.bst-time-list li {
+	padding: 8px 0;
+	border-top: 1px solid var(--bst-line-soft);
+}
+
+.bst-time-box__total {
+	margin: 12px 0 0;
+	font-weight: 600;
+}
+
+.bst-month-nav {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 6px;
+}
+
+.bst-time-table {
+	margin-top: 12px;
+}
+
+.bst-time-table td {
+	vertical-align: middle;
+}
+
 /* Canned responses ------------------------------------------------------ */
 
 .bst-canned-picker {

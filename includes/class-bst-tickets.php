@@ -872,6 +872,15 @@ class BST_Tickets {
 
 		BST_Companies::stamp_ticket( $ticket_id, $company_id );
 		BST_Activity::log( $ticket_id, 'company', (string) $old, (string) $company_id );
+
+		/**
+		 * A ticket moved to a different client company.
+		 *
+		 * @param int $ticket_id  Ticket ID.
+		 * @param int $old        Previous company (0 = none).
+		 * @param int $company_id New company (0 = none).
+		 */
+		do_action( 'bst_ticket_company_changed', (int) $ticket_id, (int) $old, $company_id );
 		return true;
 	}
 

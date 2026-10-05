@@ -35,6 +35,13 @@ All notable changes to this plugin are documented here. Format: [Keep a Changelo
   - Hidden "get uptime monitoring" link: `BST_MONITOR_PROMO_URL` / `bst_monitor_promo_url`.
 - `BST_Companies::find_by_website()`. `BST_Tickets::reply()` accepts `system` for notes written by the plugin itself. Message/ticket source `monitor`.
 - Integration tests for uptime monitoring.
+- **Canned responses** (`bst_canned` post type, `bst_canned_tag` tags) under **Support → Canned responses**:
+  - One shared library; every agent can add, edit and delete them (own `bst_canned_response` capabilities, so agents and admins only).
+  - **Insert a canned response** picker in the ticket reply box, grouped by tag, inserting at the cursor. A filter box appears above 10 replies.
+  - Placeholders filled for the current ticket: the auto-reply set plus `{{agent.name}}`. Empty values are left as typed.
+  - Plain-text reply editor with a placeholder reference.
+  - Six neutral starter replies, created once (`bst_default_canned_responses` filter).
+- `BST_Canned` (data) and `BST_Admin_Canned` (screens and picker). Integration tests.
 
 ### Changed
 - The auto-reply replaces the fixed "We have received your request" email. It's still only sent on ticket creation and never to unverified senders.
@@ -51,6 +58,7 @@ All notable changes to this plugin are documented here. Format: [Keep a Changelo
 - Theme template overrides now live in `your-theme/support-desk/` (was `bonsai-support/`).
 - Front-end CSS no longer reads the theme's `--bonsai-*` properties. The font follows `--bst-font-family`.
 - Admin screens use the product palette (overriding the shared admin design system's tokens, not the file).
+- DB version 5: canned response capabilities for agents and admins, plus the starter replies on upgrade.
 - DB version 4. Development builds keep the original Bonsai site's branding through the upgrade (`includes/legacy/`, excluded from the product zip): prefix, names, mailbox, Gmail label, auto-reply wording, colours and logo (copied into the Media Library) are saved explicitly where they weren't already.
 - DB version 3. On upgrade, existing client names become client records (matched ignoring case and spacing). People are linked, tickets are backfilled, pending sign-ups are skipped, and a notice reports the counts. The old `bst_client_name` meta is kept.
 

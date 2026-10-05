@@ -42,10 +42,10 @@ class BST_Admin_UI {
 		if ( ! $screen ) {
 			return false;
 		}
-		if ( in_array( $screen->post_type, array( BST_Post_Types::TICKET, BST_Post_Types::ARTICLE, BST_Post_Types::COMPANY ), true ) ) {
+		if ( in_array( $screen->post_type, array( BST_Post_Types::TICKET, BST_Post_Types::ARTICLE, BST_Post_Types::COMPANY, BST_Post_Types::CANNED ), true ) ) {
 			return true;
 		}
-		if ( in_array( $screen->taxonomy, array( BST_Post_Types::TICKET_TYPE, BST_Post_Types::ARTICLE_TOPIC, BST_Post_Types::PARTNER, BST_Post_Types::PLAN ), true ) ) {
+		if ( in_array( $screen->taxonomy, array( BST_Post_Types::TICKET_TYPE, BST_Post_Types::ARTICLE_TOPIC, BST_Post_Types::PARTNER, BST_Post_Types::PLAN, BST_Post_Types::CANNED_TAG ), true ) ) {
 			return true;
 		}
 		return str_contains( (string) $screen->id, 'bst-settings' ) || str_contains( (string) $screen->id, 'bst-signups' );

@@ -44,6 +44,23 @@ class BST_Install {
 	);
 
 	/**
+	 * Canned response capabilities. One shared library, so every agent
+	 * (and administrator) can add, edit and delete any of them.
+	 */
+	const CANNED_CAPS = array(
+		'edit_bst_canned_responses',
+		'edit_others_bst_canned_responses',
+		'edit_published_bst_canned_responses',
+		'edit_private_bst_canned_responses',
+		'publish_bst_canned_responses',
+		'read_private_bst_canned_responses',
+		'delete_bst_canned_responses',
+		'delete_others_bst_canned_responses',
+		'delete_published_bst_canned_responses',
+		'delete_private_bst_canned_responses',
+	);
+
+	/**
 	 * Runtime hooks: upgrade check.
 	 */
 	public static function init() {
@@ -63,6 +80,7 @@ class BST_Install {
 
 		BST_Post_Types::register();
 		BST_Post_Types::create_default_terms();
+		BST_Canned::create_defaults();
 		flush_rewrite_rules();
 
 		BST_Cron::schedule();
@@ -97,6 +115,12 @@ class BST_Install {
 		// 3: client names become Client records.
 		if ( $from < 3 ) {
 			self::migrate_companies();
+		}
+
+		// 5: starter canned responses (their caps come from create_roles() above).
+		if ( $from < 5 ) {
+			BST_Post_Types::register();
+			BST_Canned::create_defaults();
 		}
 
 		/**
@@ -213,14 +237,14 @@ class BST_Install {
 
 		$agent = get_role( 'bst_agent' );
 		if ( $agent ) {
-			foreach ( self::AGENT_CAPS as $cap ) {
+			foreach ( array_merge( self::AGENT_CAPS, self::CANNED_CAPS ) as $cap ) {
 				$agent->add_cap( $cap );
 			}
 		}
 
 		$admin = get_role( 'administrator' );
 		if ( $admin ) {
-			foreach ( array_merge( self::AGENT_CAPS, self::ADMIN_CAPS ) as $cap ) {
+			foreach ( array_merge( self::AGENT_CAPS, self::ADMIN_CAPS, self::CANNED_CAPS ) as $cap ) {
 				$admin->add_cap( $cap );
 			}
 		}

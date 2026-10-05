@@ -352,6 +352,43 @@
 	border-color: var(--bst-note-line);
 }
 
+/* Canned responses ------------------------------------------------------ */
+
+.bst-canned-picker {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px 12px;
+	margin: 0 0 10px;
+}
+
+.bst-canned-picker label {
+	font-weight: 600;
+}
+
+.bst-canned-picker__select {
+	min-width: 240px;
+	max-width: 100%;
+}
+
+.bst-canned-picker__filter {
+	width: 180px;
+}
+
+.bst-canned-text {
+	font-family: inherit;
+	line-height: 1.6;
+}
+
+.bst-placeholder-list dt {
+	margin: 8px 0 0;
+}
+
+.bst-placeholder-list dd {
+	margin: 2px 0 0;
+	color: var(--bst-muted);
+}
+
 .bst-reply-box__row {
 	display: flex;
 	flex-wrap: wrap;

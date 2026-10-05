@@ -824,6 +824,8 @@ class BST_Admin_Tickets {
 			</p>
 			<p class="bst-mode-hint bst-mode-hint--internal"><?php esc_html_e( 'Only the support team can see internal notes. The client is not emailed.', 'bonsai-support-tickets' ); ?></p>
 
+			<?php BST_Admin_Canned::picker( $post ); ?>
+
 			<label class="screen-reader-text" for="bst-message"><?php esc_html_e( 'Message', 'bonsai-support-tickets' ); ?></label>
 			<textarea name="bst_message" id="bst-message" rows="8" class="widefat bst-reply-box__text"><?php echo esc_textarea( is_string( $draft ) ? $draft : '' ); ?></textarea>
 

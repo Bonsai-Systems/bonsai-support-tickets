@@ -115,6 +115,16 @@ Monitor tickets have no client account, so clients are never emailed. Agents get
 
 Endpoints: `POST /wp-json/bst/v1/monitor/status` and `POST /wp-json/bst/v1/monitor/uptimerobot?key=…`. A "Don't have uptime monitoring yet?" link appears on the tab once `BST_MONITOR_PROMO_URL` is set (or via the `bst_monitor_promo_url` filter).
 
+### Canned responses
+
+Saved replies the team inserts into the ticket reply box. Manage them under **Support → Canned responses**; group them with **Tags** (linked above the list).
+
+- It's one shared library: every agent can add, edit and delete any reply. Clients never see the library.
+- On a ticket, **Insert a canned response** drops the chosen reply in at the cursor, grouped by tag. You can edit it before sending, and it works for client replies and internal notes. A filter box appears once there are more than 10 replies.
+- Placeholders are filled for the ticket you're on: `{{client.name}}`, `{{ticket.id}}`, `{{ticket.title}}`, `{{agent.name}}` (you) and `{{site.name}}`, plus anything added with `bst_email_placeholders`. One with no value yet (e.g. on a brand-new ticket) is left as typed, so you can spot and fill it.
+- The reply text is plain text, like ticket messages.
+- Six neutral starter replies are created once on install (or on upgrading to DB version 5): please send a screenshot, login details needed, DNS can take 48 hours, updates done, still working on it, closing as solved. Edit or delete them freely; they don't come back. Change the set for new installs with `bst_default_canned_responses`.
+
 ### Auto-reply
 
 When a client raises a new request, through the form or by emailing the support mailbox, they get an auto-reply. Edit the subject and message under **Support → Settings → Auto-reply**, or switch it off there.
@@ -167,7 +177,8 @@ Template functions, all permission-checked:
 | `bst_allowed_attachment_types` | Extension → MIME map for uploads |
 | `bst_agent_notification_recipients` | Which agents get emailed |
 | `bst_email` | Change any outgoing email before it's sent |
-| `bst_email_placeholders` | Add `{{placeholders}}` for the auto-reply |
+| `bst_email_placeholders` | Add `{{placeholders}}` for the auto-reply and canned responses |
+| `bst_default_canned_responses` | Starter canned responses created on first install |
 | `bst_settings_defaults` | Change setting defaults |
 | `bst_ticket_created`, `bst_message_added`, `bst_status_changed`, `bst_ticket_assigned` | Actions for integrations (the Slack post listens to `bst_ticket_created`) |
 | `bst_monitor_promo_url` | "Get uptime monitoring" link on the Uptime monitoring tab (`''` hides it) |

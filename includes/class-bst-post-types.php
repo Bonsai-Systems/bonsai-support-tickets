@@ -1,7 +1,7 @@
 <?php
 /**
- * Post types and taxonomies: tickets and client companies (private, admin
- * only) and help centre articles (public).
+ * Post types and taxonomies: tickets, client companies and canned
+ * responses (private, admin only) and help centre articles (public).
  *
  * @package Support_Desk
  */
@@ -20,6 +20,8 @@ class BST_Post_Types {
 	const COMPANY       = 'bst_company';
 	const PARTNER       = 'bst_partner';
 	const PLAN          = 'bst_plan';
+	const CANNED        = 'bst_canned';
+	const CANNED_TAG    = 'bst_canned_tag';
 
 	/**
 	 * Hooks.
@@ -35,6 +37,7 @@ class BST_Post_Types {
 	public static function register() {
 		self::register_ticket();
 		self::register_company();
+		self::register_canned();
 		self::register_article();
 	}
 
@@ -178,6 +181,70 @@ class BST_Post_Types {
 				)
 			);
 		}
+	}
+
+	/**
+	 * Canned responses: the team's saved replies. Private, admin only. Own
+	 * capability type so every agent can add, edit and delete them (unlike
+	 * tickets and clients, where only admins delete). Tags are free-form so
+	 * agents can group replies however suits them.
+	 */
+	private static function register_canned() {
+		register_post_type(
+			self::CANNED,
+			array(
+				'labels'              => array(
+					'name'               => __( 'Canned responses', 'bonsai-support-tickets' ),
+					'singular_name'      => __( 'Canned response', 'bonsai-support-tickets' ),
+					'all_items'          => __( 'Canned responses', 'bonsai-support-tickets' ),
+					'add_new'            => __( 'Add canned response', 'bonsai-support-tickets' ),
+					'add_new_item'       => __( 'Add canned response', 'bonsai-support-tickets' ),
+					'edit_item'          => __( 'Edit canned response', 'bonsai-support-tickets' ),
+					'search_items'       => __( 'Search canned responses', 'bonsai-support-tickets' ),
+					'not_found'          => __( 'No canned responses found.', 'bonsai-support-tickets' ),
+					'not_found_in_trash' => __( 'No canned responses in the bin.', 'bonsai-support-tickets' ),
+				),
+				'public'              => false,
+				'publicly_queryable'  => false,
+				'exclude_from_search' => true,
+				'show_ui'             => true,
+				'show_in_menu'        => 'edit.php?post_type=' . self::TICKET,
+				'show_in_rest'        => false,
+				'supports'            => array( 'title' ), // Reply text is a plain textarea, see BST_Admin_Canned.
+				'capability_type'     => array( 'bst_canned_response', 'bst_canned_responses' ),
+				'map_meta_cap'        => true,
+				'rewrite'             => false,
+				'query_var'           => false,
+			)
+		);
+
+		register_taxonomy(
+			self::CANNED_TAG,
+			self::CANNED,
+			array(
+				'labels'            => array(
+					'name'                       => __( 'Tags', 'bonsai-support-tickets' ),
+					'singular_name'              => __( 'Tag', 'bonsai-support-tickets' ),
+					'add_new_item'               => __( 'Add tag', 'bonsai-support-tickets' ),
+					'separate_items_with_commas' => __( 'Separate tags with commas, e.g. Hosting, Billing', 'bonsai-support-tickets' ),
+					'choose_from_most_used'      => __( 'Choose from the most used tags', 'bonsai-support-tickets' ),
+					'back_to_items'              => __( '&larr; Back to tags', 'bonsai-support-tickets' ),
+				),
+				'public'            => false,
+				'show_ui'           => true,
+				'show_in_menu'      => false, // Linked from the Canned responses screen instead.
+				'show_in_rest'      => false,
+				'show_admin_column' => true,
+				'hierarchical'      => false,
+				'rewrite'           => false,
+				'capabilities'      => array(
+					'manage_terms' => 'edit_bst_canned_responses',
+					'edit_terms'   => 'edit_bst_canned_responses',
+					'delete_terms' => 'edit_bst_canned_responses',
+					'assign_terms' => 'edit_bst_canned_responses',
+				),
+			)
+		);
 	}
 
 	/**

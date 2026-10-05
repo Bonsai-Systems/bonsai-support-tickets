@@ -86,6 +86,16 @@ Required because this plugin stores client data, sends email, and has custom tab
 - [ ] Toggle off and save → new ticket doesn't post. Toggle back on.
 - [ ] Wrong webhook URL → Send test message shows an error; ticket submission still works and is not slowed down.
 
+## Canned responses
+- [ ] Fresh install: Support → Canned responses lists the six starter replies, with tags. Nothing mentions a company.
+- [ ] On a ticket: **Insert a canned response** → reply appears in the box with the client's name, the ticket reference and your name filled in; the dropdown resets.
+- [ ] Insert into a half-written reply: it lands at the cursor with a blank line either side.
+- [ ] Works with **Internal note** selected too.
+- [ ] Client name with an apostrophe or "&" shows correctly (not `&amp;`).
+- [ ] Add a reply as a **Support Agent** (not admin), give it a new tag → it appears under that tag on tickets. Another agent can edit and delete it.
+- [ ] Add more than 10 replies → a filter box appears; typing narrows the list.
+- [ ] Delete a starter reply, update the plugin → it doesn't come back.
+
 ## Uptime monitoring
 - [ ] Settings → Uptime monitoring: both sources **Off** by default; with no promo URL set there's no "Don't have uptime monitoring yet?" line.
 - [ ] Turn on the status monitor, save, **Generate secret**. Paste URL + secret into the uptime monitor's Settings → Support tickets, **Send test** → success there, and "Last alert" here shows `test`.

@@ -72,6 +72,59 @@
 		bonsai_bst_set_mode(this.value);
 	});
 
+	// Canned responses: insert the chosen reply at the cursor (already
+	// filled for this ticket server-side), then reset the select.
+	function bonsai_bst_insert_canned(text) {
+		var textarea = $box.find('.bst-reply-box__text').get(0);
+		if (!textarea || !text) {
+			return;
+		}
+		var value = textarea.value;
+		var start = typeof textarea.selectionStart === 'number' ? textarea.selectionStart : value.length;
+		var end = typeof textarea.selectionEnd === 'number' ? textarea.selectionEnd : value.length;
+		var before = value.slice(0, start);
+		var after = value.slice(end);
+
+		// Keep a blank line between existing text and the inserted reply.
+		if (before && !/\n\n$/.test(before)) {
+			text = (/\n$/.test(before) ? '\n' : '\n\n') + text;
+		}
+		var spacing = '';
+		if (after && !/^\n\n/.test(after)) {
+			spacing = /^\n/.test(after) ? '\n' : '\n\n';
+		}
+
+		textarea.value = before + text + spacing + after;
+		// Caret at the end of the reply, ready to carry on typing.
+		var caret = (before + text).length;
+		textarea.focus();
+		textarea.setSelectionRange(caret, caret);
+		$(textarea).trigger('input');
+	}
+
+	$box.on('change.bonsai_bst', '.bst-canned-picker__select', function () {
+		var $option = $(this).find('option:selected');
+		bonsai_bst_insert_canned($option.attr('data-text') || '');
+		$(this).val('');
+	});
+
+	// Filter the list (shown when there are lots of replies).
+	$box.on('input.bonsai_bst', '.bst-canned-picker__filter', function () {
+		var query = $.trim($(this).val()).toLowerCase();
+		var $select = $box.find('.bst-canned-picker__select');
+
+		$select.find('option[value!=""]').each(function () {
+			var $option = $(this);
+			var haystack = ($option.text() + ' ' + ($option.attr('data-text') || '')).toLowerCase();
+			var match = !query || haystack.indexOf(query) !== -1;
+			$option.prop('hidden', !match).prop('disabled', !match);
+		});
+		$select.find('optgroup').each(function () {
+			var $group = $(this);
+			$group.prop('hidden', !$group.find('option:not([hidden])').length);
+		});
+	});
+
 	// Stop a double click sending the same reply twice.
 	$('#post').on('submit.bonsai_bst', function () {
 		var $form = $(this);

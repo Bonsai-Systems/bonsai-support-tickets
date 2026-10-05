@@ -18,7 +18,7 @@ global $wpdb;
 wp_clear_scheduled_hook( 'bst_poll_mailbox' );
 wp_clear_scheduled_hook( 'bst_daily_maintenance' );
 
-foreach ( array( 'bst_settings', 'bst_inbound_status', 'bst_db_version', 'bst_default_terms_created', 'bst_monitor_log' ) as $bst_option ) {
+foreach ( array( 'bst_settings', 'bst_inbound_status', 'bst_db_version', 'bst_default_terms_created', 'bst_monitor_log', 'bst_canned_seeded' ) as $bst_option ) {
 	delete_option( $bst_option );
 }
 delete_transient( 'bst_menu_count' );
@@ -43,6 +43,16 @@ $bst_caps = array(
 	'delete_others_bst_tickets',
 	'delete_published_bst_tickets',
 	'delete_private_bst_tickets',
+	'edit_bst_canned_responses',
+	'edit_others_bst_canned_responses',
+	'edit_published_bst_canned_responses',
+	'edit_private_bst_canned_responses',
+	'publish_bst_canned_responses',
+	'read_private_bst_canned_responses',
+	'delete_bst_canned_responses',
+	'delete_others_bst_canned_responses',
+	'delete_published_bst_canned_responses',
+	'delete_private_bst_canned_responses',
 );
 $bst_admin = get_role( 'administrator' );
 if ( $bst_admin ) {
@@ -56,13 +66,13 @@ if ( ! defined( 'BST_REMOVE_ALL_DATA' ) || true !== BST_REMOVE_ALL_DATA ) {
 	return;
 }
 
-// Posts (tickets, clients and help articles) and their meta/terms.
-$bst_post_ids = $wpdb->get_col( "SELECT ID FROM {$wpdb->posts} WHERE post_type IN ('bst_ticket','bst_company','bst_article')" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+// Posts (tickets, clients, canned responses and help articles) and their meta/terms.
+$bst_post_ids = $wpdb->get_col( "SELECT ID FROM {$wpdb->posts} WHERE post_type IN ('bst_ticket','bst_company','bst_canned','bst_article')" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 foreach ( $bst_post_ids as $bst_post_id ) {
 	wp_delete_post( (int) $bst_post_id, true );
 }
 
-foreach ( array( 'bst_ticket_type', 'bst_article_topic', 'bst_partner', 'bst_plan' ) as $bst_taxonomy ) {
+foreach ( array( 'bst_ticket_type', 'bst_article_topic', 'bst_partner', 'bst_plan', 'bst_canned_tag' ) as $bst_taxonomy ) {
 	$bst_terms = $wpdb->get_col( $wpdb->prepare( "SELECT term_id FROM {$wpdb->term_taxonomy} WHERE taxonomy = %s", $bst_taxonomy ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 	foreach ( $bst_terms as $bst_term_id ) {
 		wp_delete_term( (int) $bst_term_id, $bst_taxonomy );

@@ -33,6 +33,11 @@ class BST_Admin_UI {
 	}
 
 	/**
+	 * Page slugs of our full-page screens.
+	 */
+	const FULL_PAGES = array( 'bst-overview', 'bst-settings', 'bst-signups', 'bst-time', 'bst-sla' );
+
+	/**
 	 * Whether the current screen belongs to this plugin.
 	 *
 	 * @return bool
@@ -48,18 +53,26 @@ class BST_Admin_UI {
 		if ( in_array( $screen->taxonomy, array( BST_Post_Types::TICKET_TYPE, BST_Post_Types::ARTICLE_TOPIC, BST_Post_Types::PARTNER, BST_Post_Types::PLAN, BST_Post_Types::CANNED_TAG ), true ) ) {
 			return true;
 		}
-		return str_contains( (string) $screen->id, 'bst-settings' ) || str_contains( (string) $screen->id, 'bst-signups' ) || str_contains( (string) $screen->id, 'bst-time' ) || str_contains( (string) $screen->id, 'bst-sla' );
+		return self::is_full_page( $screen );
 	}
 
 	/**
-	 * Whether the screen is one of our full pages (settings, sign-ups),
-	 * which print their own header instead of the banner.
+	 * Whether the screen is one of our full pages (FULL_PAGES), which print
+	 * their own header instead of the banner.
 	 *
 	 * @param WP_Screen|null $screen Screen.
 	 * @return bool
 	 */
 	private static function is_full_page( $screen ) {
-		return $screen && ( str_contains( (string) $screen->id, 'bst-settings' ) || str_contains( (string) $screen->id, 'bst-signups' ) || str_contains( (string) $screen->id, 'bst-time' ) || str_contains( (string) $screen->id, 'bst-sla' ) );
+		if ( ! $screen ) {
+			return false;
+		}
+		foreach ( self::FULL_PAGES as $slug ) {
+			if ( str_contains( (string) $screen->id, $slug ) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**

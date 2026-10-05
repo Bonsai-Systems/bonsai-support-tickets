@@ -129,6 +129,7 @@ require_once BST_DIR . 'includes/admin/class-bst-admin-companies.php';
 require_once BST_DIR . 'includes/admin/class-bst-admin-canned.php';
 require_once BST_DIR . 'includes/admin/class-bst-admin-time.php';
 require_once BST_DIR . 'includes/admin/class-bst-admin-sla.php';
+require_once BST_DIR . 'includes/admin/class-bst-admin-overview.php';
 
 register_activation_hook( __FILE__, array( 'BST_Install', 'activate' ) );
 register_deactivation_hook( __FILE__, array( 'BST_Install', 'deactivate' ) );
@@ -152,6 +153,9 @@ add_action(
 		BST_Forms::init();
 		BST_Registration::init();
 		BST_Frontend::init();
+
+		// Not admin-only: it also sets the login redirect and the front-end admin bar.
+		BST_Admin_Overview::init();
 
 		if ( is_admin() ) {
 			BST_Admin_UI::init();

@@ -64,8 +64,12 @@ All notable changes to this plugin are documented here. Format: [Keep a Changelo
 - `BST_Business_Hours` (pure PHP, unit tested incl. bank holidays and clock changes), `BST_SLA`, `BST_Admin_SLA`. A 5-minute cron (`bst_sla_check`), scheduled only while SLAs or reminders are on.
 - `bst_priority_changed` action and `bst_sla_now` filter (tests).
 - Unit and integration tests, manual checklist.
+- **Support → Overview** (`BST_Admin_Overview`): the team's home screen, with headline numbers, Due next (SLAs on), My tickets, Unassigned (oldest first), uptime alerts, pending sign-ups, retainers at 80%+ and latest activity, each linking to the filtered ticket list. It's the first item under Support.
+- **Replace the WordPress dashboard** (Settings → General, on by default): agents and administrators land on the overview after login; the Dashboard and the admin bar's Dashboard link open it. Agents lose the Dashboard menu; administrators keep it for Updates. Other roles are unchanged.
+- `bst_overview_stats` filter. Hidden `bst_view=monitor` ticket list view (open uptime alerts).
 
 ### Changed
+- `BST_Admin_Tickets::view_meta_query()` is public. Full-page screen detection uses `BST_Admin_UI::FULL_PAGES`.
 - The auto-reply replaces the fixed "We have received your request" email. It's still only sent on ticket creation and never to unverified senders.
 - Plain-text email alternatives now show list items as `- ` bullets.
 - **Support → Settings** now has a left-hand tab nav (General, Outgoing email, Auto-reply, Incoming email, Front end), one tab per page load (`&tab=…`). Each tab saves only its own fields, and you return to the same tab after saving, Test connection or Check now.

@@ -380,6 +380,14 @@ class BST_Admin_Settings {
 					</td>
 				</tr>
 				<tr>
+					<th scope="row"><?php esc_html_e( 'Dashboard', 'bonsai-support-tickets' ); ?></th>
+					<td>
+						<input type="hidden" name="bst[replace_dashboard]" value="0">
+						<label for="bst-replace-dashboard"><input type="checkbox" class="bonsai-ui-toggle" id="bst-replace-dashboard" name="bst[replace_dashboard]" value="1" <?php checked( $s['replace_dashboard'] ); ?>> <?php esc_html_e( 'Replace the WordPress dashboard with Support → Overview', 'bonsai-support-tickets' ); ?></label>
+						<p class="description"><?php esc_html_e( 'Agents and administrators land on the overview after logging in. Agents no longer see the Dashboard menu; administrators keep it for Updates. Other users are not affected.', 'bonsai-support-tickets' ); ?></p>
+					</td>
+				</tr>
+				<tr>
 					<th scope="row"><label for="bst-auto-close"><?php esc_html_e( 'Auto-close solved tickets after', 'bonsai-support-tickets' ); ?></label></th>
 					<td>
 						<input type="number" id="bst-auto-close" name="bst[auto_close_days]" value="<?php echo esc_attr( $s['auto_close_days'] ); ?>" min="0" max="90" class="small-text"> <?php esc_html_e( 'days', 'bonsai-support-tickets' ); ?>

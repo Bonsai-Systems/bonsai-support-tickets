@@ -27,6 +27,12 @@ clients see (portal, emails, login) carries **your** name, logo and colours.
 4. Add your clients (the businesses) under **Support → Clients**. People can **register** themselves (see below), or you add them under **Users → Add New** with the role **Support Client** and choose their **Client** on their profile.
 5. Add team members as **Support Agent**. Administrators are agents automatically.
 
+### Support overview
+
+**Support → Overview** is the team's home screen: headline numbers (my open tickets, unassigned, new, overdue when SLAs are on, awaiting client, on hold, unverified), **Due next** (SLAs on), **My tickets**, **Unassigned, oldest first**, open uptime alerts, pending sign-ups, clients at 80%+ of their retainer (time tracking on, administrators) and the latest activity. Every number and panel links to the matching filtered ticket list.
+
+By default it **replaces the WordPress dashboard** for anyone who can reply to tickets: they land on it after logging in (unless they were heading to a specific page), the Dashboard redirects to it, and so does the admin bar's Dashboard link. Agents no longer see the Dashboard menu; administrators keep it so **Dashboard → Updates** stays reachable. Editors, other users and clients are not affected. Switch it off under **Settings → General → Dashboard**.
+
 ### Client registration
 
 The log-in box on the portal and submit pages has a **Register** link (switch it off in **Support → Settings**). The form asks for client name (the business, e.g. *The Ley Arms*), first and last name, email, website and phone.
@@ -218,6 +224,7 @@ Template functions, all permission-checked:
 | `bst_priority_changed` | Action when a ticket's priority changes (ticket ID, old, new); SLA due times follow it |
 | `bst_sla_now` | "Now" (Unix time) for SLA and reminder sums. For tests |
 | `bst_settings_defaults` | Change setting defaults |
+| `bst_overview_stats` | Add, remove or reorder the numbers at the top of Support → Overview (each: label, count, url, tone) |
 | `bst_ticket_created`, `bst_message_added`, `bst_status_changed`, `bst_ticket_assigned` | Actions for integrations (the Slack post listens to `bst_ticket_created`) |
 | `bst_monitor_promo_url` | "Get uptime monitoring" link on the Uptime monitoring tab (`''` hides it) |
 | `bst_registration_notify_recipients` | Who is emailed about new sign-ups |

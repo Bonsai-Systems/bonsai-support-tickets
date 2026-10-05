@@ -16,6 +16,17 @@ Required because this plugin stores client data, sends email, and has custom tab
 - [ ] Server cron hitting wp-cron.php every 2 minutes. "Next scheduled check" updates.
 - [ ] `wp-content/uploads/bst-private/` returns 403 when opened directly in a browser (check nginx rule if not Apache).
 
+## Support overview and dashboard
+- [ ] Log in as an agent → lands on Support → Overview ("Hello, <name>"). No Dashboard menu. Admin bar on the front end: site menu → **Support overview**.
+- [ ] Log in as an administrator → Overview. Dashboard menu still there; clicking it opens Overview; **Dashboard → Updates** works.
+- [ ] Log in as an editor → normal WordPress dashboard.
+- [ ] Follow a ticket email link while logged out, log in → goes to that ticket, not the overview.
+- [ ] Each number at the top opens the ticket list with the same count.
+- [ ] With SLAs on: Overdue count and **Due next** panel; overdue tickets show red badges. With SLAs off: neither appears.
+- [ ] Time tracking on, a client at 80%+ → **Retainers** panel for administrators only.
+- [ ] An open uptime alert → **Uptime alerts** panel; "View all" lists only monitor tickets.
+- [ ] Settings → General → untick **Dashboard** → agents get the normal dashboard again after logging in.
+
 ## Client (Support Client login)
 - [ ] Logged-out visit to My requests shows the login form. Logging in returns to the page.
 - [ ] Visiting /wp-admin/ redirects to My requests. No admin bar.

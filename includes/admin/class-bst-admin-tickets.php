@@ -203,7 +203,7 @@ class BST_Admin_Tickets {
 	 * @param string $view View key.
 	 * @return array|null
 	 */
-	private static function view_meta_query( $view ) {
+	public static function view_meta_query( $view ) {
 		switch ( $view ) {
 			case 'active':
 				return array(
@@ -253,6 +253,19 @@ class BST_Admin_Tickets {
 					array(
 						'key'   => BST_Tickets::META_UNVERIFIED,
 						'value' => '1',
+					),
+				);
+			case 'monitor': // Not a tab: linked from Support → Overview.
+				return array(
+					'relation' => 'AND',
+					array(
+						'key'     => BST_Monitoring::META_KEY,
+						'compare' => 'EXISTS',
+					),
+					array(
+						'key'     => BST_Tickets::META_STATUS,
+						'value'   => BST_Tickets::active_statuses(),
+						'compare' => 'IN',
 					),
 				);
 			case 'resolved':

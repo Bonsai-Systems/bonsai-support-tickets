@@ -36,6 +36,7 @@ class BST_Settings {
 				'max_upload_mb'        => 10,
 				'max_upload_files'     => 5,
 				'registration_enabled' => 1,
+				'replace_dashboard'    => 1, // Team lands on Support → Overview instead of the WP dashboard.
 
 				// Outbound email.
 				'from_name'            => '', // '' = support name.
@@ -133,6 +134,7 @@ class BST_Settings {
 		$clean['max_upload_mb']        = max( 1, min( 64, absint( $input['max_upload_mb'] ?? $defaults['max_upload_mb'] ) ) );
 		$clean['max_upload_files']     = max( 1, min( 20, absint( $input['max_upload_files'] ?? $defaults['max_upload_files'] ) ) );
 		$clean['registration_enabled'] = empty( $input['registration_enabled'] ) ? 0 : 1;
+		$clean['replace_dashboard']    = empty( $input['replace_dashboard'] ) ? 0 : 1;
 		$clean['from_name']            = sanitize_text_field( $input['from_name'] ?? '' );
 		$clean['from_email']           = sanitize_email( $input['from_email'] ?? '' );
 		$clean['email_logo_url']       = esc_url_raw( $input['email_logo_url'] ?? '' );

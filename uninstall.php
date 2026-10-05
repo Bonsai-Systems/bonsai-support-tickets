@@ -17,8 +17,9 @@ global $wpdb;
 
 wp_clear_scheduled_hook( 'bst_poll_mailbox' );
 wp_clear_scheduled_hook( 'bst_daily_maintenance' );
+wp_clear_scheduled_hook( 'bst_sla_check' );
 
-foreach ( array( 'bst_settings', 'bst_inbound_status', 'bst_db_version', 'bst_default_terms_created', 'bst_monitor_log', 'bst_canned_seeded' ) as $bst_option ) {
+foreach ( array( 'bst_settings', 'bst_inbound_status', 'bst_db_version', 'bst_default_terms_created', 'bst_monitor_log', 'bst_canned_seeded', 'bst_bank_holidays' ) as $bst_option ) {
 	delete_option( $bst_option );
 }
 delete_transient( 'bst_menu_count' );

@@ -100,6 +100,22 @@ Required because this plugin stores client data, sends email, and has custom tab
 - [ ] Move a ticket with logged time to another client → last month's report for the old client is unchanged.
 - [ ] Switch time tracking off → all time UI disappears; switch on → entries are still there.
 
+## SLAs and reminders
+- [ ] Fresh install: no Due column, no SLA box, no Support → SLA report, and no reminder emails until the switches on Settings → SLAs & reminders are on.
+- [ ] Turn SLAs on. The tab shows "A working day is 8.5 hours", and Closed days lists the next bank holidays. **Update bank holidays now** → "Bank holidays updated from gov.uk."
+- [ ] Raise an Urgent ticket → Due shows "Reply" an hour from now; the SLA box shows targets 1h and 8h.
+- [ ] Raise a Normal ticket at 5pm on Friday → Due is on Monday afternoon (not over the weekend).
+- [ ] Reply to the client → the SLA box shows First response **Met**; the ticket goes to Awaiting client and resolution shows **Paused**. Client replies → back to Due with the paused time added on.
+- [ ] Internal note only → first response is still due.
+- [ ] Put a ticket's client on a plan, set that plan's Urgent first response to 0.5 → the ticket's SLA box says "for the <plan> plan" and the target is 30m.
+- [ ] Change priority Normal → Urgent → the Due time moves.
+- [ ] Leave an Urgent ticket unanswered → at 15 minutes left the assignee gets "SLA at risk", then "SLA breached" once it's late. Each email arrives once. Unassigned → every agent gets them. Slack posts too if it's on.
+- [ ] Sort the ticket list by Due → soonest first; tickets with no SLA at the end.
+- [ ] Support → SLA report: this month's percentages by priority, plan and client. Export CSV opens in Excel.
+- [ ] Turn on reminders only (SLAs off) with Urgent 0.25h / 0.25h → a New ticket emails a reminder after 15 minutes, then every 15 minutes. Client replies → the count restarts. Set it to On hold → reminders stop.
+- [ ] Uptime-monitor ticket → no SLA box and no Due time.
+- [ ] Switch both off → the cron event `bst_sla_check` is removed (WP Crontrol) and the SLA screens disappear.
+
 ## Canned responses
 - [ ] Fresh install: Support → Canned responses lists the six starter replies, with tags. Nothing mentions a company.
 - [ ] On a ticket: **Insert a canned response** → reply appears in the box with the client's name, the ticket reference and your name filled in; the dropdown resets.

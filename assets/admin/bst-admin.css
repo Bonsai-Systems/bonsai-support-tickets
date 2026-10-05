@@ -842,3 +842,68 @@
 .bst-signups__actions form {
 	margin: 0;
 }
+
+/* SLAs & reminders ----------------------------------------------------- */
+
+.bst-days {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px 16px;
+}
+
+.bst-sla-targets {
+	max-width: 720px;
+	margin: 8px 0 12px;
+}
+
+.bst-sla-targets th[scope="row"] {
+	font-weight: 600;
+}
+
+.bst-sla-targets td,
+.bst-sla-targets th {
+	vertical-align: middle;
+}
+
+/* Due column: deadline time, coloured by how close it is. */
+.bst-due {
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 999px;
+	font-size: 12px;
+	line-height: 1.6;
+	white-space: nowrap;
+	color: var(--bst-text);
+	background: var(--bst-subtle);
+}
+
+.bst-due__label {
+	font-weight: 600;
+}
+
+.bst-due--warning {
+	color: var(--bonsai-ui-warning);
+	background: var(--bonsai-ui-warning-bg);
+}
+
+.bst-due--over {
+	color: var(--bonsai-ui-error);
+	background: var(--bonsai-ui-error-bg);
+}
+
+.bst-sla-box {
+	margin: 0;
+}
+
+.bst-sla-box dt {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	font-weight: 600;
+}
+
+.bst-sla-box dd {
+	margin: 2px 0 12px;
+	color: var(--bst-muted);
+}

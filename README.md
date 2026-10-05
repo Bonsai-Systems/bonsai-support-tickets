@@ -127,6 +127,27 @@ Off by default. Turn it on under **Support → Settings → Time tracking**. Tur
 - **Support → Time** (administrators): each month's clients with retainer, billable, non-billable and usage. Click a client for their entries. **Export summary (CSV)** and **Export all entries / Export CSV** produce invoicing spreadsheets (decimal hours, UTF-8, formula-safe). Agents see their own month's time there.
 - **Client portal** (optional, its own switch): clients on a retainer see "Support hours · October 2026 — 9h 45m of 10h used, 15m left" on My requests. Totals only, never entries or notes.
 
+### SLAs and response reminders
+
+Both off by default, with separate switches under **Support → Settings → SLAs & reminders**.
+
+**Business hours** (shared by both): working days and opening times in the site's timezone, UK bank holidays from gov.uk for the chosen region (refreshed weekly, or **Update bank holidays now**) and any other closed days. A ticket raised at 5pm on Friday isn't late at 9am on Monday.
+
+**SLAs**
+- Each priority has a first-response and a resolution target, in hours, counted on business hours or 24/7. A working day is the length of your opening hours (8.5 hours for 09:00–17:30).
+- **First response** is met by the first reply to the client; internal notes don't count. **Resolution** is met by Solved. The resolution clock pauses while a ticket is Awaiting client or On hold (an agent reply moves New/Open tickets to Awaiting client) and restarts when it comes back.
+- **Plans** can have their own targets (Support → Clients → Plans), so Gold clients can get faster responses than Bronze. The ticket's client decides the plan.
+- The ticket list gets a **Due** column (the deadline, amber when close, red when overdue; sortable). Each ticket has an **SLA** box with its targets and status.
+- When a target gets close (default: 25% of the time left) and again if it's missed, the assignee is emailed, or every agent if it's unassigned. Slack gets a post too, if it's on. Each is sent once per ticket.
+- **Support → SLA report**: per month, the percentage of tickets that met each target, by priority, plan and client. **Export tickets (CSV)** gives one row per ticket.
+- Only tickets created after SLAs are switched on are measured. Uptime-monitor tickets never are.
+
+**Response reminders**
+- While a ticket is **New** or **Open**, the assignee (or every agent) is emailed after the set time, then repeatedly at the interval you choose. Leave "Then every" blank for a single reminder, and "First reminder" blank to switch a priority off.
+- Waiting time is counted on the priority's clock and restarts whenever the client replies. Awaiting client, On hold, Solved and Closed tickets never get reminders.
+
+The checks run every 5 minutes via WP-Cron. On low-traffic sites, use a real cron job to call `wp-cron.php` so emails go out on time.
+
 ### Canned responses
 
 Saved replies the team inserts into the ticket reply box. Manage them under **Support → Canned responses**; group them with **Tags** (linked above the list).
@@ -194,6 +215,8 @@ Template functions, all permission-checked:
 | `bst_time_alert_recipients` | Email addresses for retainer alerts (default: users with `bst_manage_time`) |
 | `bst_time_logged` | Action after time is logged (entry ID, entry row) |
 | `bst_ticket_company_changed` | Action when a ticket moves client (ticket ID, old, new) |
+| `bst_priority_changed` | Action when a ticket's priority changes (ticket ID, old, new); SLA due times follow it |
+| `bst_sla_now` | "Now" (Unix time) for SLA and reminder sums. For tests |
 | `bst_settings_defaults` | Change setting defaults |
 | `bst_ticket_created`, `bst_message_added`, `bst_status_changed`, `bst_ticket_assigned` | Actions for integrations (the Slack post listens to `bst_ticket_created`) |
 | `bst_monitor_promo_url` | "Get uptime monitoring" link on the Uptime monitoring tab (`''` hides it) |

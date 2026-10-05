@@ -102,6 +102,8 @@ require_once BST_DIR . 'includes/class-bst-companies.php';
 require_once BST_DIR . 'includes/class-bst-canned.php';
 require_once BST_DIR . 'includes/class-bst-duration.php';
 require_once BST_DIR . 'includes/class-bst-time.php';
+require_once BST_DIR . 'includes/class-bst-business-hours.php';
+require_once BST_DIR . 'includes/class-bst-sla.php';
 
 // Email.
 require_once BST_DIR . 'includes/class-bst-mailer.php';
@@ -126,6 +128,7 @@ require_once BST_DIR . 'includes/admin/class-bst-admin-signups.php';
 require_once BST_DIR . 'includes/admin/class-bst-admin-companies.php';
 require_once BST_DIR . 'includes/admin/class-bst-admin-canned.php';
 require_once BST_DIR . 'includes/admin/class-bst-admin-time.php';
+require_once BST_DIR . 'includes/admin/class-bst-admin-sla.php';
 
 register_activation_hook( __FILE__, array( 'BST_Install', 'activate' ) );
 register_deactivation_hook( __FILE__, array( 'BST_Install', 'deactivate' ) );
@@ -144,6 +147,7 @@ add_action(
 		BST_Slack::init();
 		BST_Monitoring::init();
 		BST_Time::init();
+		BST_SLA::init();
 		BST_Cron::init();
 		BST_Forms::init();
 		BST_Registration::init();
@@ -158,6 +162,7 @@ add_action(
 			BST_Admin_Companies::init();
 			BST_Admin_Canned::init();
 			BST_Admin_Time::init();
+			BST_Admin_SLA::init();
 		}
 	}
 );

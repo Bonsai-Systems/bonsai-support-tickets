@@ -71,6 +71,18 @@ class BST_Settings {
 				'time_portal'          => 0, // Clients see this month's hours in the portal.
 				'time_alerts'          => 1, // Team alert at 80% and 100% of a retainer.
 				'time_default_billable' => 1,
+
+				// SLAs and reminders. Both off by default; see BST_SLA. Targets in minutes.
+				'sla_enabled'          => 0,
+				'reminders_enabled'    => 0,
+				'sla_days'             => '1,2,3,4,5', // ISO weekdays.
+				'sla_start'            => '09:00',
+				'sla_end'              => '17:30',
+				'sla_holiday_region'   => 'england-and-wales',
+				'sla_closed_days'      => '',
+				'sla_warn_percent'     => 25,
+				'sla_targets'          => BST_SLA::default_targets(),
+				'reminder_rules'       => BST_SLA::default_reminders(),
 			)
 			// Brand colours. '' = default; see BST_Appearance.
 			+ array_fill_keys( array_keys( BST_Appearance::default_colors() ), '' )
@@ -148,11 +160,40 @@ class BST_Settings {
 		$clean['time_alerts']          = empty( $input['time_alerts'] ) ? 0 : 1;
 		$clean['time_default_billable'] = empty( $input['time_default_billable'] ) ? 0 : 1;
 
+		$clean['sla_enabled']          = empty( $input['sla_enabled'] ) ? 0 : 1;
+		$clean['reminders_enabled']    = empty( $input['reminders_enabled'] ) ? 0 : 1;
+		$days                          = is_array( $input['sla_days'] ?? null ) ? $input['sla_days'] : explode( ',', (string) ( $input['sla_days'] ?? '' ) );
+		$days                          = array_unique( array_filter( array_map( 'absint', $days ), fn( $day ) => $day >= 1 && $day <= 7 ) );
+		sort( $days );
+		$clean['sla_days']             = implode( ',', $days );
+		$clean['sla_start']            = self::sanitize_time( $input['sla_start'] ?? '', $defaults['sla_start'] );
+		$clean['sla_end']              = self::sanitize_time( $input['sla_end'] ?? '', $defaults['sla_end'] );
+		$clean['sla_holiday_region']   = array_key_exists( (string) ( $input['sla_holiday_region'] ?? '' ), BST_SLA::holiday_regions() ) ? (string) $input['sla_holiday_region'] : $defaults['sla_holiday_region'];
+		$closed                        = preg_split( '/[\s,]+/', (string) ( $input['sla_closed_days'] ?? '' ) );
+		$clean['sla_closed_days']      = implode( "\n", array_unique( preg_grep( '/^\d{4}-\d{2}-\d{2}$/', $closed ) ) );
+		$clean['sla_warn_percent']     = max( 5, min( 90, absint( $input['sla_warn_percent'] ?? $defaults['sla_warn_percent'] ) ) );
+		$clean['sla_targets']          = BST_SLA::sanitize_targets( $input['sla_targets'] ?? array() );
+		$clean['reminder_rules']       = BST_SLA::sanitize_reminders( $input['reminder_rules'] ?? array() );
+
 		foreach ( array_keys( BST_Appearance::default_colors() ) as $color_key ) {
 			$clean[ $color_key ] = BST_Appearance::sanitize( $color_key, $input[ $color_key ] ?? '' );
 		}
 
 		update_option( self::OPTION, $clean, false );
+	}
+
+	/**
+	 * "9:5" or "09:05" → "09:05"; anything else → the fallback.
+	 *
+	 * @param string $time     Input.
+	 * @param string $fallback Default.
+	 * @return string
+	 */
+	private static function sanitize_time( $time, $fallback ) {
+		if ( preg_match( '/^([01]?\d|2[0-3]):([0-5]\d)$/', trim( (string) $time ), $m ) ) {
+			return sprintf( '%02d:%02d', $m[1], $m[2] );
+		}
+		return $fallback;
 	}
 
 	/**

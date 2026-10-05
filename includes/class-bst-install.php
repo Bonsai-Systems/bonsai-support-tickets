@@ -98,6 +98,7 @@ class BST_Install {
 	 */
 	public static function deactivate() {
 		BST_Cron::unschedule();
+		wp_clear_scheduled_hook( BST_SLA::CRON_HOOK );
 		flush_rewrite_rules();
 	}
 

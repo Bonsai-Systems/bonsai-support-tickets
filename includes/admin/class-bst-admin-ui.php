@@ -48,7 +48,7 @@ class BST_Admin_UI {
 		if ( in_array( $screen->taxonomy, array( BST_Post_Types::TICKET_TYPE, BST_Post_Types::ARTICLE_TOPIC, BST_Post_Types::PARTNER, BST_Post_Types::PLAN, BST_Post_Types::CANNED_TAG ), true ) ) {
 			return true;
 		}
-		return str_contains( (string) $screen->id, 'bst-settings' ) || str_contains( (string) $screen->id, 'bst-signups' ) || str_contains( (string) $screen->id, 'bst-time' );
+		return str_contains( (string) $screen->id, 'bst-settings' ) || str_contains( (string) $screen->id, 'bst-signups' ) || str_contains( (string) $screen->id, 'bst-time' ) || str_contains( (string) $screen->id, 'bst-sla' );
 	}
 
 	/**
@@ -59,7 +59,7 @@ class BST_Admin_UI {
 	 * @return bool
 	 */
 	private static function is_full_page( $screen ) {
-		return $screen && ( str_contains( (string) $screen->id, 'bst-settings' ) || str_contains( (string) $screen->id, 'bst-signups' ) || str_contains( (string) $screen->id, 'bst-time' ) );
+		return $screen && ( str_contains( (string) $screen->id, 'bst-settings' ) || str_contains( (string) $screen->id, 'bst-signups' ) || str_contains( (string) $screen->id, 'bst-time' ) || str_contains( (string) $screen->id, 'bst-sla' ) );
 	}
 
 	/**

@@ -52,6 +52,18 @@ All notable changes to this plugin are documented here. Format: [Keep a Changelo
   - `BST_Time`, `BST_Duration` (unit tested), `BST_Admin_Time`. Capabilities `bst_log_time` (agents) and `bst_manage_time` (admins).
   - `bst_time_alert_recipients` filter, `bst_time_logged` and `bst_ticket_company_changed` actions.
   - Unit and integration tests.
+- **SLAs** (off by default; **Support → Settings → SLAs & reminders**):
+  - First-response and resolution targets per priority, each on business hours or a 24/7 clock. Defaults: Urgent 1h / 8h (24/7), High 4h / 2 working days, Normal 8h / 5 working days, Low 2 / 10 working days.
+  - Business hours: working days, opening times (site timezone), UK bank holidays from the gov.uk feed (England and Wales, Scotland, Northern Ireland or none; refreshed weekly, with a built-in list as fallback) and custom closed days.
+  - Per-plan targets on Support → Clients → Plans (e.g. Bronze/Silver/Gold); blank fields use the defaults.
+  - First response = the first reply to the client (internal notes don't count). The resolution clock pauses while a ticket is Awaiting client or On hold, and a solved ticket is judged when it was solved.
+  - **Due** column on the ticket list (sortable; amber when close, red when overdue), an **SLA** box on tickets, and **Support → SLA report**: percentage met per month by priority, plan and client, with CSV export.
+  - One warning (at a set % of time left, default 25%) and one breach email per ticket and target, to the assignee or all agents if unassigned, plus Slack if it's on.
+  - Monitor tickets aren't measured. Applies to tickets created after SLAs are switched on.
+- **Response reminders** (own switch; works with or without SLAs): emails the assignee, or all agents if unassigned, while a ticket is New or Open. Per priority: first reminder after X hours, then every Y hours (blank = once). Counted on the priority's clock; restarts when the client replies; never sent for Awaiting client, On hold, Solved or Closed.
+- `BST_Business_Hours` (pure PHP, unit tested incl. bank holidays and clock changes), `BST_SLA`, `BST_Admin_SLA`. A 5-minute cron (`bst_sla_check`), scheduled only while SLAs or reminders are on.
+- `bst_priority_changed` action and `bst_sla_now` filter (tests).
+- Unit and integration tests, manual checklist.
 
 ### Changed
 - The auto-reply replaces the fixed "We have received your request" email. It's still only sent on ticket creation and never to unverified senders.

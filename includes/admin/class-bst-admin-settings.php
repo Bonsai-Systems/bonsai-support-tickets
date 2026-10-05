@@ -81,6 +81,12 @@ class BST_Admin_Settings {
 				'render' => array( 'BST_Admin_Time', 'render_settings' ),
 				'form'   => true,
 			),
+			'sla'        => array(
+				'label'  => __( 'SLAs & reminders', 'bonsai-support-tickets' ),
+				'render' => array( 'BST_Admin_SLA', 'render_settings' ),
+				'form'   => true,
+				'after'  => array( 'BST_Admin_SLA', 'render_settings_status' ),
+			),
 			'monitoring' => array(
 				'label'  => __( 'Uptime monitoring', 'bonsai-support-tickets' ),
 				'render' => array( __CLASS__, 'render_monitoring' ),

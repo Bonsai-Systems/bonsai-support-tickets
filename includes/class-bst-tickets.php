@@ -791,6 +791,15 @@ class BST_Tickets {
 		}
 		update_post_meta( $ticket_id, self::META_PRIORITY, $priority );
 		BST_Activity::log( $ticket_id, 'priority', $old, $priority );
+
+		/**
+		 * Ticket priority changed (SLA targets follow it).
+		 *
+		 * @param int    $ticket_id Ticket ID.
+		 * @param string $old       Old priority.
+		 * @param string $priority  New priority.
+		 */
+		do_action( 'bst_priority_changed', (int) $ticket_id, $old, $priority );
 		return true;
 	}
 

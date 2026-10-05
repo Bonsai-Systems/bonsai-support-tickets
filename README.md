@@ -66,6 +66,21 @@ Each person has their own account and sees only their own requests. Client name 
 - Auto-replies, bounces, mailing lists and duplicate emails are ignored.
 - Agents can reply from their inbox. Starting the reply with `#note` makes it an internal note.
 
+### Slack
+
+Every new ticket (web form, email or added by the team) is posted to one Slack channel with its reference, subject, client, priority, type, source and site, and a link to the ticket. The client's message isn't sent. Tickets from unknown senders are flagged.
+
+1. At api.slack.com/apps, create an app for your workspace, turn on **Incoming Webhooks** and add a webhook for the channel.
+2. Add it to `wp-config.php`. Like the IMAP credentials, it's never stored in the database:
+
+   ```php
+   define( 'BST_SLACK_WEBHOOK_URL', 'https://hooks.slack.com/services/…' );
+   ```
+
+3. Under **Support → Settings → Slack**, use **Send test message**. The same tab switches it on or off.
+
+Posts are fire-and-forget, so a slow or down Slack never delays ticket creation. Failures go to the PHP error log. To change the message, use the `bst_slack_ticket_payload` filter. To supply the URL some other way, use `bst_slack_webhook_url`.
+
 ### Auto-reply
 
 When a client raises a new request, through the form or by emailing the support mailbox, they get an auto-reply. Edit the subject and message under **Support → Settings → Auto-reply**, or switch it off there.
@@ -120,7 +135,7 @@ Template functions, all permission-checked:
 | `bst_email` | Change any outgoing email before it's sent |
 | `bst_email_placeholders` | Add `{{placeholders}}` for the auto-reply |
 | `bst_settings_defaults` | Change setting defaults |
-| `bst_ticket_created`, `bst_message_added`, `bst_status_changed`, `bst_ticket_assigned` | Actions for integrations (e.g. Slack later) |
+| `bst_ticket_created`, `bst_message_added`, `bst_status_changed`, `bst_ticket_assigned` | Actions for integrations (the Slack post listens to `bst_ticket_created`) |
 | `bst_registration_notify_recipients` | Who is emailed about new sign-ups |
 | `bst_client_registered`, `bst_client_approved`, `bst_client_rejected` | Registration actions |
 

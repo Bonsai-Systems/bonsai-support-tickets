@@ -83,6 +83,7 @@ require_once BST_DIR . 'includes/class-bst-clients.php';
 // Email.
 require_once BST_DIR . 'includes/class-bst-mailer.php';
 require_once BST_DIR . 'includes/class-bst-inbound.php';
+require_once BST_DIR . 'includes/class-bst-slack.php';
 require_once BST_DIR . 'includes/class-bst-cron.php';
 
 // Front end.
@@ -112,6 +113,7 @@ add_action(
 		BST_Clients::init();
 		BST_Attachments::init();
 		BST_Mailer::init();
+		BST_Slack::init();
 		BST_Cron::init();
 		BST_Forms::init();
 		BST_Registration::init();

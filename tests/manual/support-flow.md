@@ -58,6 +58,14 @@ Required by Bonsai testing rules: this plugin stores client data, sends email, a
 - [ ] Agent replies to a notification starting with `#note` → internal note.
 - [ ] Processed emails are marked read and labelled "Bonsai Support/Processed" in Gmail.
 
+## Slack
+- [ ] `BST_SLACK_WEBHOOK_URL` in wp-config.php → Settings → Slack shows **On**; Send test message arrives in the channel.
+- [ ] Submit a ticket from the web form → one Slack post with reference, subject, client, priority and a working link to the ticket in wp-admin. No message body.
+- [ ] Unknown address emails in → Slack post says "unknown sender" and "Could be spam".
+- [ ] Client replies to a ticket → **no** Slack post.
+- [ ] Toggle off and save → new ticket doesn't post. Toggle back on.
+- [ ] Wrong webhook URL → Send test message shows an error; ticket submission still works and is not slowed down.
+
 ## Security
 - [ ] Second client account cannot open the first client's ticket URL ("could not find") or attachment URL (403).
 - [ ] Logged-out attachment URL → login screen.

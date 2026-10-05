@@ -27,6 +27,7 @@ class BST_Admin_Settings {
 		add_action( 'admin_post_bst_save_settings', array( __CLASS__, 'handle_save' ) );
 		add_action( 'admin_post_bst_test_imap', array( __CLASS__, 'handle_test_imap' ) );
 		add_action( 'admin_post_bst_check_mail', array( __CLASS__, 'handle_check_mail' ) );
+		add_action( 'admin_post_bst_test_slack', array( __CLASS__, 'handle_test_slack' ) );
 		add_filter( 'plugin_action_links_' . plugin_basename( BST_FILE ), array( __CLASS__, 'plugin_link' ) );
 	}
 
@@ -66,6 +67,12 @@ class BST_Admin_Settings {
 				'render' => array( __CLASS__, 'render_inbound' ),
 				'form'   => true,
 				'after'  => array( __CLASS__, 'render_inbound_status' ),
+			),
+			'slack'      => array(
+				'label'  => __( 'Slack', 'bonsai-support-tickets' ),
+				'render' => array( __CLASS__, 'render_slack' ),
+				'form'   => true,
+				'after'  => array( __CLASS__, 'render_slack_status' ),
 			),
 			'frontend'   => array(
 				'label'  => __( 'Front end', 'bonsai-support-tickets' ),
@@ -190,6 +197,24 @@ class BST_Admin_Settings {
 		}
 
 		wp_safe_redirect( self::url( 'inbound' ) );
+		exit;
+	}
+
+	/**
+	 * Post a test message to Slack.
+	 */
+	public static function handle_test_slack() {
+		self::guard( 'bst_test_slack' );
+
+		$result = BST_Slack::send_test();
+		if ( is_wp_error( $result ) ) {
+			/* translators: %s: error message. */
+			BST_Admin_UI::flash( sprintf( __( 'Slack test failed: %s', 'bonsai-support-tickets' ), $result->get_error_message() ), 'error' );
+		} else {
+			BST_Admin_UI::flash( __( 'Test message sent. Check the Slack channel.', 'bonsai-support-tickets' ) );
+		}
+
+		wp_safe_redirect( self::url( 'slack' ) );
 		exit;
 	}
 
@@ -605,6 +630,83 @@ define( 'BST_IMAP_PASSWORD', 'abcd efgh ijkl mnop' ); // App password, not the a
 				<li><?php esc_html_e( 'For prompt checks on a quiet site, add a server cron job that runs every 2 minutes:', 'bonsai-support-tickets' ); ?>
 					<pre class="bst-code"><code>*/2 * * * * curl -s <?php echo esc_html( site_url( 'wp-cron.php?doing_wp_cron' ) ); ?> &gt; /dev/null</code></pre>
 				</li>
+			</ol>
+		</section>
+		<?php
+	}
+
+	/**
+	 * Slack tab: the on/off switch (inside the tab's form).
+	 *
+	 * @param array $s Settings.
+	 */
+	public static function render_slack( array $s ) {
+		?>
+		<section class="bonsai-ui-card">
+			<h2 class="bonsai-ui-card__title"><?php esc_html_e( 'Slack', 'bonsai-support-tickets' ); ?></h2>
+			<p class="bonsai-ui-card__intro"><?php esc_html_e( 'Posts every new ticket to one Slack channel: reference, subject, client, priority, type, source and site, with a link to the ticket. The client\'s message is not sent to Slack.', 'bonsai-support-tickets' ); ?></p>
+			<table class="form-table" role="presentation">
+				<tr>
+					<th scope="row"><?php esc_html_e( 'New tickets', 'bonsai-support-tickets' ); ?></th>
+					<td>
+						<input type="hidden" name="bst[slack_enabled]" value="0">
+						<label for="bst-slack-enabled"><input type="checkbox" class="bonsai-ui-toggle" id="bst-slack-enabled" name="bst[slack_enabled]" value="1" <?php checked( $s['slack_enabled'] ); ?>> <?php esc_html_e( 'Post new tickets to Slack', 'bonsai-support-tickets' ); ?></label>
+						<?php if ( ! BST_Slack::has_webhook() ) : ?>
+							<p class="description"><?php esc_html_e( 'Nothing is sent until the webhook URL is added to wp-config.php (see below).', 'bonsai-support-tickets' ); ?></p>
+						<?php endif; ?>
+					</td>
+				</tr>
+			</table>
+		</section>
+		<?php
+	}
+
+	/**
+	 * Slack tab: status, test button and setup steps. Outside the settings
+	 * form because Send test message is a form of its own.
+	 *
+	 * @param array $s Settings.
+	 */
+	public static function render_slack_status( array $s ) {
+		$has_webhook = BST_Slack::has_webhook();
+		?>
+		<section class="bonsai-ui-card">
+			<div class="bonsai-ui-card__head">
+				<h2 class="bonsai-ui-card__title"><?php esc_html_e( 'Slack status', 'bonsai-support-tickets' ); ?></h2>
+				<?php
+				if ( ! $has_webhook ) {
+					echo BST_Admin_UI::badge( __( 'No webhook', 'bonsai-support-tickets' ), 'error' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in badge().
+				} elseif ( ! $s['slack_enabled'] ) {
+					echo BST_Admin_UI::badge( __( 'Off', 'bonsai-support-tickets' ), 'neutral' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				} else {
+					echo BST_Admin_UI::badge( __( 'On', 'bonsai-support-tickets' ), 'success' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				}
+				?>
+			</div>
+
+			<dl class="bonsai-ui-status">
+				<dt><?php esc_html_e( 'Webhook', 'bonsai-support-tickets' ); ?></dt>
+				<dd><?php echo $has_webhook ? esc_html__( 'Set in wp-config.php', 'bonsai-support-tickets' ) : esc_html__( 'Not set — see below', 'bonsai-support-tickets' ); ?></dd>
+			</dl>
+
+			<div class="bonsai-ui-card__footer bonsai-ui-actions">
+				<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+					<input type="hidden" name="action" value="bst_test_slack">
+					<?php wp_nonce_field( 'bst_test_slack' ); ?>
+					<button type="submit" class="button" <?php disabled( ! $has_webhook ); ?>><?php esc_html_e( 'Send test message', 'bonsai-support-tickets' ); ?></button>
+				</form>
+			</div>
+		</section>
+
+		<section class="bonsai-ui-card">
+			<h2 class="bonsai-ui-card__title"><?php esc_html_e( 'Setting up the Slack webhook', 'bonsai-support-tickets' ); ?></h2>
+			<ol class="bst-steps">
+				<li><?php esc_html_e( 'Go to api.slack.com/apps → Create New App → From scratch, and pick your workspace.', 'bonsai-support-tickets' ); ?></li>
+				<li><?php esc_html_e( 'Under Incoming Webhooks, turn them on, then Add New Webhook to Workspace and choose the channel.', 'bonsai-support-tickets' ); ?></li>
+				<li><?php esc_html_e( 'Copy the webhook URL and add this line to wp-config.php, above "That\'s all, stop editing!":', 'bonsai-support-tickets' ); ?>
+					<pre class="bst-code"><code>define( 'BST_SLACK_WEBHOOK_URL', 'https://hooks.slack.com/services/…' );</code></pre>
+				</li>
+				<li><?php esc_html_e( 'Use Send test message above. To change channel, create a new webhook and swap the URL.', 'bonsai-support-tickets' ); ?></li>
 			</ol>
 		</section>
 		<?php

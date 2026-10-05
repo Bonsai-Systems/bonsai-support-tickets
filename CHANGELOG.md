@@ -12,6 +12,10 @@ All notable changes to this plugin are documented here. Format: [Keep a Changelo
 - Contrast warnings on the Appearance tab when a chosen pair falls below WCAG AA (4.5:1).
 - `BST_Appearance` class: colour fields, `color()`, `inline_css()`, `email_colors()` and the contrast maths (unit tested).
 - Email layout: `$colors` variable.
+- Slack: every new ticket is posted to one channel through an incoming webhook (`BST_SLACK_WEBHOOK_URL` in `wp-config.php`). The post has the reference, subject, client, priority, type, source, site and a link to the ticket, and flags unknown senders. The message body is never sent. Sends are non-blocking, and failures are logged.
+- **Support → Settings → Slack**: on/off switch, status, **Send test message** and setup steps.
+- `bst_slack_ticket_payload` and `bst_slack_webhook_url` filters.
+- Integration tests for Slack (HTTP faked) and manual checklist steps.
 
 ### Changed
 - The auto-reply replaces the fixed "We have received your request" email. It's still only sent on ticket creation and never to unverified senders.

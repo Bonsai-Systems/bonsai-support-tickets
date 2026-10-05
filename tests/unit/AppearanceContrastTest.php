@@ -2,7 +2,7 @@
 /**
  * BST_Appearance contrast maths tests.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 use PHPUnit\Framework\TestCase;
@@ -28,13 +28,23 @@ class AppearanceContrastTest extends TestCase {
 		);
 	}
 
-	public function test_bonsai_defaults_pass_aa() {
+	public function test_shipped_default_palette_passes_aa() {
+		$c = BST_Appearance::default_colors();
+		// The same pairs the Appearance tab warns about.
+		$this->assertGreaterThanOrEqual( 4.5, BST_Appearance::contrast_ratio( $c['color_background'], $c['color_ink'] ) );
+		$this->assertGreaterThanOrEqual( 4.5, BST_Appearance::contrast_ratio( $c['color_surface'], $c['color_accent_hover'] ) );
+		$this->assertGreaterThanOrEqual( 4.5, BST_Appearance::contrast_ratio( $c['color_accent_text'], $c['color_background'] ) );
+		$this->assertGreaterThanOrEqual( 4.5, BST_Appearance::contrast_ratio( $c['color_text'], $c['color_surface'] ) );
+		$this->assertGreaterThanOrEqual( 4.5, BST_Appearance::contrast_ratio( $c['color_ink'], $c['color_surface'] ) );
+	}
+
+	public function test_example_pink_pairs_pass_aa() {
 		// White on the hover pink, and accent text on the warm background.
 		$this->assertGreaterThanOrEqual( 4.5, BST_Appearance::contrast_ratio( '#ffffff', '#d23253' ) );
 		$this->assertGreaterThanOrEqual( 4.5, BST_Appearance::contrast_ratio( '#c21f48', '#faf8f5' ) );
 	}
 
-	public function test_bonsai_pink_fails_aa_for_white_text() {
+	public function test_light_pink_fails_aa_for_white_text() {
 		$this->assertLessThan( 4.5, BST_Appearance::contrast_ratio( '#ffffff', '#ee4367' ) );
 	}
 

@@ -10,7 +10,7 @@
  * mailer knows a reply went out before it decides whether to send a
  * separate "solved" email.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -421,7 +421,7 @@ class BST_Admin_Tickets {
 		}
 		// phpcs:enable
 
-		// Searching for a reference (BDC-1042) jumps straight to that ticket.
+		// Searching for a reference (SUP-1042) jumps straight to that ticket.
 		$search = (string) $query->get( 's' );
 		if ( preg_match( '/^\s*[A-Za-z0-9]+-\d+\s*$/', $search ) ) {
 			$meta_query[] = array(
@@ -626,7 +626,8 @@ class BST_Admin_Tickets {
 					<strong><?php echo esc_html( BST_Companies::name( $company ) ); ?></strong>
 				<?php endif; ?>
 			<?php endif; ?>
-			<span><?php echo esc_html( BST_Tickets::contact_name( $post->ID ) ); ?> &lt;<?php echo esc_html( BST_Tickets::contact_email( $post->ID ) ); ?>&gt;</span>
+			<?php $bst_contact_email = BST_Tickets::contact_email( $post->ID ); ?>
+			<span><?php echo esc_html( BST_Tickets::contact_name( $post->ID ) ); ?><?php echo '' !== $bst_contact_email ? ' &lt;' . esc_html( $bst_contact_email ) . '&gt;' : ''; ?></span>
 			<?php if ( $site ) : ?>
 				<a href="<?php echo esc_url( $site ); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html( $site ); ?><span class="screen-reader-text"> <?php esc_html_e( '(opens in a new tab)', 'bonsai-support-tickets' ); ?></span></a>
 			<?php endif; ?>
@@ -865,9 +866,10 @@ class BST_Admin_Tickets {
 
 		$files   = BST_Attachments::for_messages( wp_list_pluck( $messages, 'id' ) );
 		$sources = array(
-			'email' => __( 'by email', 'bonsai-support-tickets' ),
-			'web'   => __( 'via the portal', 'bonsai-support-tickets' ),
-			'admin' => '',
+			'email'   => __( 'by email', 'bonsai-support-tickets' ),
+			'web'     => __( 'via the portal', 'bonsai-support-tickets' ),
+			'admin'   => '',
+			'monitor' => __( 'from uptime monitoring', 'bonsai-support-tickets' ),
 		);
 		?>
 		<ol class="bst-admin-thread">
@@ -1015,7 +1017,7 @@ class BST_Admin_Tickets {
 
 			delete_transient( 'bst_menu_count' );
 		} catch ( Throwable $e ) {
-			error_log( 'Bonsai Support Tickets: ticket save failed for ' . $post_id . ': ' . $e->getMessage() );
+			error_log( BST_PRODUCT_NAME . ': ticket save failed for ' . $post_id . ': ' . $e->getMessage() );
 			BST_Admin_UI::flash( __( 'Something went wrong saving the ticket. Please check it and try again.', 'bonsai-support-tickets' ), 'error' );
 		}
 	}

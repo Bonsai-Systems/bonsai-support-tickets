@@ -3,7 +3,7 @@
  * Client registration and approval. Needs the WordPress test suite:
  * WP_TESTS_DIR=/path/to/wordpress-tests-lib vendor/bin/phpunit --testsuite integration
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 /**
@@ -136,7 +136,7 @@ class RegistrationTest extends WP_UnitTestCase {
 		BST_Registration::validate( $input );
 		BST_Registration::create_account( $input );
 
-		$raw    = "From: Jane <jane@leyarms.example>\r\nTo: bonsaisupport@gmail.com\r\nSubject: Hello\r\nMessage-ID: <pending-test@x>\r\n\r\nPlease help.";
+		$raw    = "From: Jane <jane@leyarms.example>\r\nTo: support@gmail.com\r\nSubject: Hello\r\nMessage-ID: <pending-test@x>\r\n\r\nPlease help.";
 		$result = BST_Inbound::process_raw( $raw );
 		$this->assertSame( 'created', $result['result'] );
 

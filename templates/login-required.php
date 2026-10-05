@@ -2,9 +2,9 @@
 /**
  * Shown in place of the portal or form to logged-out visitors.
  *
- * Override: copy to {theme}/bonsai-support/login-required.php
+ * Override: copy to {theme}/support-desk/login-required.php
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;

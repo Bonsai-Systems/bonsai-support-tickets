@@ -10,7 +10,7 @@
  * ticket's secret token (inbound+t{ID}-{token}@domain), and a References
  * header so mail clients group a ticket's emails into one conversation.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -240,6 +240,7 @@ class BST_Mailer {
 		// Raw title, not get_the_title(): that adds curly-quote entities that
 		// would show up literally in a subject line.
 		$placeholders = array(
+			'{{site.name}}'    => BST_Settings::brand_name(),
 			'{{ticket.title}}' => $ticket_id ? (string) get_post_field( 'post_title', $ticket_id, 'raw' ) : '',
 			'{{ticket.id}}'    => $ticket_id ? BST_Tickets::ref( $ticket_id ) : '',
 			'{{client.name}}'  => $ticket_id ? BST_Tickets::contact_name( $ticket_id ) : '',
@@ -386,8 +387,8 @@ class BST_Mailer {
 		$content['ref']          = '';
 		$content['subject']      = '';
 		$content['reply_marker'] = '';
-		$content['logo_url']     = BST_Settings::get( 'email_logo_url' ) ? BST_Settings::get( 'email_logo_url' ) : BST_URL . 'assets/bonsai-avatar.jpg';
-		$content['site_name']    = BST_Settings::get( 'from_name' ) ? BST_Settings::get( 'from_name' ) : get_bloginfo( 'name' );
+		$content['logo_url']     = (string) BST_Settings::get( 'email_logo_url' ); // '' = support name as text.
+		$content['site_name']    = BST_Settings::brand_name();
 		$content['colors']       = BST_Appearance::email_colors();
 
 		$html = BST_Template::capture( 'emails/layout.php', $content );
@@ -396,7 +397,7 @@ class BST_Mailer {
 		$headers    = array( 'Content-Type: text/html; charset=UTF-8', 'Auto-Submitted: auto-generated' );
 		$from_email = BST_Settings::get( 'from_email' );
 		if ( is_email( $from_email ) ) {
-			$headers[] = sprintf( 'From: %s <%s>', self::header_safe( BST_Settings::get( 'from_name' ) ), $from_email );
+			$headers[] = sprintf( 'From: %s <%s>', self::header_safe( BST_Settings::from_name() ), $from_email );
 		}
 
 		$set_mailer = function ( $phpmailer ) use ( $text ) {
@@ -421,7 +422,7 @@ class BST_Mailer {
 		remove_action( 'phpmailer_init', $set_mailer );
 
 		if ( ! $sent ) {
-			error_log( 'Bonsai Support Tickets: wp_mail failed sending account email "' . $subject . '" to ' . $to );
+			error_log( BST_PRODUCT_NAME . ': wp_mail failed sending account email "' . $subject . '" to ' . $to );
 		}
 		return $sent;
 	}
@@ -458,8 +459,8 @@ class BST_Mailer {
 		$content['ref']          = $ref;
 		$content['subject']      = get_the_title( $ticket_id );
 		$content['reply_marker'] = $reply_to ? self::REPLY_MARKER : '';
-		$content['logo_url']     = BST_Settings::get( 'email_logo_url' ) ? BST_Settings::get( 'email_logo_url' ) : BST_URL . 'assets/bonsai-avatar.jpg';
-		$content['site_name']    = BST_Settings::get( 'from_name' ) ? BST_Settings::get( 'from_name' ) : get_bloginfo( 'name' );
+		$content['logo_url']     = (string) BST_Settings::get( 'email_logo_url' ); // '' = support name as text.
+		$content['site_name']    = BST_Settings::brand_name();
 		$content['colors']       = BST_Appearance::email_colors();
 
 		$html = BST_Template::capture( 'emails/layout.php', $content );
@@ -469,10 +470,10 @@ class BST_Mailer {
 
 		$from_email = BST_Settings::get( 'from_email' );
 		if ( is_email( $from_email ) ) {
-			$headers[] = sprintf( 'From: %s <%s>', self::header_safe( BST_Settings::get( 'from_name' ) ), $from_email );
+			$headers[] = sprintf( 'From: %s <%s>', self::header_safe( BST_Settings::from_name() ), $from_email );
 		}
 		if ( $reply_to ) {
-			$headers[] = sprintf( 'Reply-To: %s <%s>', self::header_safe( BST_Settings::get( 'from_name' ) ), $reply_to );
+			$headers[] = sprintf( 'Reply-To: %s <%s>', self::header_safe( BST_Settings::from_name() ), $reply_to );
 		}
 
 		// Thread every email for this ticket together in the recipient's mail client.
@@ -515,14 +516,14 @@ class BST_Mailer {
 		remove_action( 'phpmailer_init', $set_mailer );
 
 		if ( ! $sent ) {
-			error_log( 'Bonsai Support Tickets: wp_mail failed sending "' . $full_subject . '" to ' . $to );
+			error_log( BST_PRODUCT_NAME . ': wp_mail failed sending "' . $full_subject . '" to ' . $to );
 		}
 		return $sent;
 	}
 
 	/**
 	 * Reply-To address for a ticket. With plus addressing on, Gmail delivers
-	 * bonsaisupport+t123-abcdef1234@gmail.com to bonsaisupport@gmail.com, and
+	 * support+t123-abcdef1234@example.com to support@example.com, and
 	 * the inbound processor reads the ticket ID and token back out of it.
 	 *
 	 * @param int $ticket_id Ticket ID.

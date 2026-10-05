@@ -2,7 +2,7 @@
 /**
  * Activation, upgrades, roles and capabilities, custom tables.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -99,6 +99,13 @@ class BST_Install {
 			self::migrate_companies();
 		}
 
+		/**
+		 * After the schema/data upgrade, before the new DB version is saved.
+		 *
+		 * @param int $from DB version before the upgrade.
+		 */
+		do_action( 'bst_upgraded', $from );
+
 		update_option( 'bst_db_version', BST_DB_VERSION, false );
 	}
 
@@ -111,7 +118,7 @@ class BST_Install {
 			BST_Post_Types::register(); // admin_init runs after init, but be explicit.
 			$result = BST_Companies::migrate_legacy_names();
 		} catch ( Throwable $e ) {
-			error_log( 'Bonsai Support Tickets: client migration failed: ' . $e->getMessage() );
+			error_log( BST_PRODUCT_NAME . ': client migration failed: ' . $e->getMessage() );
 			return;
 		}
 
@@ -229,12 +236,12 @@ class BST_Install {
 	public static function create_private_dir() {
 		$dir = BST_Attachments::base_dir();
 		if ( ! wp_mkdir_p( $dir ) ) {
-			error_log( 'Bonsai Support Tickets: could not create private upload folder ' . $dir );
+			error_log( BST_PRODUCT_NAME . ': could not create private upload folder ' . $dir );
 			return;
 		}
 
 		$files = array(
-			'.htaccess'  => "# Bonsai Support Tickets — never serve these files directly.\n<IfModule mod_authz_core.c>\nRequire all denied\n</IfModule>\n<IfModule !mod_authz_core.c>\nDeny from all\n</IfModule>\n",
+			'.htaccess'  => "# Private support attachments — never serve these files directly.\n<IfModule mod_authz_core.c>\nRequire all denied\n</IfModule>\n<IfModule !mod_authz_core.c>\nDeny from all\n</IfModule>\n",
 			'index.php'  => "<?php\n// Silence is golden.\n",
 			'index.html' => '',
 		);

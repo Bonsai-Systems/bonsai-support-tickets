@@ -2,7 +2,7 @@
 /**
  * Email layout. Inline styles only — most mail clients ignore <style>.
  *
- * Override: copy to {theme}/bonsai-support/emails/layout.php
+ * Override: copy to {theme}/support-desk/emails/layout.php
  *
  * Available variables:
  *
@@ -18,17 +18,17 @@
  * @var string      $subject      Ticket subject ('' for account emails).
  * @var array       $details      Optional label => value rows (account emails).
  * @var string      $reply_marker Reply-above-this-line marker ('' when inbound email is off).
- * @var string      $logo_url     Logo image URL.
- * @var string      $site_name    Sender name.
+ * @var string      $logo_url     Logo image URL ('' = show the support name as text).
+ * @var string      $site_name    Support name.
  * @var array       $colors       Brand colours from Settings → Appearance: accent,
  *                                accent_text, ink, text, background, surface.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;
 
-$bst_font    = "'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif";
+$bst_font    = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif";
 $bst_details = isset( $details ) && is_array( $details ) ? $details : array();
 $bst_body    = isset( $body_html ) ? (string) $body_html : '';
 
@@ -58,7 +58,11 @@ $bst_c = array_map(
 
 					<tr>
 						<td style="background:#f9f8f4;border-bottom:4px solid <?php echo $bst_c['accent']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>;padding:24px 32px;">
-							<img src="<?php echo esc_url( $logo_url ); ?>" width="206" alt="<?php echo esc_attr( $site_name ); ?>" style="display:block;width:206px;max-width:100%;height:auto;border:0;">
+							<?php if ( $logo_url ) : ?>
+								<img src="<?php echo esc_url( $logo_url ); ?>" width="206" alt="<?php echo esc_attr( $site_name ); ?>" style="display:block;width:206px;max-width:100%;height:auto;border:0;">
+							<?php else : ?>
+								<p style="margin:0;font-family:<?php echo esc_attr( $bst_font ); ?>;font-size:20px;line-height:1.3;font-weight:700;color:<?php echo $bst_c['ink']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped above. ?>;"><?php echo esc_html( $site_name ); ?></p>
+							<?php endif; ?>
 						</td>
 					</tr>
 

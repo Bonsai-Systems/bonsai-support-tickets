@@ -13,7 +13,7 @@
  * Live sends are non-blocking, so a slow or down Slack never holds up
  * ticket creation (web form or the inbound mail cron).
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -88,7 +88,7 @@ class BST_Slack {
 	 * Slack message for a new ticket.
 	 *
 	 * @param int    $ticket_id Ticket ID.
-	 * @param string $source    web|email|admin.
+	 * @param string $source    web|email|admin|monitor.
 	 * @return array Webhook payload.
 	 */
 	public static function ticket_payload( $ticket_id, $source = '' ) {
@@ -107,9 +107,10 @@ class BST_Slack {
 		$client = '' !== $company ? $company . ' — ' . $person : $person;
 
 		$sources = array(
-			'web'   => __( 'Web form', 'bonsai-support-tickets' ),
-			'email' => __( 'Email', 'bonsai-support-tickets' ),
-			'admin' => __( 'Added by the team', 'bonsai-support-tickets' ),
+			'web'     => __( 'Web form', 'bonsai-support-tickets' ),
+			'email'   => __( 'Email', 'bonsai-support-tickets' ),
+			'admin'   => __( 'Added by the team', 'bonsai-support-tickets' ),
+			'monitor' => __( 'Uptime monitor', 'bonsai-support-tickets' ),
 		);
 
 		$types = get_the_terms( $ticket_id, BST_Post_Types::TICKET_TYPE );
@@ -222,7 +223,7 @@ class BST_Slack {
 		);
 
 		if ( is_wp_error( $response ) ) {
-			error_log( 'Bonsai Support Tickets: Slack post failed: ' . $response->get_error_message() );
+			error_log( BST_PRODUCT_NAME . ': Slack post failed: ' . $response->get_error_message() );
 			return $response;
 		}
 
@@ -230,7 +231,7 @@ class BST_Slack {
 			$code = (int) wp_remote_retrieve_response_code( $response );
 			if ( 200 !== $code ) {
 				$body = trim( (string) wp_remote_retrieve_body( $response ) );
-				error_log( 'Bonsai Support Tickets: Slack returned ' . $code . ': ' . $body );
+				error_log( BST_PRODUCT_NAME . ': Slack returned ' . $code . ': ' . $body );
 				return new WP_Error(
 					'bst_slack_http',
 					/* translators: 1: HTTP status code, 2: Slack's error text, e.g. invalid_token. */

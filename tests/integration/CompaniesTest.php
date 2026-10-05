@@ -2,7 +2,7 @@
 /**
  * Client companies. Needs the WordPress test suite.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 /**

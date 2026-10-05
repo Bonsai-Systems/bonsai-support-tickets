@@ -2,7 +2,7 @@
 /**
  * Inbound email processing. Needs the WordPress test suite.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 /**
@@ -19,6 +19,8 @@ class InboundTest extends WP_UnitTestCase {
 
 	public function set_up() {
 		parent::set_up();
+		// Reply-To tokens need a support mailbox; there is none by default.
+		BST_Settings::save( array( 'inbound_address' => 'support@example.com' ) );
 		$this->client = self::factory()->user->create(
 			array(
 				'role'       => 'bst_client',
@@ -52,7 +54,7 @@ class InboundTest extends WP_UnitTestCase {
 	}
 
 	public function test_known_client_email_creates_a_verified_ticket() {
-		$result = BST_Inbound::process_raw( $this->email( 'Jane <jane@example.com>', 'bonsaisupport@gmail.com', 'Site down', 'Nothing loads.' ) );
+		$result = BST_Inbound::process_raw( $this->email( 'Jane <jane@example.com>', 'support@gmail.com', 'Site down', 'Nothing loads.' ) );
 
 		$this->assertSame( 'created', $result['result'] );
 		$this->assertSame( $this->client, BST_Tickets::client_id( $result['ticket_id'] ) );
@@ -60,7 +62,7 @@ class InboundTest extends WP_UnitTestCase {
 	}
 
 	public function test_unknown_sender_creates_an_unverified_ticket() {
-		$result = BST_Inbound::process_raw( $this->email( 'stranger@example.net', 'bonsaisupport@gmail.com', 'Hello', 'Can you quote for a site?' ) );
+		$result = BST_Inbound::process_raw( $this->email( 'stranger@example.net', 'support@gmail.com', 'Hello', 'Can you quote for a site?' ) );
 
 		$this->assertSame( 'created', $result['result'] );
 		$this->assertTrue( BST_Tickets::is_unverified( $result['ticket_id'] ) );
@@ -85,7 +87,7 @@ class InboundTest extends WP_UnitTestCase {
 		$created = BST_Tickets::create( array( 'client_id' => $this->client, 'subject' => 'Menu', 'body' => 'x' ) );
 		$ref     = BST_Tickets::ref( $created['ticket_id'] );
 
-		$result = BST_Inbound::process_raw( $this->email( 'attacker@example.net', 'bonsaisupport@gmail.com', "Re: [{$ref}] Menu", 'Let me in' ) );
+		$result = BST_Inbound::process_raw( $this->email( 'attacker@example.net', 'support@gmail.com', "Re: [{$ref}] Menu", 'Let me in' ) );
 
 		$this->assertSame( 'created', $result['result'] );
 		$this->assertNotSame( $created['ticket_id'], $result['ticket_id'] );
@@ -94,7 +96,7 @@ class InboundTest extends WP_UnitTestCase {
 
 	public function test_wrong_token_is_not_trusted() {
 		$created = BST_Tickets::create( array( 'client_id' => $this->client, 'subject' => 'Menu', 'body' => 'x' ) );
-		$to      = 'bonsaisupport+t' . $created['ticket_id'] . '-0000000000@gmail.com';
+		$to      = 'support+t' . $created['ticket_id'] . '-0000000000@gmail.com';
 
 		$result = BST_Inbound::process_raw( $this->email( 'attacker@example.net', $to, 'Hi', 'Let me in' ) );
 
@@ -102,10 +104,10 @@ class InboundTest extends WP_UnitTestCase {
 	}
 
 	public function test_auto_replies_and_duplicates_are_skipped() {
-		$auto = $this->email( 'jane@example.com', 'bonsaisupport@gmail.com', 'Out of office', 'Away', array( 'Auto-Submitted: auto-replied' ) );
+		$auto = $this->email( 'jane@example.com', 'support@gmail.com', 'Out of office', 'Away', array( 'Auto-Submitted: auto-replied' ) );
 		$this->assertSame( 'skipped_auto', BST_Inbound::process_raw( $auto )['result'] );
 
-		$raw = $this->email( 'jane@example.com', 'bonsaisupport@gmail.com', 'Once', 'Only once' );
+		$raw = $this->email( 'jane@example.com', 'support@gmail.com', 'Once', 'Only once' );
 		$this->assertSame( 'created', BST_Inbound::process_raw( $raw )['result'] );
 		$this->assertSame( 'duplicate', BST_Inbound::process_raw( $raw )['result'] );
 	}

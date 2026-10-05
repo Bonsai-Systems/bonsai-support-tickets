@@ -7,7 +7,7 @@
  * has its own form and posts only its own fields; BST_Settings::save()
  * keeps everything else as it was.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -28,6 +28,7 @@ class BST_Admin_Settings {
 		add_action( 'admin_post_bst_test_imap', array( __CLASS__, 'handle_test_imap' ) );
 		add_action( 'admin_post_bst_check_mail', array( __CLASS__, 'handle_check_mail' ) );
 		add_action( 'admin_post_bst_test_slack', array( __CLASS__, 'handle_test_slack' ) );
+		add_action( 'admin_post_bst_monitor_secret', array( __CLASS__, 'handle_monitor_secret' ) );
 		add_filter( 'plugin_action_links_' . plugin_basename( BST_FILE ), array( __CLASS__, 'plugin_link' ) );
 	}
 
@@ -35,8 +36,8 @@ class BST_Admin_Settings {
 	 * Tabs, in nav order.
 	 *
 	 * Each tab: label, render (callable, receives settings; printed inside
-	 * the tab's form when form is true), form (bool), after (optional
-	 * callable printed below the form, for cards with their own forms).
+	 * the tab's form when form is true), form (bool), before/after (optional
+	 * callables printed above/below the form, for cards with their own forms).
 	 *
 	 * @return array<string,array> Keyed by tab slug.
 	 */
@@ -46,6 +47,7 @@ class BST_Admin_Settings {
 				'label'  => __( 'General', 'bonsai-support-tickets' ),
 				'render' => array( __CLASS__, 'render_general' ),
 				'form'   => true,
+				'before' => array( 'BST_Admin_Setup', 'render_card' ),
 			),
 			'appearance' => array(
 				'label'  => __( 'Appearance', 'bonsai-support-tickets' ),
@@ -73,6 +75,12 @@ class BST_Admin_Settings {
 				'render' => array( __CLASS__, 'render_slack' ),
 				'form'   => true,
 				'after'  => array( __CLASS__, 'render_slack_status' ),
+			),
+			'monitoring' => array(
+				'label'  => __( 'Uptime monitoring', 'bonsai-support-tickets' ),
+				'render' => array( __CLASS__, 'render_monitoring' ),
+				'form'   => true,
+				'after'  => array( __CLASS__, 'render_monitoring_status' ),
 			),
 			'frontend'   => array(
 				'label'  => __( 'Front end', 'bonsai-support-tickets' ),
@@ -219,6 +227,30 @@ class BST_Admin_Settings {
 	}
 
 	/**
+	 * Generate (or replace) an uptime monitoring secret.
+	 */
+	public static function handle_monitor_secret() {
+		self::guard( 'bst_monitor_secret' );
+
+		$source = isset( $_POST['source'] ) ? sanitize_key( wp_unslash( $_POST['source'] ) ) : '';
+		if ( ! array_key_exists( $source, BST_Monitoring::sources() ) || BST_Monitoring::secret_in_config( $source ) ) {
+			wp_safe_redirect( self::url( 'monitoring' ) );
+			exit;
+		}
+
+		$had = '' !== BST_Monitoring::secret( $source );
+		BST_Monitoring::regenerate_secret( $source );
+
+		BST_Admin_UI::flash(
+			$had
+				? __( 'New secret generated. Update it in your monitor: the old one no longer works.', 'bonsai-support-tickets' )
+				: __( 'Secret generated. Copy it into your monitor.', 'bonsai-support-tickets' )
+		);
+		wp_safe_redirect( self::url( 'monitoring' ) );
+		exit;
+	}
+
+	/**
 	 * Page: header, tab nav, the current tab.
 	 */
 	public static function render() {
@@ -253,6 +285,11 @@ class BST_Admin_Settings {
 				</nav>
 
 				<div class="bst-settings__main">
+					<?php
+					if ( ! empty( $tab['before'] ) ) {
+						call_user_func( $tab['before'], $s );
+					}
+					?>
 					<?php if ( $tab['form'] ) : ?>
 						<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 							<input type="hidden" name="action" value="bst_save_settings">
@@ -293,7 +330,12 @@ class BST_Admin_Settings {
 					<th scope="row"><label for="bst-ref-prefix"><?php esc_html_e( 'Reference prefix', 'bonsai-support-tickets' ); ?></label></th>
 					<td>
 						<input type="text" id="bst-ref-prefix" name="bst[ref_prefix]" value="<?php echo esc_attr( $s['ref_prefix'] ); ?>" class="small-text" maxlength="8">
-						<p class="description"><?php esc_html_e( 'Letters and numbers. Tickets are numbered like BDC-1042. Changing it only affects new tickets.', 'bonsai-support-tickets' ); ?></p>
+						<p class="description">
+							<?php
+							/* translators: %s: example reference, e.g. SUP-1042. */
+							echo esc_html( sprintf( __( 'Letters and numbers. Tickets are numbered like %s. Changing it only affects new tickets.', 'bonsai-support-tickets' ), $s['ref_prefix'] . '-1042' ) );
+							?>
+						</p>
 					</td>
 				</tr>
 				<tr>
@@ -355,7 +397,7 @@ class BST_Admin_Settings {
 	}
 
 	/**
-	 * Appearance tab: brand colours for the front end and emails.
+	 * Appearance tab: support name, logo and colours for the front end and emails.
 	 *
 	 * @param array $s Settings.
 	 */
@@ -363,8 +405,33 @@ class BST_Admin_Settings {
 		$warnings = BST_Appearance::contrast_warnings();
 		?>
 		<section class="bonsai-ui-card">
+			<h2 class="bonsai-ui-card__title"><?php esc_html_e( 'Brand', 'bonsai-support-tickets' ); ?></h2>
+			<p class="bonsai-ui-card__intro"><?php esc_html_e( 'What your clients see on the portal, the login screen and every email.', 'bonsai-support-tickets' ); ?></p>
+			<table class="form-table" role="presentation">
+				<tr>
+					<th scope="row"><label for="bst-brand-name"><?php esc_html_e( 'Support name', 'bonsai-support-tickets' ); ?></label></th>
+					<td>
+						<input type="text" id="bst-brand-name" name="bst[brand_name]" value="<?php echo esc_attr( $s['brand_name'] ); ?>" class="regular-text" placeholder="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>">
+						<p class="description"><?php esc_html_e( 'Your business or support desk name, e.g. "Acme Support". Blank uses the site title.', 'bonsai-support-tickets' ); ?></p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="bst-logo"><?php esc_html_e( 'Logo', 'bonsai-support-tickets' ); ?></label></th>
+					<td>
+						<div class="bst-media-field">
+							<img class="bst-media-field__preview" src="<?php echo esc_url( $s['email_logo_url'] ); ?>" alt="" <?php echo $s['email_logo_url'] ? '' : 'hidden'; ?>>
+							<input type="url" id="bst-logo" name="bst[email_logo_url]" value="<?php echo esc_attr( $s['email_logo_url'] ); ?>" class="regular-text bst-media-field__url">
+							<button type="button" class="button bst-media-field__choose" data-title="<?php esc_attr_e( 'Choose a logo', 'bonsai-support-tickets' ); ?>"><?php esc_html_e( 'Choose image', 'bonsai-support-tickets' ); ?></button>
+						</div>
+						<p class="description"><?php esc_html_e( 'Shown at the top of every email. Around 400 × 100px on a light background works best. Blank shows the support name as text.', 'bonsai-support-tickets' ); ?></p>
+					</td>
+				</tr>
+			</table>
+		</section>
+
+		<section class="bonsai-ui-card">
 			<h2 class="bonsai-ui-card__title"><?php esc_html_e( 'Brand colours', 'bonsai-support-tickets' ); ?></h2>
-			<p class="bonsai-ui-card__intro"><?php esc_html_e( 'Used by the client portal, forms, help centre and every email. Leave a colour blank (Clear) to use the default. On the front end, blank also lets the theme\'s own Bonsai colours through. Success, warning and error colours are fixed so they stay readable.', 'bonsai-support-tickets' ); ?></p>
+			<p class="bonsai-ui-card__intro"><?php esc_html_e( 'Used by the client portal, forms, help centre and every email. Leave a colour blank (Clear) to use the default. Success, warning and error colours are fixed so they stay readable.', 'bonsai-support-tickets' ); ?></p>
 
 			<?php if ( $warnings ) : ?>
 				<div class="notice notice-warning inline">
@@ -412,20 +479,16 @@ class BST_Admin_Settings {
 			<table class="form-table" role="presentation">
 				<tr>
 					<th scope="row"><label for="bst-from-name"><?php esc_html_e( 'From name', 'bonsai-support-tickets' ); ?></label></th>
-					<td><input type="text" id="bst-from-name" name="bst[from_name]" value="<?php echo esc_attr( $s['from_name'] ); ?>" class="regular-text"></td>
+					<td>
+						<input type="text" id="bst-from-name" name="bst[from_name]" value="<?php echo esc_attr( $s['from_name'] ); ?>" class="regular-text" placeholder="<?php echo esc_attr( BST_Settings::brand_name() ); ?>">
+						<p class="description"><?php esc_html_e( 'Blank uses the support name from the Appearance tab.', 'bonsai-support-tickets' ); ?></p>
+					</td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="bst-from-email"><?php esc_html_e( 'From address', 'bonsai-support-tickets' ); ?></label></th>
 					<td>
-						<input type="email" id="bst-from-email" name="bst[from_email]" value="<?php echo esc_attr( $s['from_email'] ); ?>" class="regular-text" placeholder="support@bonsaidigitalcollective.co.uk">
+						<input type="email" id="bst-from-email" name="bst[from_email]" value="<?php echo esc_attr( $s['from_email'] ); ?>" class="regular-text" placeholder="support@example.com">
 						<p class="description"><?php esc_html_e( 'Use an address on your own domain, not the Gmail address — mail claiming to be from @gmail.com but sent by this server fails Gmail\'s checks. Blank uses the WordPress default.', 'bonsai-support-tickets' ); ?></p>
-					</td>
-				</tr>
-				<tr>
-					<th scope="row"><label for="bst-logo"><?php esc_html_e( 'Email logo URL', 'bonsai-support-tickets' ); ?></label></th>
-					<td>
-						<input type="url" id="bst-logo" name="bst[email_logo_url]" value="<?php echo esc_attr( $s['email_logo_url'] ); ?>" class="regular-text">
-						<p class="description"><?php esc_html_e( 'Blank uses the Bonsai logo. Around 412 × 108px, on a light background.', 'bonsai-support-tickets' ); ?></p>
 					</td>
 				</tr>
 			</table>
@@ -440,8 +503,10 @@ class BST_Admin_Settings {
 	 */
 	public static function render_autoreply( array $s ) {
 		$descriptions = array(
+			'{{site.name}}'    => __( 'Your support name (Appearance tab)', 'bonsai-support-tickets' ),
 			'{{ticket.title}}' => __( 'Ticket subject', 'bonsai-support-tickets' ),
-			'{{ticket.id}}'    => __( 'Ticket reference, e.g. BDC-1042', 'bonsai-support-tickets' ),
+			/* translators: %s: example reference. */
+			'{{ticket.id}}'    => sprintf( __( 'Ticket reference, e.g. %s', 'bonsai-support-tickets' ), $s['ref_prefix'] . '-1042' ),
 			'{{client.name}}'  => __( 'Name of the person who raised it', 'bonsai-support-tickets' ),
 		);
 		?>
@@ -546,7 +611,12 @@ class BST_Admin_Settings {
 					<th scope="row"><label for="bst-imap-label"><?php esc_html_e( 'Gmail label for processed emails', 'bonsai-support-tickets' ); ?></label></th>
 					<td>
 						<input type="text" id="bst-imap-label" name="bst[imap_processed_tag]" value="<?php echo esc_attr( $s['imap_processed_tag'] ); ?>" class="regular-text">
-						<p class="description"><?php esc_html_e( 'Processed emails are marked read and given this label. Emails that fail get "Bonsai Support/Failed".', 'bonsai-support-tickets' ); ?></p>
+						<p class="description">
+							<?php
+							/* translators: %s: label for emails that failed. */
+							echo esc_html( sprintf( __( 'Processed emails are marked read and given this label. Emails that fail get "%s".', 'bonsai-support-tickets' ), BST_Inbound::failed_label() ) );
+							?>
+						</p>
 					</td>
 				</tr>
 			</table>
@@ -623,7 +693,7 @@ class BST_Admin_Settings {
 				<li><?php esc_html_e( 'Create an app password (Security → App passwords). Copy the 16-character password.', 'bonsai-support-tickets' ); ?></li>
 				<li><?php esc_html_e( 'In Gmail → Settings → Forwarding and POP/IMAP, make sure IMAP is enabled.', 'bonsai-support-tickets' ); ?></li>
 				<li><?php esc_html_e( 'Add these lines to wp-config.php, above "That\'s all, stop editing!":', 'bonsai-support-tickets' ); ?>
-					<pre class="bst-code"><code>define( 'BST_IMAP_USER', 'bonsaisupport@gmail.com' );
+					<pre class="bst-code"><code>define( 'BST_IMAP_USER', 'support@example.com' );
 define( 'BST_IMAP_PASSWORD', 'abcd efgh ijkl mnop' ); // App password, not the account password.</code></pre>
 				</li>
 				<li><?php esc_html_e( 'Turn on "Turn emails into tickets" above, save, then use Test connection.', 'bonsai-support-tickets' ); ?></li>
@@ -713,6 +783,169 @@ define( 'BST_IMAP_PASSWORD', 'abcd efgh ijkl mnop' ); // App password, not the a
 	}
 
 	/**
+	 * Uptime monitoring tab: the on/off switches (inside the tab's form).
+	 *
+	 * @param array $s Settings.
+	 */
+	public static function render_monitoring( array $s ) {
+		$promo = BST_Monitoring::promo_url();
+		?>
+		<section class="bonsai-ui-card">
+			<h2 class="bonsai-ui-card__title"><?php esc_html_e( 'Uptime monitoring', 'bonsai-support-tickets' ); ?></h2>
+			<p class="bonsai-ui-card__intro"><?php esc_html_e( 'When a monitored site goes down, open an Urgent ticket for it, filed under the client whose Websites include it. When it comes back up, add an internal note with the downtime; the ticket stays open so someone can check why. SSL and domain expiry warnings open a Normal ticket. Clients are never emailed about these tickets.', 'bonsai-support-tickets' ); ?></p>
+			<table class="form-table" role="presentation">
+				<tr>
+					<th scope="row"><?php esc_html_e( 'Status monitor', 'bonsai-support-tickets' ); ?></th>
+					<td>
+						<input type="hidden" name="bst[monitor_enabled]" value="0">
+						<label for="bst-monitor-enabled"><input type="checkbox" class="bonsai-ui-toggle" id="bst-monitor-enabled" name="bst[monitor_enabled]" value="1" <?php checked( $s['monitor_enabled'] ); ?>> <?php esc_html_e( 'Turn status monitor alerts into tickets', 'bonsai-support-tickets' ); ?></label>
+						<p class="description"><?php esc_html_e( 'For the hosted status monitor: it sends signed alerts to this site.', 'bonsai-support-tickets' ); ?></p>
+						<?php if ( '' !== $promo ) : ?>
+							<p class="bst-monitor-promo">
+								<?php
+								printf(
+									/* translators: 1: "Get it" link to the monitoring service, 2: product name. */
+									esc_html__( 'Don\'t have uptime monitoring yet? %1$s from %2$s.', 'bonsai-support-tickets' ),
+									'<a href="' . esc_url( $promo ) . '" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Get it', 'bonsai-support-tickets' ) . '<span class="screen-reader-text"> ' . esc_html__( '(opens in a new tab)', 'bonsai-support-tickets' ) . '</span></a>',
+									esc_html( BST_PRODUCT_NAME )
+								);
+								?>
+							</p>
+						<?php endif; ?>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><?php esc_html_e( 'UptimeRobot', 'bonsai-support-tickets' ); ?></th>
+					<td>
+						<input type="hidden" name="bst[uptimerobot_enabled]" value="0">
+						<label for="bst-uptimerobot-enabled"><input type="checkbox" class="bonsai-ui-toggle" id="bst-uptimerobot-enabled" name="bst[uptimerobot_enabled]" value="1" <?php checked( $s['uptimerobot_enabled'] ); ?>> <?php esc_html_e( 'Turn UptimeRobot alerts into tickets', 'bonsai-support-tickets' ); ?></label>
+						<p class="description"><?php esc_html_e( 'If you use UptimeRobot, add this site as a webhook alert contact (see below).', 'bonsai-support-tickets' ); ?></p>
+					</td>
+				</tr>
+			</table>
+		</section>
+		<?php
+	}
+
+	/**
+	 * Uptime monitoring tab: connection details, secrets and setup steps for
+	 * each source. Outside the settings form because the secret buttons are
+	 * forms of their own.
+	 *
+	 * @param array $s Settings.
+	 */
+	public static function render_monitoring_status( array $s ) {
+		unset( $s ); // Same signature as the other tabs; read through BST_Monitoring.
+		foreach ( BST_Monitoring::sources() as $source => $info ) {
+			$enabled   = BST_Monitoring::enabled( $source );
+			$secret    = BST_Monitoring::secret( $source );
+			$in_config = BST_Monitoring::secret_in_config( $source );
+			$last      = BST_Monitoring::last_received( $source );
+			?>
+			<section class="bonsai-ui-card">
+				<div class="bonsai-ui-card__head">
+					<h2 class="bonsai-ui-card__title"><?php echo esc_html( $info['label'] ); ?></h2>
+					<?php
+					if ( ! $enabled ) {
+						echo BST_Admin_UI::badge( __( 'Off', 'bonsai-support-tickets' ), 'neutral' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in badge().
+					} elseif ( '' === $secret ) {
+						echo BST_Admin_UI::badge( __( 'No secret', 'bonsai-support-tickets' ), 'error' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					} else {
+						echo BST_Admin_UI::badge( __( 'On', 'bonsai-support-tickets' ), 'success' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					}
+					?>
+				</div>
+
+				<dl class="bonsai-ui-status">
+					<dt><label for="bst-<?php echo esc_attr( $source ); ?>-url"><?php echo 'uptimerobot' === $source ? esc_html__( 'Webhook URL', 'bonsai-support-tickets' ) : esc_html__( 'Endpoint URL', 'bonsai-support-tickets' ); ?></label></dt>
+					<dd>
+						<?php if ( 'uptimerobot' === $source && '' === $secret ) : ?>
+							<?php esc_html_e( 'Generate a secret first.', 'bonsai-support-tickets' ); ?>
+						<?php else : ?>
+							<input type="text" readonly class="bst-copy-field" id="bst-<?php echo esc_attr( $source ); ?>-url" value="<?php echo esc_attr( BST_Monitoring::endpoint_url( $source ) ); ?>">
+						<?php endif; ?>
+					</dd>
+
+					<?php if ( 'status' === $source ) : ?>
+						<dt><label for="bst-status-secret"><?php esc_html_e( 'Secret', 'bonsai-support-tickets' ); ?></label></dt>
+						<dd>
+							<?php if ( $in_config ) : ?>
+								<?php esc_html_e( 'Set in wp-config.php (BST_MONITOR_SECRET)', 'bonsai-support-tickets' ); ?>
+							<?php elseif ( '' === $secret ) : ?>
+								<?php esc_html_e( 'Not generated yet', 'bonsai-support-tickets' ); ?>
+							<?php else : ?>
+								<input type="text" readonly class="bst-copy-field" id="bst-status-secret" value="<?php echo esc_attr( $secret ); ?>">
+							<?php endif; ?>
+						</dd>
+					<?php elseif ( $in_config ) : ?>
+						<dt><?php esc_html_e( 'Key', 'bonsai-support-tickets' ); ?></dt>
+						<dd><?php esc_html_e( 'Set in wp-config.php (BST_UPTIMEROBOT_KEY)', 'bonsai-support-tickets' ); ?></dd>
+					<?php endif; ?>
+
+					<dt><?php esc_html_e( 'Last alert', 'bonsai-support-tickets' ); ?></dt>
+					<dd>
+						<?php
+						if ( $last ) {
+							echo esc_html(
+								sprintf(
+									/* translators: 1: date and time, 2: event (down, up, test…), 3: result (created, noted, ignored…). */
+									__( '%1$s · %2$s · %3$s', 'bonsai-support-tickets' ),
+									wp_date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), (int) $last['time'] ),
+									'' !== $last['event'] ? $last['event'] : __( 'unknown event', 'bonsai-support-tickets' ),
+									$last['result']
+								)
+							);
+						} else {
+							esc_html_e( 'None received yet', 'bonsai-support-tickets' );
+						}
+						?>
+					</dd>
+				</dl>
+
+				<?php if ( ! $in_config ) : ?>
+					<div class="bonsai-ui-card__footer bonsai-ui-actions">
+						<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+							<input type="hidden" name="action" value="bst_monitor_secret">
+							<input type="hidden" name="source" value="<?php echo esc_attr( $source ); ?>">
+							<?php wp_nonce_field( 'bst_monitor_secret' ); ?>
+							<?php if ( '' === $secret ) : ?>
+								<button type="submit" class="button"><?php esc_html_e( 'Generate secret', 'bonsai-support-tickets' ); ?></button>
+							<?php else : ?>
+								<button type="submit" class="button" data-bst-confirm="<?php esc_attr_e( 'The current secret will stop working straight away. Continue?', 'bonsai-support-tickets' ); ?>"><?php esc_html_e( 'Generate a new secret', 'bonsai-support-tickets' ); ?></button>
+							<?php endif; ?>
+						</form>
+					</div>
+				<?php endif; ?>
+			</section>
+			<?php
+		}
+		?>
+		<section class="bonsai-ui-card">
+			<h2 class="bonsai-ui-card__title"><?php esc_html_e( 'Connecting the status monitor', 'bonsai-support-tickets' ); ?></h2>
+			<ol class="bst-steps">
+				<li><?php esc_html_e( 'Turn on the status monitor above, save, then use Generate secret.', 'bonsai-support-tickets' ); ?></li>
+				<li><?php esc_html_e( 'In the monitor, open Settings → Support tickets and paste in the endpoint URL and secret.', 'bonsai-support-tickets' ); ?></li>
+				<li><?php esc_html_e( 'Use Send test there. Last alert above should then show "test".', 'bonsai-support-tickets' ); ?></li>
+				<li><?php esc_html_e( 'Add each site\'s address to its client\'s Websites (Support → Clients) so tickets are filed under the right client.', 'bonsai-support-tickets' ); ?></li>
+			</ol>
+		</section>
+
+		<section class="bonsai-ui-card">
+			<h2 class="bonsai-ui-card__title"><?php esc_html_e( 'Connecting UptimeRobot', 'bonsai-support-tickets' ); ?></h2>
+			<ol class="bst-steps">
+				<li><?php esc_html_e( 'Turn on UptimeRobot above, save, then use Generate secret and copy the webhook URL.', 'bonsai-support-tickets' ); ?></li>
+				<li><?php esc_html_e( 'In UptimeRobot, add a new Webhook alert contact (Integrations, or My Settings → Alert Contacts) and paste the URL.', 'bonsai-support-tickets' ); ?></li>
+				<li><?php esc_html_e( 'Set it to POST, tick "Send as JSON", and use this body:', 'bonsai-support-tickets' ); ?>
+					<pre class="bst-code"><code>{"monitorURL":"*monitorURL*","monitorFriendlyName":"*monitorFriendlyName*","alertType":"*alertType*","alertDetails":"*alertDetails*","alertDuration":"*alertDuration*","sslExpiryDate":"*sslExpiryDate*","sslExpiryDaysLeft":"*sslExpiryDaysLeft*"}</code></pre>
+				</li>
+				<li><?php esc_html_e( 'Turn on notifications for down and up events (and SSL expiry if you want tickets for it), then add the alert contact to the monitors you want tickets for.', 'bonsai-support-tickets' ); ?></li>
+				<li><?php esc_html_e( 'Add each site\'s address to its client\'s Websites so tickets are filed under the right client.', 'bonsai-support-tickets' ); ?></li>
+			</ol>
+		</section>
+		<?php
+	}
+
+	/**
 	 * Front end tab: shortcode and template reference (no settings).
 	 *
 	 * @param array $s Settings.
@@ -732,7 +965,7 @@ define( 'BST_IMAP_PASSWORD', 'abcd efgh ijkl mnop' ); // App password, not the a
 				<dt><code>[bst_help_centre]</code></dt>
 				<dd><?php esc_html_e( 'Help centre search and topics. Articles also have their own archive at /help/.', 'bonsai-support-tickets' ); ?></dd>
 				<dt><?php esc_html_e( 'Theme overrides', 'bonsai-support-tickets' ); ?></dt>
-				<dd><?php echo wp_kses( __( 'Copy any file from the plugin\'s <code>templates/</code> folder to <code>your-theme/bonsai-support/</code>.', 'bonsai-support-tickets' ), array( 'code' => array() ) ); ?></dd>
+				<dd><?php echo wp_kses( __( 'Copy any file from the plugin\'s <code>templates/</code> folder to <code>your-theme/support-desk/</code>.', 'bonsai-support-tickets' ), array( 'code' => array() ) ); ?></dd>
 			</dl>
 		</section>
 		<?php

@@ -16,7 +16,7 @@
  * Spam: nonce, honeypot, minimum fill time (signed timestamp), and a
  * per-IP limit. No CAPTCHA, so nothing loads from third parties.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -159,7 +159,7 @@ class BST_Registration {
 
 			$user_id = self::create_account( $input );
 			if ( is_wp_error( $user_id ) ) {
-				error_log( 'Bonsai Support Tickets: registration failed: ' . $user_id->get_error_message() );
+				error_log( BST_PRODUCT_NAME . ': registration failed: ' . $user_id->get_error_message() );
 				self::fail( array( __( 'Sorry, we could not create your account. Please try again, or email us.', 'bonsai-support-tickets' ) ), $input );
 			}
 
@@ -177,7 +177,7 @@ class BST_Registration {
 
 			self::done();
 		} catch ( Throwable $e ) {
-			error_log( 'Bonsai Support Tickets: registration exception: ' . $e->getMessage() );
+			error_log( BST_PRODUCT_NAME . ': registration exception: ' . $e->getMessage() );
 			self::fail( array( __( 'Sorry, something went wrong. Please try again, or email us.', 'bonsai-support-tickets' ) ), $input );
 		}
 	}

@@ -9,7 +9,7 @@
  * WP_TESTS_DIR to it (see `wp scaffold plugin-tests`) and run:
  * vendor/bin/phpunit --testsuite integration
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 require_once dirname( __DIR__ ) . '/vendor/autoload.php';
@@ -36,6 +36,9 @@ if ( $bst_tests_dir && file_exists( $bst_tests_dir . '/includes/functions.php' )
 // Unit-only mode.
 if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', __DIR__ . '/' );
+}
+if ( ! defined( 'BST_PRODUCT_NAME' ) ) {
+	define( 'BST_PRODUCT_NAME', 'Support Desk' );
 }
 
 require_once dirname( __DIR__ ) . '/includes/class-bst-mime-parser.php';

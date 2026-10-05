@@ -10,7 +10,7 @@
  * - [bst_my_tickets]  The client's tickets; shows one ticket when ?ticket=ID.
  * - [bst_help_centre] Help centre search and topics.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;

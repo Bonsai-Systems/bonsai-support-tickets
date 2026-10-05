@@ -1,15 +1,14 @@
 /**
- * Bonsai Support Tickets — front end.
+ * Support Desk — front end.
  *
- * Follows the Bonsai theme design system (tbdc_theme_v2/DESIGN.md): warm
- * off-white surfaces, black buttons that turn pink on hover, no rounded
- * corners, Plus Jakarta Sans, pink uppercase section tags.
+ * Square corners, solid buttons that change to the accent on hover, and
+ * small uppercase section tags.
  *
- * Every colour/font reads the theme's custom property first and falls back
- * to the Bonsai value, so it looks right on the Bonsai theme and anywhere
- * else. All colours are tokens in .bst {} below; colours set under
- * Support → Settings → Appearance are printed inline after this file and
- * override them (BST_Appearance::inline_css()). Turn the whole file off with:
+ * All colours are tokens in .bst {} below, matching
+ * BST_Appearance::default_colors(). Colours set under Support → Settings →
+ * Appearance are printed inline after this file and override them
+ * (BST_Appearance::inline_css()). The font follows the theme's
+ * --bst-font-family when it sets one. Turn the whole file off with:
  * add_filter( 'bst_load_frontend_css', '__return_false' );
  *
  * Everything is scoped under .bst. BEM: .bst-block__element--modifier.
@@ -18,19 +17,19 @@
 /* Tokens --------------------------------------------------------------- */
 
 .bst {
-	--bst-accent: var(--bonsai-accent, #ee4367);
-	--bst-accent-hover: var(--bonsai-accent-hover, #d23253); /* White text on this passes AA (4.9:1). */
-	--bst-accent-text: #c21f48; /* Pink for small text on light backgrounds (5.8:1). */
-	--bst-black: var(--bonsai-black, #000);
-	--bst-dark: var(--bonsai-dark, #111);
-	--bst-warm: var(--bonsai-warm, #faf8f5);
-	--bst-white: var(--bonsai-white, #fff);
-	--bst-grey-dark: var(--bonsai-grey-dark, #333);
-	--bst-grey-mid: #6b6b6b; /* Theme's #767676 is borderline on warm backgrounds; this passes AA. */
-	--bst-grey-light: var(--bonsai-grey-light, #e5e5e0);
-	--bst-border: var(--bonsai-border, rgba(0, 0, 0, 0.08));
+	--bst-accent: #4f46e5;
+	--bst-accent-hover: #4338ca; /* White text on this passes AA (7.9:1). */
+	--bst-accent-text: #4338ca; /* Accent for small text on light backgrounds (7.6:1). */
+	--bst-black: #111827;
+	--bst-dark: #111;
+	--bst-warm: #f9fafb;
+	--bst-white: #fff;
+	--bst-grey-dark: #374151;
+	--bst-grey-mid: #6b6b6b; /* Passes AA on the page background. */
+	--bst-grey-light: #e5e5e0;
+	--bst-border: rgba(0, 0, 0, 0.08);
 	--bst-input-border: #8a8a85; /* 3:1 against white for the input boundary. */
-	--bst-sans: var(--bonsai-sans, "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+	--bst-sans: var(--bst-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
 	--bst-ease: all 0.25s ease;
 
 	--bst-success: #13744a;

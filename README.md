@@ -1,7 +1,8 @@
-# Bonsai Support Tickets
+# Support Desk
 
-Support ticketing for The Bonsai Digital Collective, built to replace Zendesk on
-`support.bonsaidigitalcollective.co.uk`.
+Support ticketing for WordPress, sold as a white-label product: everything your
+clients see (portal, emails, login) carries **your** name, logo and colours.
+*Support Desk* is a working product name — see [Product identity](#product-identity).
 
 - **Clients** log in to see and reply to their own requests, raise new ones and mark them solved.
 - **Agents** work tickets in wp-admin: assign, prioritise, set status, reply to the client or add **internal notes** the client never sees.
@@ -11,20 +12,18 @@ Support ticketing for The Bonsai Digital Collective, built to replace Zendesk on
 ## Requirements
 
 - WordPress 6.2+, PHP 8.1+
-- No ACF dependency. Works with any theme. The front end is meant to be themed by a bespoke Bonsai theme.
+- No ACF dependency. Works with any theme; ships with a companion theme.
 
 ## Setup
 
 1. Upload and activate. This creates the tables, the **Support Client** and **Support Agent** roles, and the default ticket types.
-2. Create three pages:
+2. **Support → Settings → General** shows a **Get set up** checklist. Work through it:
+   - **Appearance**: your support name (shown to clients; blank uses the site title), logo and brand colours.
+   - **Create the pages for me** adds *My requests* (`[bst_my_tickets]`) and *Submit a request* (`[bst_submit_form]`) and selects them. The help centre lives at `/help/`, or put `[bst_help_centre]` on a page.
+   - **Outgoing email**: the From address. Use an address on your own domain, not a Gmail one.
+   - Optional: a support mailbox (below) and brand colours.
 
-   | Page | Content |
-   |---|---|
-   | My requests | `[bst_my_tickets]` |
-   | Submit a request | `[bst_submit_form]` |
-   | Help | `[bst_help_centre]` |
-
-3. **Support → Settings**: choose those pages on the **General** tab, and set the From address on **Outgoing email**. Use an address on your own domain, not the Gmail one.
+   Until the required steps are done, admins see a "Finish setting up" notice on the dashboard and support screens.
 4. Add your clients (the businesses) under **Support → Clients**. People can **register** themselves (see below), or you add them under **Users → Add New** with the role **Support Client** and choose their **Client** on their profile.
 5. Add team members as **Support Agent**. Administrators are agents automatically.
 
@@ -61,7 +60,7 @@ Clients don't change permissions: people only ever see their own tickets.
 3. Add the credentials to `wp-config.php`. They are never stored in the database.
 
    ```php
-   define( 'BST_IMAP_USER', 'bonsaisupport@gmail.com' );
+   define( 'BST_IMAP_USER', 'support@example.com' );
    define( 'BST_IMAP_PASSWORD', 'abcd efgh ijkl mnop' );
    ```
 
@@ -69,15 +68,15 @@ Clients don't change permissions: people only ever see their own tickets.
 5. Add a server cron job so the mailbox is checked every 2 minutes even when nobody is visiting the site:
 
    ```
-   */2 * * * * curl -s https://support.bonsaidigitalcollective.co.uk/wp-cron.php?doing_wp_cron > /dev/null
+   */2 * * * * curl -s https://support.example.com/wp-cron.php?doing_wp_cron > /dev/null
    ```
 
    Then add `define( 'DISABLE_WP_CRON', true );` to `wp-config.php`.
 
 ### How replies are matched
 
-- Every email we send has `Reply-To: bonsaisupport+t{ID}-{token}@gmail.com`. Gmail delivers it to the normal inbox, and the secret token identifies the ticket.
-- Without a token, a `[BDC-1042]` in the subject is accepted **only** from the ticket's client or an agent. Anyone else starts a new ticket.
+- Every email we send has `Reply-To: support+t{ID}-{token}@example.com` (your mailbox, plus-addressed). Gmail delivers it to the normal inbox, and the secret token identifies the ticket.
+- Without a token, a `[SUP-1042]` in the subject is accepted **only** from the ticket's client or an agent. Anyone else starts a new ticket.
 - Email from an unknown address creates an **Unverified** ticket. It gets no automatic emails until an agent links it to a client.
 - Auto-replies, bounces, mailing lists and duplicate emails are ignored.
 - Agents can reply from their inbox. Starting the reply with `#note` makes it an internal note.
@@ -97,18 +96,37 @@ Every new ticket (web form, email or added by the team) is posted to one Slack c
 
 Posts are fire-and-forget, so a slow or down Slack never delays ticket creation. Failures go to the PHP error log. To change the message, use the `bst_slack_ticket_payload` filter. To supply the URL some other way, use `bst_slack_webhook_url`.
 
+### Uptime monitoring
+
+Site-down alerts can open tickets automatically. **Support → Settings → Uptime monitoring** has two sources, each with its own on/off switch (both off by default):
+
+- **Status monitor**: the hosted uptime monitor. It sends signed alerts (HMAC-SHA256 with a shared secret, a timestamp checked to ±5 minutes, and each signature accepted once).
+- **UptimeRobot**: a webhook alert contact. UptimeRobot can't sign requests, so the secret is a `key` in the webhook URL. The tab shows the URL and the JSON body to paste in.
+
+What happens:
+
+| Alert | Result |
+|---|---|
+| Site down | One **Urgent** ticket per site and source, filed under the client whose **Websites** include the site (matched on host, `www.` ignored; no match or two matches = no client). Another down while it's open adds an internal note. |
+| Back up | Internal note on the open ticket with the downtime. The ticket stays open so someone checks why it went down. |
+| SSL / domain expiring | One **Normal** ticket per site and kind while open. |
+
+Monitor tickets have no client account, so clients are never emailed. Agents get the usual new-ticket email, and the Slack post if Slack is on. Generate each secret on the tab, or set `BST_MONITOR_SECRET` / `BST_UPTIMEROBOT_KEY` in `wp-config.php` to override. A switched-off source answers 404. The tab shows the last alert received from each source.
+
+Endpoints: `POST /wp-json/bst/v1/monitor/status` and `POST /wp-json/bst/v1/monitor/uptimerobot?key=…`. A "Don't have uptime monitoring yet?" link appears on the tab once `BST_MONITOR_PROMO_URL` is set (or via the `bst_monitor_promo_url` filter).
+
 ### Auto-reply
 
 When a client raises a new request, through the form or by emailing the support mailbox, they get an auto-reply. Edit the subject and message under **Support → Settings → Auto-reply**, or switch it off there.
 
 - It's sent once, when the ticket is created. Replies don't trigger it, and unknown senders never get it.
-- Placeholders: `{{ticket.title}}`, `{{ticket.id}}` (the reference, e.g. `BDC-1042`) and `{{client.name}}`. Add more with the `bst_email_placeholders` filter.
-- The `[BDC-1042]` reference is always added to the start of the subject, because reply matching depends on it. The client's message and a **View your request** button come after your text.
+- Placeholders: `{{site.name}}` (your support name), `{{ticket.title}}`, `{{ticket.id}}` (the reference, e.g. `SUP-1042`) and `{{client.name}}`. Add more with the `bst_email_placeholders` filter.
+- The `[SUP-1042]` reference is always added to the start of the subject, because reply matching depends on it. The client's message and a **View your request** button come after your text.
 - Clear the subject or message and save to go back to the default.
 
 ## Theming
 
-Copy any file from `templates/` to `your-theme/bonsai-support/` and edit it there. Keep the form field names, nonces and `action` inputs.
+Copy any file from `templates/` to `your-theme/support-desk/` and edit it there. Keep the form field names, nonces and `action` inputs.
 
 To turn off the plugin's front-end CSS:
 
@@ -116,16 +134,16 @@ To turn off the plugin's front-end CSS:
 add_filter( 'bst_load_frontend_css', '__return_false' );
 ```
 
-The default CSS uses the Bonsai theme's custom properties (`--bonsai-accent`, `--bonsai-sans`, …) and falls back to the brand values when they aren't defined. Every colour is a token in `.bst {}`.
+Every colour is a token in `.bst {}`. The font follows `--bst-font-family` if your theme sets it, otherwise the system font.
 
-### Brand colours
+### Branding
 
-To rebrand an install for another client, set the colours under **Support → Settings → Appearance**: accent, button hover, accent text, buttons and headings, body text, page background and cards. They apply to the front end, where they're printed as `.bst { --bst-… }` after the stylesheet, and to every email.
+Everything clients see comes from **Support → Settings**:
 
-- Leave a colour blank (Clear) to use the default. On the front end, blank also lets the theme's `--bonsai-*` colours through.
-- If a pair you pick drops below WCAG AA (4.5:1), the tab shows a warning.
-- Success, warning and error colours aren't editable, so they stay readable.
-- For the rest of a rebrand, see **Outgoing email** (from name, logo), **Auto-reply** (wording) and **General** (reference prefix).
+- **Appearance**: support name, logo (media picker; blank shows the name as text in emails) and seven brand colours (accent, button hover, accent text, buttons and headings, body text, page background, cards). Colours are printed as `.bst { --bst-… }` after the stylesheet and used in every email. Blank uses the neutral default. A pair below WCAG AA (4.5:1) shows a warning. Success, warning and error colours are fixed so they stay readable.
+- **Outgoing email**: From name (blank = support name) and address.
+- **Auto-reply**: wording, with `{{site.name}}`.
+- **General**: reference prefix (default `SUP`).
 
 Template functions, all permission-checked:
 
@@ -152,6 +170,7 @@ Template functions, all permission-checked:
 | `bst_email_placeholders` | Add `{{placeholders}}` for the auto-reply |
 | `bst_settings_defaults` | Change setting defaults |
 | `bst_ticket_created`, `bst_message_added`, `bst_status_changed`, `bst_ticket_assigned` | Actions for integrations (the Slack post listens to `bst_ticket_created`) |
+| `bst_monitor_promo_url` | "Get uptime monitoring" link on the Uptime monitoring tab (`''` hides it) |
 | `bst_registration_notify_recipients` | Who is emailed about new sign-ups |
 | `bst_client_registered`, `bst_client_approved`, `bst_client_rejected` | Registration actions |
 
@@ -178,8 +197,15 @@ composer install --no-dev # before committing — vendor/ is committed
 
 Manual pre-launch checklist: [tests/manual/support-flow.md](tests/manual/support-flow.md).
 
+## Product identity
+
+- The product name shown in wp-admin and logs is `BST_PRODUCT_NAME` in `bonsai-support-tickets.php` (with `BST_PRODUCT_URL` for a help link). Rename it there and in the plugin header before launch.
+- Code prefixes (`bst_`, `BST_`), the plugin folder, the text domain and the `bonsai-ui` admin CSS classes are internal and not yet renamed; the folder/text domain rename happens with the final name, in the packaging step.
+- `includes/legacy/` is **development builds only** and must be excluded from the product zip. It keeps the original Bonsai support site's branding when it upgrades from the old Bonsai defaults (DB version 3 → 4), including copying its logo into the Media Library.
+
 ## Releasing
 
 1. Bump `Version:` and `BST_VERSION` in `bonsai-support-tickets.php`, and add a `CHANGELOG.md` entry.
+   (Updates currently come from GitHub releases; licensed updates replace this.)
 2. Merge `develop` into `main` and push.
 3. Publish a GitHub Release on `main` tagged `vX.Y.Z`. `.github/workflows/release.yml` checks the tag matches both version numbers, builds `bonsai-support-tickets.zip` (production `vendor/`, no tests or dev files) and attaches it. Sites update from that zip (release-assets mode).

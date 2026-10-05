@@ -2,7 +2,7 @@
 /**
  * Settings store. Needs the WordPress test suite.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 /**
@@ -24,11 +24,11 @@ class SettingsTest extends WP_UnitTestCase {
 		);
 
 		// Outgoing email tab posts only its own fields.
-		BST_Settings::save( array( 'from_name' => 'Bonsai Help' ) );
+		BST_Settings::save( array( 'from_name' => 'Acme Help' ) );
 
 		$this->assertSame( 'ABC', BST_Settings::get( 'ref_prefix' ) );
 		$this->assertSame( 0, BST_Settings::get( 'registration_enabled' ) );
-		$this->assertSame( 'Bonsai Help', BST_Settings::get( 'from_name' ) );
+		$this->assertSame( 'Acme Help', BST_Settings::get( 'from_name' ) );
 	}
 
 	public function test_unticked_checkbox_posts_zero_and_saves() {

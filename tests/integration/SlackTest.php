@@ -4,7 +4,7 @@
  *
  * HTTP is intercepted with pre_http_request, so nothing reaches Slack.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 /**

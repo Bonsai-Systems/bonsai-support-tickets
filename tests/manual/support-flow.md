@@ -1,7 +1,7 @@
 # Support flow — pre-launch sign-off
 
 Run on staging (`support.` subdomain) with a real Gmail mailbox before go-live.
-Required by Bonsai testing rules: this plugin stores client data, sends email, and has custom tables and cron jobs.
+Required because this plugin stores client data, sends email, and has custom tables and cron jobs.
 
 - Site:
 - Tested by:
@@ -22,7 +22,7 @@ Required by Bonsai testing rules: this plugin stores client data, sends email, a
 - [ ] Submit with an empty form → field errors, values kept.
 - [ ] Submit with subject, description and a PNG + PDF → lands on the ticket with "request has been sent".
 - [ ] Upload a `.php` or `.exe` renamed to `.jpg` → rejected.
-- [ ] Auto-reply arrives at the client inbox: subject `[BDC-…] Thank you for contacting The Bonsai Digital Collective Support – [subject]`, placeholders filled, bullet list intact, client's message and View your request button below.
+- [ ] Auto-reply arrives at the client inbox: subject `[SUP-…] We've received your request – [subject]` (or your edited wording), placeholders filled including the support name, bullet list intact, client's message and View your request button below.
 - [ ] Email the support mailbox from the client's address → new ticket gets the same auto-reply. Reply to it → no second auto-reply.
 - [ ] **Support → Settings → Auto-reply**: edit the subject and message, then raise a ticket → edited version arrives. Switch it off → no auto-reply. Clear both fields and save → defaults return.
 - [ ] Reply from the portal → appears in the thread. The agent gets "Client reply".
@@ -58,7 +58,7 @@ Required by Bonsai testing rules: this plugin stores client data, sends email, a
 - [ ] Out-of-office reply → ignored (no ticket).
 - [ ] Email with a PDF attachment → attachment on the ticket and downloadable.
 - [ ] Agent replies to a notification starting with `#note` → internal note.
-- [ ] Processed emails are marked read and labelled "Bonsai Support/Processed" in Gmail.
+- [ ] Processed emails are marked read and labelled "Support/Processed" (or your label) in Gmail; failures get the matching "/Failed" label.
 
 ## Clients
 - [ ] Upgrade a 0.1 site with typed client names → notice reports clients created and people/tickets linked. "the ley arms" and "The Ley Arms" became one client.
@@ -68,6 +68,16 @@ Required by Bonsai testing rules: this plugin stores client data, sends email, a
 - [ ] Ticket screen: change **Contact** to someone at another client → **Client** follows. Change **Client** directly → it sticks, and Activity says "moved the ticket to …".
 - [ ] Move a person to a different client on their profile → their old tickets keep the old client.
 
+## White-label (fresh install)
+- [ ] Fresh site: Settings → General shows **Get set up**; dashboard shows "Finish setting up" until name, logo, pages and From address are done. Dismiss hides it.
+- [ ] **Create the pages for me** → My requests and Submit a request exist and are selected.
+- [ ] Appearance: set support name, choose a logo with **Choose image**, set colours → portal, register page and emails use them. No logo → emails show the name as text.
+- [ ] Nowhere visible to a client (portal, register, login-required box, every email, email headers) mentions Bonsai or BDC.
+- [ ] wp-admin shows the product name and mark, not Bonsai.
+
+## White-label (Bonsai site upgrade, dev build)
+- [ ] After updating support.bonsaidigitalcollective.co.uk: refs still `BDC-`, pink colours, Bonsai auto-reply wording, From "Bonsai Support", logo in emails (now from the Media Library), Gmail label unchanged.
+
 ## Slack
 - [ ] `BST_SLACK_WEBHOOK_URL` in wp-config.php → Settings → Slack shows **On**; Send test message arrives in the channel.
 - [ ] Submit a ticket from the web form → one Slack post with reference, subject, client, priority and a working link to the ticket in wp-admin. No message body.
@@ -75,6 +85,16 @@ Required by Bonsai testing rules: this plugin stores client data, sends email, a
 - [ ] Client replies to a ticket → **no** Slack post.
 - [ ] Toggle off and save → new ticket doesn't post. Toggle back on.
 - [ ] Wrong webhook URL → Send test message shows an error; ticket submission still works and is not slowed down.
+
+## Uptime monitoring
+- [ ] Settings → Uptime monitoring: both sources **Off** by default; with no promo URL set there's no "Don't have uptime monitoring yet?" line.
+- [ ] Turn on the status monitor, save, **Generate secret**. Paste URL + secret into the uptime monitor's Settings → Support tickets, **Send test** → success there, and "Last alert" here shows `test`.
+- [ ] Add a site's address to a client's Websites. Take that site down in the monitor (or point the monitor at a dead URL) → one **Urgent** "Site down" ticket under that client; agents emailed; Slack post (if on); **no** email to any client.
+- [ ] Site comes back → internal note "back up after …" on the same ticket, status unchanged. No second ticket.
+- [ ] Solve the ticket, take the site down again → a **new** ticket.
+- [ ] **Generate a new secret** asks to confirm; afterwards the monitor's Send test fails with a 401 message until the new secret is pasted in.
+- [ ] Switch the status monitor off → the monitor's Send test reports 404.
+- [ ] UptimeRobot: turn on, generate, add the webhook alert contact with the JSON body shown, pause/resume a monitor → down ticket, then up note.
 
 ## Security
 - [ ] Second client account cannot open the first client's ticket URL ("could not find") or attachment URL (403).

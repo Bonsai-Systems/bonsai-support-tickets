@@ -2,7 +2,7 @@
 /**
  * BST_Imap_Client tests (offline parts only).
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 use PHPUnit\Framework\TestCase;

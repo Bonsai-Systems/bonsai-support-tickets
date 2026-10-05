@@ -2,7 +2,7 @@
 /**
  * Ticket activity log (status changes, assignments, replies).
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;

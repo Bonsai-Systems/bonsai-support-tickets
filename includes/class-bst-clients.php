@@ -14,7 +14,7 @@
  *  - are treated as unknown senders by inbound email.
  * Approval is in admin/class-bst-admin-signups.php.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;

@@ -8,7 +8,7 @@
  *
  * define( 'BST_REMOVE_ALL_DATA', true );
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
@@ -18,7 +18,7 @@ global $wpdb;
 wp_clear_scheduled_hook( 'bst_poll_mailbox' );
 wp_clear_scheduled_hook( 'bst_daily_maintenance' );
 
-foreach ( array( 'bst_settings', 'bst_inbound_status', 'bst_db_version', 'bst_default_terms_created' ) as $bst_option ) {
+foreach ( array( 'bst_settings', 'bst_inbound_status', 'bst_db_version', 'bst_default_terms_created', 'bst_monitor_log' ) as $bst_option ) {
 	delete_option( $bst_option );
 }
 delete_transient( 'bst_menu_count' );

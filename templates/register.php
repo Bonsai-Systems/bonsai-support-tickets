@@ -2,7 +2,7 @@
 /**
  * Register for a client account.
  *
- * Override: copy to {theme}/bonsai-support/register.php
+ * Override: copy to {theme}/support-desk/register.php
  * Keep the field names, the nonce, the honeypot and bst_ts — the handler relies on them.
  *
  * @var bool   $done        Registration received (show the thanks message).
@@ -12,7 +12,7 @@
  * @var string $login_url   Back to the log-in form.
  * @var string $privacy_url Privacy policy URL ('' if none set).
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -84,7 +84,12 @@ $bst_field = function ( $key, $label, $type, $required, $autocomplete, $hint = '
 		<p><a class="bst-btn bst-btn--primary" href="<?php echo esc_url( $login_url ); ?>"><?php esc_html_e( 'Back to log in', 'bonsai-support-tickets' ); ?></a></p>
 	<?php else : ?>
 		<h2 class="bst__title"><?php esc_html_e( 'Register for an account', 'bonsai-support-tickets' ); ?></h2>
-		<p class="bst__lead"><?php esc_html_e( 'For clients of The Bonsai Digital Collective. We check every registration, then email you a link to set your password.', 'bonsai-support-tickets' ); ?></p>
+		<p class="bst__lead">
+			<?php
+			/* translators: %s: support name. */
+			echo esc_html( sprintf( __( 'For clients of %s. We check every registration, then email you a link to set your password.', 'bonsai-support-tickets' ), BST_Settings::brand_name() ) );
+			?>
+		</p>
 
 		<?php if ( $errors ) : ?>
 			<div class="bst-notice bst-notice--error" role="alert">

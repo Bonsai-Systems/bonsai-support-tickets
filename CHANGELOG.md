@@ -5,10 +5,10 @@ All notable changes to this plugin are documented here. Format: [Keep a Changelo
 ## [Unreleased]
 
 ### Added
-- Editable auto-reply for new tickets (web form and email in), under **Support → Settings → Auto-reply**: on/off, subject and rich-text message, with `{{ticket.title}}`, `{{ticket.id}}` and `{{client.name}}` placeholders. Ships with the Bonsai wording as the default. Clearing a field restores the default.
+- Editable auto-reply for new tickets (web form and email in), under **Support → Settings → Auto-reply**: on/off, subject and rich-text message, with `{{site.name}}`, `{{ticket.title}}`, `{{ticket.id}}` and `{{client.name}}` placeholders. Ships with neutral wording as the default. Clearing a field restores the default.
 - `bst_email_placeholders` filter.
 - Email layout: `$body_html` slot for editable content. The heading is now optional.
-- **Support → Settings → Appearance**: brand colours (accent, button hover, accent text, buttons and headings, body text, page background, cards) with the core colour picker, so the plugin can be rebranded per install. They drive the front-end CSS (printed inline after `bst-frontend.css`) and the HTML emails. Blank or default values fall back to the default, and on the front end they also let the theme's `--bonsai-*` colours through. Status colours stay fixed.
+- **Support → Settings → Appearance**: brand colours (accent, button hover, accent text, buttons and headings, body text, page background, cards) with the core colour picker, so the plugin can be rebranded per install. They drive the front-end CSS (printed inline after `bst-frontend.css`) and the HTML emails. Blank or default values fall back to the default. Status colours stay fixed.
 - Contrast warnings on the Appearance tab when a chosen pair falls below WCAG AA (4.5:1).
 - `BST_Appearance` class: colour fields, `color()`, `inline_css()`, `email_colors()` and the contrast maths (unit tested).
 - Email layout: `$colors` variable.
@@ -21,6 +21,20 @@ All notable changes to this plugin are documented here. Format: [Keep a Changelo
 - Sign-up approval asks which client the person belongs to. It suggests close matches to the typed name, with a **New client** option.
 - `BST_Companies` (data) and `BST_Admin_Companies` (screens). `BST_Tickets::create()` accepts `company_id`. New `BST_Tickets::set_company()` and `BST_Clients::typed_name()`.
 - Integration tests for clients, the migration and permissions.
+- **White-label product groundwork.** Nothing a buyer's clients see names a company:
+  - **Appearance → Brand**: support name (blank = site title) and logo with a media picker. With no logo, emails show the support name as text.
+  - **Get set up** checklist on Settings → General, with **Create the pages for me** (My requests and Submit a request) and a dismissible "Finish setting up" notice until the essentials are done.
+  - `{{site.name}}` placeholder. `BST_Settings::brand_name()` and `BST_Settings::from_name()`.
+  - `BST_PRODUCT_NAME` / `BST_PRODUCT_URL` for the product name in wp-admin and logs.
+  - `bst_upgraded` action (after an upgrade, with the previous DB version).
+- **Uptime monitoring → tickets** (`BST_Monitoring`), under **Support → Settings → Uptime monitoring**, with separate on/off switches for the status monitor and UptimeRobot (both off by default):
+  - REST endpoints `bst/v1/monitor/status` (HMAC-signed, timestamp window, replay protection) and `bst/v1/monitor/uptimerobot` (key in the URL). A switched-off source answers 404.
+  - Down → one Urgent ticket per site, matched to a client by its Websites. Repeat downs while open add a note. Up → internal note with the downtime, status unchanged. SSL/domain expiry → Normal ticket.
+  - Monitor tickets are never emailed to clients and aren't marked Unverified.
+  - Secret generation on the tab, `BST_MONITOR_SECRET` / `BST_UPTIMEROBOT_KEY` overrides, last-alert status, setup steps.
+  - Hidden "get uptime monitoring" link: `BST_MONITOR_PROMO_URL` / `bst_monitor_promo_url`.
+- `BST_Companies::find_by_website()`. `BST_Tickets::reply()` accepts `system` for notes written by the plugin itself. Message/ticket source `monitor`.
+- Integration tests for uptime monitoring.
 
 ### Changed
 - The auto-reply replaces the fixed "We have received your request" email. It's still only sent on ticket creation and never to unverified senders.
@@ -31,6 +45,13 @@ All notable changes to this plugin are documented here. Format: [Keep a Changelo
 - Front-end CSS: every colour is now a token in `.bst {}`. The input border moved to `--bst-input-border`.
 - The free-text **Client name** on user profiles is replaced by a **Client** dropdown. `BST_Clients::client_name()` and `bst_get_client_name()` return the client record's name, falling back to the name typed at sign-up.
 - Ticket screen: the person field is now **Contact**, grouped by client, with a separate **Client** field. Slack posts show "Client — Contact".
+- Neutral defaults: reference prefix `SUP`, blank From name (uses the support name) and support mailbox, `Support/Processed` Gmail label, neutral auto-reply wording, and an indigo/grey colour palette (all pairs pass WCAG AA).
+- The plugin header, admin header and banner show the product name and a neutral mark. The Bonsai logo, links and wording are gone from shipped code.
+- The failed-email Gmail label is now a sibling of the processed label (`Support/Failed`).
+- Theme template overrides now live in `your-theme/support-desk/` (was `bonsai-support/`).
+- Front-end CSS no longer reads the theme's `--bonsai-*` properties. The font follows `--bst-font-family`.
+- Admin screens use the product palette (overriding the shared admin design system's tokens, not the file).
+- DB version 4. Development builds keep the original Bonsai site's branding through the upgrade (`includes/legacy/`, excluded from the product zip): prefix, names, mailbox, Gmail label, auto-reply wording, colours and logo (copied into the Media Library) are saved explicitly where they weren't already.
 - DB version 3. On upgrade, existing client names become client records (matched ignoring case and spacing). People are linked, tickets are backfilled, pending sign-ups are skipped, and a notice reports the counts. The old `bst_client_name` meta is kept.
 
 ### Notes

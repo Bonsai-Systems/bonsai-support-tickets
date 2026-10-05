@@ -2,7 +2,7 @@
 /**
  * BST_Mime_Parser tests.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 use PHPUnit\Framework\TestCase;

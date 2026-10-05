@@ -2,7 +2,7 @@
 /**
  * Submit a request.
  *
- * Override: copy to {theme}/bonsai-support/submit-form.php
+ * Override: copy to {theme}/support-desk/submit-form.php
  * Keep the field names, the nonce and the action field — the handler relies on them.
  *
  * @var WP_Term[] $types      Ticket types.
@@ -13,7 +13,7 @@
  * @var int       $max_mb     Max file size.
  * @var int       $max_files  Max number of files.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;

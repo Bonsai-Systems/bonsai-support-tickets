@@ -6,7 +6,7 @@
  * wp-config.php as BST_IMAP_USER / BST_IMAP_PASSWORD so they never sit in the
  * database or a DB export.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -28,7 +28,8 @@ class BST_Settings {
 			'bst_settings_defaults',
 			array(
 				// General.
-				'ref_prefix'           => 'BDC',
+				'brand_name'           => '', // Support name clients see; '' = site title.
+				'ref_prefix'           => 'SUP',
 				'portal_page_id'       => 0,
 				'submit_page_id'       => 0,
 				'auto_close_days'      => 7,
@@ -37,7 +38,7 @@ class BST_Settings {
 				'registration_enabled' => 1,
 
 				// Outbound email.
-				'from_name'            => 'Bonsai Support',
+				'from_name'            => '', // '' = support name.
 				'from_email'           => '',
 				'email_logo_url'       => '',
 
@@ -47,16 +48,23 @@ class BST_Settings {
 				'autoreply_body'       => self::default_autoreply_body(),
 
 				// Inbound email.
-				'inbound_address'      => 'bonsaisupport@gmail.com',
+				'inbound_address'      => '',
 				'plus_addressing'      => 1,
 				'imap_enabled'         => 0,
 				'imap_host'            => 'imap.gmail.com',
 				'imap_port'            => 993,
 				'imap_mailbox'         => 'INBOX',
-				'imap_processed_tag'   => 'Bonsai Support/Processed',
+				'imap_processed_tag'   => 'Support/Processed',
 
 				// Slack. The webhook URL is BST_SLACK_WEBHOOK_URL in wp-config.php.
 				'slack_enabled'        => 1,
+
+				// Uptime monitoring. Secrets are generated on the settings screen
+				// (or BST_MONITOR_SECRET / BST_UPTIMEROBOT_KEY in wp-config.php).
+				'monitor_enabled'      => 0,
+				'monitor_secret'       => '',
+				'uptimerobot_enabled'  => 0,
+				'uptimerobot_key'      => '',
 			)
 			// Brand colours. '' = default; see BST_Appearance.
 			+ array_fill_keys( array_keys( BST_Appearance::default_colors() ), '' )
@@ -98,6 +106,7 @@ class BST_Settings {
 		$input    = array_merge( self::all(), $input );
 		$clean    = array();
 
+		$clean['brand_name']           = sanitize_text_field( $input['brand_name'] ?? '' );
 		$clean['ref_prefix']           = strtoupper( preg_replace( '/[^A-Za-z0-9]/', '', (string) ( $input['ref_prefix'] ?? '' ) ) );
 		$clean['ref_prefix']           = '' !== $clean['ref_prefix'] ? substr( $clean['ref_prefix'], 0, 8 ) : $defaults['ref_prefix'];
 		$clean['portal_page_id']       = absint( $input['portal_page_id'] ?? 0 );
@@ -124,6 +133,10 @@ class BST_Settings {
 		$clean['imap_mailbox']         = sanitize_text_field( $input['imap_mailbox'] ?? $defaults['imap_mailbox'] );
 		$clean['imap_processed_tag']   = sanitize_text_field( $input['imap_processed_tag'] ?? '' );
 		$clean['slack_enabled']        = empty( $input['slack_enabled'] ) ? 0 : 1;
+		$clean['monitor_enabled']      = empty( $input['monitor_enabled'] ) ? 0 : 1;
+		$clean['monitor_secret']       = preg_replace( '/[^A-Za-z0-9]/', '', (string) ( $input['monitor_secret'] ?? '' ) );
+		$clean['uptimerobot_enabled']  = empty( $input['uptimerobot_enabled'] ) ? 0 : 1;
+		$clean['uptimerobot_key']      = preg_replace( '/[^A-Za-z0-9]/', '', (string) ( $input['uptimerobot_key'] ?? '' ) );
 
 		foreach ( array_keys( BST_Appearance::default_colors() ) as $color_key ) {
 			$clean[ $color_key ] = BST_Appearance::sanitize( $color_key, $input[ $color_key ] ?? '' );
@@ -133,13 +146,34 @@ class BST_Settings {
 	}
 
 	/**
+	 * The support name clients see in emails, the portal and the login
+	 * screen: the Support name setting, else the site title.
+	 *
+	 * @return string
+	 */
+	public static function brand_name() {
+		$name = trim( (string) self::get( 'brand_name' ) );
+		return '' !== $name ? $name : wp_specialchars_decode( (string) get_bloginfo( 'name' ), ENT_QUOTES );
+	}
+
+	/**
+	 * From name on outgoing email: the From name setting, else the support name.
+	 *
+	 * @return string
+	 */
+	public static function from_name() {
+		$name = trim( (string) self::get( 'from_name' ) );
+		return '' !== $name ? $name : self::brand_name();
+	}
+
+	/**
 	 * Default auto-reply subject. Not translated: it's editable content, and
 	 * defaults() can run before the text domain loads.
 	 *
 	 * @return string
 	 */
 	public static function default_autoreply_subject() {
-		return 'Thank you for contacting The Bonsai Digital Collective Support – [{{ticket.title}}]';
+		return "We've received your request – [{{ticket.title}}]";
 	}
 
 	/**
@@ -148,19 +182,23 @@ class BST_Settings {
 	 * @return string
 	 */
 	public static function default_autoreply_body() {
-		return '<p>Thank you for reaching out to The Bonsai Digital Collective Support with your message titled \'<strong>{{ticket.title}}</strong>\'.</p>' . "\n"
-			. '<p>This is an automated response confirming we have received your ticket. It has been assigned the unique tracking ID <strong>[{{ticket.id}}]</strong> – please keep this in the subject line of any email replies so we can assist you as quickly as possible.</p>' . "\n"
-			. '<p>To help us resolve your query efficiently, please ensure you’ve included:</p>' . "\n"
-			. '<ul>' . "\n"
-			. '<li>A full description of the issue or request</li>' . "\n"
-			. '<li>Any relevant website URLs or server names/addresses</li>' . "\n"
-			. '<li>Steps to reproduce any problems you have reported</li>' . "\n"
-			. '<li>Screenshots, if applicable</li>' . "\n"
-			. '</ul>' . "\n"
-			. '<p>Our team will review your ticket and respond as soon as possible.</p>' . "\n"
-			. '<p>Thank you for choosing The Bonsai Digital Collective.</p>' . "\n"
-			. '<p>The Bonsai Digital Collective Support Team<br>' . "\n"
-			. '<a href="https://bonsaidigitalcollective.co.uk/">https://bonsaidigitalcollective.co.uk/</a></p>';
+		return implode(
+			"\n",
+			array(
+				'<p>Hi {{client.name}},</p>',
+				"<p>Thanks for contacting {{site.name}} about '<strong>{{ticket.title}}</strong>'. This is an automatic reply to confirm we have your request.</p>",
+				'<p>Your reference is <strong>[{{ticket.id}}]</strong>. Please keep it in the subject line of any email replies so we can help you quickly.</p>',
+				"<p>To help us sort it out first time, please make sure you've included:</p>",
+				'<ul>',
+				'<li>A full description of the issue or request</li>',
+				'<li>Any relevant website addresses</li>',
+				'<li>Steps to reproduce any problem</li>',
+				'<li>Screenshots, if you have them</li>',
+				'</ul>',
+				"<p>We'll be in touch as soon as possible.</p>",
+				'<p>{{site.name}}</p>',
+			)
+		);
 	}
 
 	/**

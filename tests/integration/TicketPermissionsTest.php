@@ -3,7 +3,7 @@
  * Permission and visibility tests. Needs the WordPress test suite:
  * WP_TESTS_DIR=/path/to/wordpress-tests-lib vendor/bin/phpunit --testsuite integration
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 /**

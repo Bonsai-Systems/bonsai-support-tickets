@@ -5,13 +5,13 @@
  * A bespoke theme should use these rather than querying tickets or the
  * custom tables directly — they carry the permission checks.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Render a plugin template (theme overrides in {theme}/bonsai-support/).
+ * Render a plugin template (theme overrides in {theme}/support-desk/).
  *
  * @param string $name Template name, e.g. 'my-tickets.php'.
  * @param array  $args Variables for the template.
@@ -89,7 +89,7 @@ function bst_get_attachment_url( $attachment_id ) {
 }
 
 /**
- * Ticket reference, e.g. BDC-1042.
+ * Ticket reference, e.g. SUP-1042.
  *
  * @param int $ticket_id Ticket ID.
  * @return string

@@ -2,7 +2,7 @@
 /**
  * New-ticket auto-reply. Needs the WordPress test suite.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 /**
@@ -94,7 +94,7 @@ class AutoReplyTest extends WP_UnitTestCase {
 		$emails = $this->sent_to( 'jane@example.com' );
 
 		$this->assertCount( 1, $emails );
-		$this->assertSame( '[' . $ref . '] Thank you for contacting The Bonsai Digital Collective Support – [Site down]', $emails[0]['subject'] );
+		$this->assertSame( '[' . $ref . "] We've received your request – [Site down]", $emails[0]['subject'] );
 		$this->assertStringContainsString( '<strong>[' . $ref . ']</strong>', $emails[0]['html'] );
 		$this->assertStringContainsString( 'Nothing loads.', $emails[0]['html'] );
 	}
@@ -156,7 +156,7 @@ class AutoReplyTest extends WP_UnitTestCase {
 				"\r\n",
 				array(
 					'From: stranger@example.net',
-					'To: bonsaisupport@gmail.com',
+					'To: support@gmail.com',
 					'Subject: Hello',
 					'Message-ID: <' . wp_generate_password( 12, false ) . '@example.com>',
 					'Content-Type: text/plain; charset=UTF-8',

@@ -2,13 +2,13 @@
 /**
  * The client's requests.
  *
- * Override: copy to {theme}/bonsai-support/my-tickets.php
+ * Override: copy to {theme}/support-desk/my-tickets.php
  *
  * @var WP_Post[] $active     Open requests.
  * @var WP_Post[] $resolved   Solved/closed requests.
  * @var string    $submit_url Submit-a-request URL.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;

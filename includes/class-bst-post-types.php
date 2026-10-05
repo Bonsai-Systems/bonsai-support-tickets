@@ -3,7 +3,7 @@
  * Post types and taxonomies: tickets and client companies (private, admin
  * only) and help centre articles (public).
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;

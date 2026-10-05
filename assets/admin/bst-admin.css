@@ -1,22 +1,22 @@
 /**
- * Bonsai Support Tickets — admin.
+ * Support Desk — admin.
  *
- * Builds on bonsai-admin-ui.css (the shared Bonsai admin design system).
+ * Builds on bonsai-admin-ui.css (the admin design system; class names are internal).
  * Ticket and help-article screens are core post screens that can't be
  * wrapped in .bonsai-ui, so rules here are scoped to body.bst-admin-screen
  * and reuse the same token values.
  */
 
 .bst-admin-screen {
-	--bst-accent: #ee4367;
-	--bst-accent-strong: #c21f48;
+	--bst-accent: #4f46e5;
+	--bst-accent-strong: #4338ca;
 	--bst-ink: #000;
 	--bst-text: #1d2327;
 	--bst-muted: #50575e;
 	--bst-line: #d8dcdf;
 	--bst-line-soft: #f0f0f1;
 	--bst-subtle: #f6f7f7;
-	--bst-header-bg: #f9f8f4;
+	--bst-header-bg: #f9fafb;
 	--bst-note: #8a4b00;
 	--bst-note-bg: #fff8e1;
 	--bst-note-line: #f5a623;
@@ -24,7 +24,41 @@
 	--bst-radius-sm: 6px;
 }
 
-/* Banner (compact Bonsai header above core screens) ------------------- */
+/* The shared design system's tokens, set to the product palette. The
+ * shared stylesheet itself stays untouched. */
+.bst-admin-screen .bonsai-ui {
+	--bonsai-ui-accent: var(--bst-accent);
+	--bonsai-ui-accent-strong: var(--bst-accent-strong); /* White text passes AA (7.9:1). */
+	--bonsai-ui-ink: #111827;
+	--bonsai-ui-header-bg: var(--bst-header-bg);
+}
+
+/* Product mark (header and banner) ------------------------------------ */
+
+.bst-product-mark {
+	display: inline-flex;
+	gap: 10px;
+	align-items: center;
+	margin-bottom: 14px;
+	color: var(--bst-ink);
+}
+
+.bst-product-mark__icon {
+	flex: 0 0 auto;
+	color: var(--bst-accent-strong);
+}
+
+.bst-product-mark__name {
+	font-size: 15px;
+	font-weight: 700;
+	letter-spacing: 0.01em;
+}
+
+.bst-banner .bst-product-mark {
+	margin-bottom: 0;
+}
+
+/* Banner (compact header above core screens) --------------------------- */
 
 .bst-banner.bonsai-ui {
 	max-width: none;
@@ -531,6 +565,87 @@
 
 .bonsai-ui-card__footer.bonsai-ui-actions form {
 	margin: 0;
+}
+
+/* Uptime monitoring: copyable URL/secret fields ------------------------- */
+
+.bst-copy-field {
+	width: 100%;
+	max-width: 640px;
+	font-family: Consolas, Monaco, monospace;
+	font-size: 12px;
+}
+
+.bst-monitor-promo {
+	margin: 12px 0 0;
+}
+
+/* Setup checklist ------------------------------------------------------ */
+
+.bst-setup__steps {
+	margin: 4px 0 0;
+	padding: 0;
+	list-style: none;
+}
+
+.bst-setup__steps li {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+	margin: 0;
+	padding: 8px 0;
+	border-bottom: 1px solid var(--bst-line-soft);
+}
+
+.bst-setup__steps li:last-child {
+	border-bottom: 0;
+}
+
+.bst-setup__state {
+	display: inline-flex;
+	flex: 0 0 auto;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	height: 20px;
+	font-size: 12px;
+	font-weight: 700;
+	color: #fff;
+	border: 2px solid var(--bst-line);
+	border-radius: 50%;
+}
+
+.bst-setup__steps .is-done .bst-setup__state {
+	background: #13744a;
+	border-color: #13744a;
+}
+
+.bst-setup__steps .is-done {
+	color: var(--bst-muted);
+}
+
+/* Logo field ------------------------------------------------------------ */
+
+.bst-media-field {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	align-items: center;
+}
+
+.bst-media-field__preview {
+	display: block;
+	flex-basis: 100%;
+	max-width: 240px;
+	max-height: 80px;
+	padding: 8px;
+	background: var(--bst-subtle);
+	border: 1px solid var(--bst-line);
+	border-radius: var(--bst-radius-sm);
+}
+
+.bst-media-field__preview[hidden] {
+	display: none;
 }
 
 /* Sign-ups ------------------------------------------------------------- */

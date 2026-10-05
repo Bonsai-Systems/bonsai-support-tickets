@@ -4,14 +4,13 @@
  * HTML emails, so the plugin can be rebranded per install.
  *
  * Saved as `color_*` keys in the `bst_settings` option. Blank means "use the
- * default", which on the front end lets the theme's own --bonsai-* custom
- * properties through. Saving a value equal to the default stores blank for
- * the same reason.
+ * default". Saving a value equal to the default stores blank, so a future
+ * change of default reaches sites that never customised it.
  *
  * Status colours (success/warning/error), borders and muted greys are not
  * editable, so they stay accessible whatever a client picks.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -34,12 +33,12 @@ class BST_Appearance {
 	 */
 	public static function default_colors() {
 		return array(
-			'color_accent'       => '#ee4367',
-			'color_accent_hover' => '#d23253',
-			'color_accent_text'  => '#c21f48',
-			'color_ink'          => '#000000',
-			'color_text'         => '#333333',
-			'color_background'   => '#faf8f5',
+			'color_accent'       => '#4f46e5',
+			'color_accent_hover' => '#4338ca',
+			'color_accent_text'  => '#4338ca',
+			'color_ink'          => '#111827',
+			'color_text'         => '#374151',
+			'color_background'   => '#f9fafb',
 			'color_surface'      => '#ffffff',
 		);
 	}

@@ -2,11 +2,11 @@
 /**
  * A simple message box.
  *
- * Override: copy to {theme}/bonsai-support/notice.php
+ * Override: copy to {theme}/support-desk/notice.php
  *
  * @var string $message Plain text message.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;

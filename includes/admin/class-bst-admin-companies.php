@@ -6,7 +6,7 @@
  * Data lives in BST_Companies. People are linked to a client on their user
  * profile (or when a sign-up is approved); this screen lists them.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -266,7 +266,7 @@ class BST_Admin_Companies {
 
 			update_post_meta( $post_id, BST_Companies::META_NOTES, sanitize_textarea_field( wp_unslash( $_POST['bst_notes'] ?? '' ) ) );
 		} catch ( Throwable $e ) {
-			error_log( 'Bonsai Support Tickets: client save failed for ' . $post_id . ': ' . $e->getMessage() );
+			error_log( BST_PRODUCT_NAME . ': client save failed for ' . $post_id . ': ' . $e->getMessage() );
 			BST_Admin_UI::flash( __( 'Something went wrong saving the client. Please check it and try again.', 'bonsai-support-tickets' ), 'error' );
 		}
 	}

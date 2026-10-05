@@ -3,12 +3,12 @@
  * Help centre landing: search, topics with their articles, and a
  * "still need help?" link to the request form.
  *
- * Override: copy to {theme}/bonsai-support/help-centre.php
+ * Override: copy to {theme}/support-desk/help-centre.php
  *
  * @var WP_Term[] $topics     Top-level help topics with articles.
  * @var string    $submit_url Submit-a-request URL.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;

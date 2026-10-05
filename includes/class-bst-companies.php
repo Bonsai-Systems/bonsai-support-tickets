@@ -15,7 +15,7 @@
  * migrate_legacy_names() turns those into company records on upgrade, and
  * the text is kept as "the name they typed at sign-up".
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -99,7 +99,7 @@ class BST_Companies {
 		);
 
 		if ( is_wp_error( $id ) ) {
-			error_log( 'Bonsai Support Tickets: could not create client ' . $name . ': ' . $id->get_error_message() );
+			error_log( BST_PRODUCT_NAME . ': could not create client ' . $name . ': ' . $id->get_error_message() );
 		}
 
 		return $id;
@@ -194,6 +194,55 @@ class BST_Companies {
 	public static function websites( $company_id ) {
 		$sites = get_post_meta( (int) $company_id, self::META_WEBSITES, true );
 		return is_array( $sites ) ? $sites : array();
+	}
+
+	/**
+	 * Company that lists this site under Websites, matched on host (www.
+	 * ignored). Used to file uptime alerts against the right client.
+	 *
+	 * @param string $url Any URL on the site.
+	 * @return int Company ID or 0 (none, or more than one claims it).
+	 */
+	public static function find_by_website( $url ) {
+		$host = self::website_host( $url );
+		if ( '' === $host ) {
+			return 0;
+		}
+
+		$ids = get_posts(
+			array(
+				'post_type'      => BST_Post_Types::COMPANY,
+				'post_status'    => array( 'publish', 'private', 'draft' ),
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'meta_key'       => self::META_WEBSITES, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+				'meta_compare'   => 'EXISTS',
+			)
+		);
+
+		$matches = array();
+		foreach ( $ids as $company_id ) {
+			foreach ( self::websites( $company_id ) as $site ) {
+				if ( self::website_host( $site ) === $host ) {
+					$matches[] = (int) $company_id;
+					break;
+				}
+			}
+		}
+
+		// Two clients claiming one site is a data problem; don't guess.
+		return 1 === count( $matches ) ? $matches[0] : 0;
+	}
+
+	/**
+	 * Lower-case host without www., or ''.
+	 *
+	 * @param string $url URL.
+	 * @return string
+	 */
+	private static function website_host( $url ) {
+		$host = strtolower( (string) wp_parse_url( (string) $url, PHP_URL_HOST ) );
+		return (string) preg_replace( '/^www\./', '', $host );
 	}
 
 	/**

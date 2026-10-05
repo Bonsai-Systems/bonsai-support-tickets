@@ -8,7 +8,7 @@
  * Approving also links the person to a Client record: a suggested match
  * for the name they typed, any other client, or a new one.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;

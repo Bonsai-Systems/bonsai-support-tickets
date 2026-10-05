@@ -1,0 +1,197 @@
+/**
+ * Footer — black footer + sub footer.
+ *
+ * Styles for template-parts/footer/site-footer.php. Ported from
+ * the original theme core/footer.css; text opacities raised so small grey
+ * text passes AA on black (old 0.35–0.4 alpha was ~3:1).
+ */
+
+.bonsai-footer {
+	padding: 5.5rem 0;
+	font-family: var(--bonsai-sans);
+	font-size: 0.9375rem;
+	color: rgba(255, 255, 255, 0.7);
+	background-color: var(--bonsai-black);
+}
+
+.bonsai-footer-grid {
+	display: grid;
+	grid-template-columns: 2fr 1fr 1fr;
+	gap: 4rem;
+	align-items: start;
+}
+
+@media (max-width: 900px) {
+	.bonsai-footer-grid {
+		grid-template-columns: 1fr 1fr;
+		gap: 3rem;
+	}
+
+	.bonsai-footer-brand-col {
+		grid-column: 1 / -1;
+	}
+}
+
+@media (max-width: 480px) {
+	.bonsai-footer-grid {
+		grid-template-columns: 1fr;
+		gap: 2.5rem;
+	}
+}
+
+/* =============================
+   # Brand column
+============================= */
+.bonsai-footer-brand-col {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 1.25rem;
+	max-width: 420px;
+}
+
+.bonsai-footer-logo {
+	display: inline-block;
+	font-size: 1.75rem;
+	font-weight: 700;
+	letter-spacing: -0.03em;
+	line-height: 1;
+	color: var(--bonsai-warm);
+}
+
+.bonsai-footer-logo img {
+	width: auto;
+	max-height: 50px;
+}
+
+.bonsai-footer-tagline {
+	font-weight: 300;
+	line-height: 1.6;
+	color: rgba(255, 255, 255, 0.72);
+}
+
+.bonsai-footer-hours {
+	line-height: 1.6;
+	color: rgba(255, 255, 255, 0.72);
+}
+
+.bonsai-footer-hours__label {
+	display: block;
+	margin-bottom: 0.2rem;
+	font-size: 0.75rem;
+	font-weight: 600;
+	letter-spacing: 0.15em;
+	text-transform: uppercase;
+	color: var(--bonsai-warm);
+}
+
+.bonsai-footer-contacts {
+	display: flex;
+	flex-direction: column;
+	gap: 0.4rem;
+}
+
+.bonsai-footer-link-subtle {
+	color: rgba(255, 255, 255, 0.78);
+	border-bottom: 1px solid transparent;
+}
+
+.bonsai-footer-link-subtle:hover,
+.bonsai-footer-link-subtle:focus-visible {
+	color: var(--bonsai-white);
+	border-bottom-color: var(--bonsai-accent);
+}
+
+/* =============================
+   # Link columns
+============================= */
+.bonsai-footer-heading {
+	margin-bottom: 1.5rem;
+	font-family: var(--bonsai-sans);
+	font-size: 0.75rem;
+	font-weight: 600;
+	letter-spacing: 0.15em;
+	text-transform: uppercase;
+	color: var(--bonsai-warm);
+}
+
+.bonsai-footer-links {
+	display: flex;
+	flex-direction: column;
+	gap: 0.85rem;
+}
+
+.bonsai-footer-links a {
+	display: inline-block;
+	line-height: 1.5;
+	color: rgba(255, 255, 255, 0.72);
+}
+
+.bonsai-footer-links a:hover,
+.bonsai-footer-links a:focus-visible {
+	color: var(--bonsai-white);
+}
+
+.bonsai-footer-book-call {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem;
+	margin-top: 1.5rem;
+	padding-bottom: 0.1rem;
+	font-size: 0.75rem;
+	font-weight: 700;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: var(--bonsai-accent);
+	border-bottom: 1px solid color-mix(in srgb, var(--bonsai-accent) 40%, transparent);
+}
+
+.bonsai-footer-book-call:hover,
+.bonsai-footer-book-call:focus-visible {
+	color: var(--bonsai-warm);
+	border-bottom-color: rgba(255, 255, 255, 0.4);
+}
+
+.bonsai-footer :focus-visible,
+.bonsai-sub-footer :focus-visible {
+	outline-color: var(--bonsai-white);
+}
+
+/* =============================
+   # Sub footer
+============================= */
+.bonsai-sub-footer {
+	padding: 1.5rem 0;
+	font-size: 0.8125rem;
+	background-color: var(--bonsai-black);
+	border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.bonsai-sub-footer-inner {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem 1.5rem;
+}
+
+.bonsai-sub-footer p {
+	line-height: 1.4;
+	color: rgba(255, 255, 255, 0.6);
+}
+
+.bonsai-sub-footer a {
+	color: rgba(255, 255, 255, 0.75);
+}
+
+.bonsai-sub-footer a:hover,
+.bonsai-sub-footer a:focus-visible {
+	color: var(--bonsai-white);
+}
+
+@media (max-width: 600px) {
+	.bonsai-sub-footer-inner {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+}

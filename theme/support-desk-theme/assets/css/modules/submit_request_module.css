@@ -1,0 +1,118 @@
+/**
+ * Submit Request module — guidance column + the plugin's form.
+ */
+
+.site-main > .submit-request-module {
+	padding-top: 4.5rem;
+}
+
+.submit-request-module__grid {
+	display: grid;
+	grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+	gap: 5rem;
+	align-items: start;
+}
+
+@media (max-width: 992px) {
+	.submit-request-module__grid {
+		grid-template-columns: 1fr;
+		gap: 3rem;
+	}
+}
+
+.submit-request-module__sticky {
+	position: sticky;
+	top: calc(var(--bonsai-header-h) + 2rem);
+}
+
+@media (max-width: 992px) {
+	.submit-request-module__sticky {
+		position: static;
+	}
+}
+
+.submit-request-module__aside .display-heading {
+	margin-bottom: 1.5rem;
+	font-size: clamp(1.75rem, 3vw, 2.5rem);
+}
+
+.submit-request-module__intro {
+	margin-bottom: 2rem;
+}
+
+.submit-request-module__tips-title {
+	margin-bottom: 1rem;
+	font-size: 0.75rem;
+	font-weight: 600;
+	letter-spacing: 0.15em;
+	text-transform: uppercase;
+	color: var(--bonsai-grey-mid);
+}
+
+.submit-request-module__tips {
+	margin-bottom: 2rem;
+	border-top: 1px solid var(--bonsai-border-strong);
+}
+
+.submit-request-module__tips li {
+	position: relative;
+	padding: 0.85rem 0 0.85rem 1.75rem;
+	font-size: 0.9375rem;
+	line-height: 1.5;
+	color: var(--bonsai-grey-dark);
+	border-bottom: 1px solid var(--bonsai-border-strong);
+}
+
+/* Pink tick. */
+.submit-request-module__tips li::before {
+	content: '';
+	position: absolute;
+	top: 1.2rem;
+	left: 0.2rem;
+	width: 0.7rem;
+	height: 0.4rem;
+	border-left: 2px solid var(--bonsai-accent);
+	border-bottom: 2px solid var(--bonsai-accent);
+	transform: rotate(-45deg);
+}
+
+.submit-request-module__hours,
+.submit-request-module__help {
+	font-size: 0.9375rem;
+	line-height: 1.6;
+	color: var(--bonsai-grey-dark);
+}
+
+.submit-request-module__hours {
+	margin-bottom: 1.25rem;
+}
+
+.submit-request-module__hours strong {
+	display: block;
+	color: var(--bonsai-black);
+}
+
+.submit-request-module__help .text-link {
+	margin-left: 0.25rem;
+}
+
+/* Form panel. */
+.submit-request-module__form {
+	padding: 3rem;
+	background-color: var(--bonsai-white);
+	border: 1px solid var(--bonsai-border);
+}
+
+.submit-request-module__help {
+  padding-top: 30px;
+}
+
+@media (max-width: 600px) {
+	.submit-request-module__form {
+		padding: 1.75rem 1.25rem;
+		margin-left: calc(var(--bonsai-gutter) * -1);
+		margin-right: calc(var(--bonsai-gutter) * -1);
+		border-left: 0;
+		border-right: 0;
+	}
+}

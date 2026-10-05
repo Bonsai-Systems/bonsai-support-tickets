@@ -1,0 +1,29 @@
+/**
+ * Block editor only: small adjustments so the server-rendered block
+ * previews sit well in the canvas. Loaded after base.css and the module
+ * stylesheets (inc/assets.php).
+ */
+
+/* Previews are disabled (not clickable); keep the pointer normal. */
+.bsup-block-editor {
+	cursor: default;
+}
+
+/* Reveal animations: always visible in the editor. */
+.editor-styles-wrapper .reveal-on-scroll {
+	opacity: 1;
+	transform: none;
+}
+
+/* The Content block shows its inner blocks inside the reading column. */
+.editor-styles-wrapper .wp-block-support-desk-content-block {
+	max-width: 780px;
+	margin-inline: auto;
+	padding-block: 2rem;
+}
+
+/* Note shown to editors when a ticket block can't render. */
+.editor-styles-wrapper .bsup-editor-notice {
+	padding: 1rem 1.25rem;
+	border: 1px dashed var(--bonsai-border-strong);
+}

@@ -173,6 +173,12 @@ When a client raises a new request, through the form or by emailing the support 
 - The `[SUP-1042]` reference is always added to the start of the subject, because reply matching depends on it. The client's message and a **View your request** button come after your text.
 - Clear the subject or message and save to go back to the default.
 
+## Companion theme
+
+`theme/support-desk-theme/` is the Support Desk theme: help centre, request form, client portal and team page, built with its own blocks (no ACF). It follows the plugin's support name, logo and colours. See its [README](theme/support-desk-theme/README.md).
+
+It ships inside the plugin zip. (One-click install from **Get set up** and automatic theme updates come in the bundling step.) Until then, copy the folder to `wp-content/themes/` to use it.
+
 ## Theming
 
 Copy any file from `templates/` to `your-theme/support-desk/` and edit it there. Keep the form field names, nonces and `action` inputs.

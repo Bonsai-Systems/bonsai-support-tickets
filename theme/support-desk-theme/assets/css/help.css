@@ -1,0 +1,541 @@
+/**
+ * Help centre — article, archive, topic, search and 404 templates, plus
+ * the shared partials (search form, topics grid, article list, still
+ * stuck, breadcrumbs) that the help modules also use.
+ */
+
+/* =============================
+   # Page sections
+============================= */
+.help-hero {
+	padding: 6rem 0 5rem;
+	border-bottom: 1px solid var(--bonsai-border);
+}
+
+.help-hero--compact {
+	padding: 4.5rem 0 3.5rem;
+}
+
+.help-hero__inner {
+	max-width: 820px;
+}
+
+.help-hero__title {
+	margin-bottom: 1.25rem;
+}
+
+.help-hero--compact .help-hero__title {
+	font-size: clamp(1.875rem, 3.4vw, 2.75rem);
+}
+
+.help-hero__lead {
+	max-width: 640px;
+	margin-bottom: 2.5rem;
+	font-size: clamp(1.0625rem, 1.6vw, 1.3125rem);
+	font-weight: 300;
+	line-height: 1.55;
+	color: var(--bonsai-grey-dark);
+}
+
+.help-hero__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1rem;
+	margin-top: 2rem;
+}
+
+.help-section {
+	padding: 5rem 0;
+}
+
+.help-section + .help-section {
+	border-top: 1px solid var(--bonsai-border);
+}
+
+.help-section--tight {
+	padding: 3.5rem 0;
+}
+
+.help-section--cta {
+	padding: 4rem 0 6rem;
+}
+
+.help-section__title {
+	margin-bottom: 1.75rem;
+	font-size: 1.25rem;
+	font-weight: 600;
+	color: var(--bonsai-black);
+}
+
+.help-header {
+	padding: 2rem 0 0;
+}
+
+/* Article + sidebar. */
+.help-layout {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 320px;
+	gap: 5rem;
+	align-items: start;
+	padding: 3rem 0 6rem;
+}
+
+.help-main--solo {
+	max-width: 780px;
+	padding: 3rem 0 6rem;
+}
+
+@media (max-width: 992px) {
+	.help-layout {
+		grid-template-columns: 1fr;
+		gap: 3.5rem;
+	}
+}
+
+/* =============================
+   # Article
+============================= */
+.help-article {
+	max-width: 760px;
+}
+
+.help-article__header {
+	padding-bottom: 2rem;
+	margin-bottom: 2.5rem;
+	border-bottom: 1px solid var(--bonsai-border);
+}
+
+.help-article__title {
+	font-size: clamp(1.875rem, 3.4vw, 2.75rem);
+}
+
+.help-article__meta {
+	margin-top: 1rem;
+	font-size: 0.875rem;
+	color: var(--bonsai-grey-mid);
+}
+
+/* =============================
+   # Sidebar
+============================= */
+.help-sidebar {
+	position: sticky;
+	top: calc(var(--bonsai-header-h) + 2rem);
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
+}
+
+@media (max-width: 992px) {
+	.help-sidebar {
+		position: static;
+	}
+}
+
+.help-sidebar__block {
+	padding: 1.75rem;
+	background-color: var(--bonsai-white);
+	border: 1px solid var(--bonsai-border);
+}
+
+.help-sidebar__title {
+	margin-bottom: 1rem;
+	font-size: 0.75rem;
+	font-weight: 600;
+	letter-spacing: 0.15em;
+	text-transform: uppercase;
+	color: var(--bonsai-grey-mid);
+}
+
+.help-sidebar__list {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+}
+
+.help-sidebar__list a {
+	font-size: 0.9375rem;
+	line-height: 1.45;
+	color: var(--bonsai-grey-dark);
+}
+
+.help-sidebar__list a:hover,
+.help-sidebar__list a:focus-visible,
+.help-sidebar__list [aria-current] {
+	color: var(--bonsai-accent-text);
+}
+
+/* =============================
+   # Breadcrumbs
+============================= */
+.breadcrumbs {
+	font-size: 0.8125rem;
+	color: var(--bonsai-grey-mid);
+}
+
+.breadcrumbs__list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.25rem 0;
+}
+
+.breadcrumbs__item + .breadcrumbs__item::before {
+	content: '/';
+	margin: 0 0.6rem;
+	color: var(--bonsai-grey-light);
+}
+
+.breadcrumbs a {
+	color: var(--bonsai-grey-dark);
+	border-bottom: 1px solid transparent;
+}
+
+.breadcrumbs a:hover,
+.breadcrumbs a:focus-visible {
+	color: var(--bonsai-black);
+	border-bottom-color: var(--bonsai-accent);
+}
+
+/* =============================
+   # Search form
+============================= */
+.help-search {
+	max-width: 680px;
+}
+
+.help-search__label {
+	display: block;
+	margin-bottom: 0.5rem;
+	font-size: 0.875rem;
+	font-weight: 600;
+}
+
+.help-search__row {
+	position: relative;
+	display: flex;
+	background-color: var(--bonsai-white);
+	border: 1px solid #8a8a85;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.help-search__row:focus-within {
+	border-color: var(--bonsai-black);
+	box-shadow: 0 0 0 1px var(--bonsai-black);
+}
+
+.help-search__icon {
+	position: absolute;
+	top: 50%;
+	left: 1rem;
+	display: flex;
+	color: var(--bonsai-grey-mid);
+	transform: translateY(-50%);
+	pointer-events: none;
+}
+
+.help-search__icon .bsup-icon {
+	width: 20px;
+	height: 20px;
+}
+
+/* Input sits inside the bordered row, so it loses its own frame. */
+.help-search .help-search__input {
+	flex: 1;
+	min-width: 0;
+	padding: 0.85rem 1rem 0.85rem 2.9rem;
+	border: 0;
+	background: transparent;
+	box-shadow: none;
+}
+
+.help-search .help-search__input:focus {
+	box-shadow: none;
+}
+
+.help-search__submit {
+	flex-shrink: 0;
+	margin: -1px -1px -1px 0;
+}
+
+.help-search--large .help-search__input {
+	padding-top: 1.15rem;
+	padding-bottom: 1.15rem;
+	font-size: 1.0625rem;
+}
+
+@media (max-width: 480px) {
+	.help-search__submit {
+		padding-left: 1.25rem;
+		padding-right: 1.25rem;
+	}
+}
+
+/* =============================
+   # Topics grid
+============================= */
+.help-topics {
+	display: grid;
+	gap: 1.5rem;
+}
+
+.help-topics--cols-3 {
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.help-topics--cols-2 {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (max-width: 992px) {
+	.help-topics--cols-3 {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@media (max-width: 640px) {
+	.help-topics--cols-3,
+	.help-topics--cols-2 {
+		grid-template-columns: 1fr;
+	}
+}
+
+.help-topic {
+	display: flex;
+	flex-direction: column;
+	padding: 2rem;
+	background-color: var(--bonsai-white);
+	border: 1px solid var(--bonsai-border);
+	transition: border-color 0.3s ease;
+}
+
+.help-topic:hover {
+	border-color: color-mix(in srgb, var(--bonsai-accent) 35%, transparent);
+}
+
+.help-topic__title {
+	margin-bottom: 0.5rem;
+	font-family: var(--bonsai-header);
+	font-size: 1.375rem;
+	font-weight: 500;
+	letter-spacing: -0.01em;
+	line-height: 1.25;
+}
+
+.help-topic__title a {
+	color: var(--bonsai-black);
+}
+
+.help-topic__title a:hover,
+.help-topic__title a:focus-visible {
+	color: var(--bonsai-accent-text);
+}
+
+.help-topic__desc {
+	margin-bottom: 0.25rem;
+	font-size: 0.9375rem;
+	line-height: 1.55;
+	color: var(--bonsai-grey-mid);
+}
+
+.help-topic__list {
+	display: flex;
+	flex-direction: column;
+	gap: 0.15rem;
+	margin-top: 1.25rem;
+	border-top: 1px solid var(--bonsai-border);
+}
+
+.help-topic__list li {
+	border-bottom: 1px solid var(--bonsai-border);
+}
+
+.help-topic__list a {
+	display: block;
+	padding: 0.7rem 0;
+	font-size: 0.9375rem;
+	line-height: 1.45;
+	color: var(--bonsai-grey-dark);
+}
+
+.help-topic__list a:hover,
+.help-topic__list a:focus-visible {
+	color: var(--bonsai-accent-text);
+}
+
+.help-topic__list--columns {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+	column-gap: 2.5rem;
+}
+
+.help-topic__more {
+	display: inline-flex;
+	gap: 0.35rem;
+	align-self: flex-start;
+	margin-top: auto;
+	padding-top: 1.25rem;
+	font-size: 0.8125rem;
+	font-weight: 600;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: var(--bonsai-black);
+}
+
+.help-topic__more:hover,
+.help-topic__more:focus-visible {
+	color: var(--bonsai-accent-text);
+}
+
+/* =============================
+   # Article list (search, topic pages)
+============================= */
+.article-list {
+	border-top: 1px solid var(--bonsai-border-strong);
+}
+
+.article-list__item {
+	border-bottom: 1px solid var(--bonsai-border-strong);
+}
+
+.article-list__link {
+	display: grid;
+	gap: 0.35rem;
+	padding: 1.5rem 0;
+}
+
+.article-list__title {
+	font-size: 1.125rem;
+	font-weight: 600;
+	line-height: 1.35;
+	color: var(--bonsai-black);
+	transition: color 0.2s ease;
+}
+
+.article-list__link:hover .article-list__title,
+.article-list__link:focus-visible .article-list__title {
+	color: var(--bonsai-accent-text);
+}
+
+.article-list__excerpt {
+	font-size: 0.9375rem;
+	line-height: 1.6;
+	color: var(--bonsai-grey-dark);
+}
+
+.article-list__meta {
+	font-size: 0.75rem;
+	font-weight: 600;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: var(--bonsai-grey-mid);
+}
+
+.article-list__empty {
+	padding: 2rem;
+	margin-bottom: 2rem;
+	background-color: var(--bonsai-white);
+	border: 1px solid var(--bonsai-border);
+}
+
+.help-main > p {
+	margin-top: 2.5rem;
+}
+
+/* Pagination. */
+.bsup-pagination {
+	margin-top: 2.5rem;
+}
+
+.bsup-pagination .nav-links {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+}
+
+.bsup-pagination .page-numbers {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 44px;
+	height: 44px;
+	padding: 0 0.9rem;
+	font-size: 0.875rem;
+	font-weight: 500;
+	background-color: var(--bonsai-white);
+	border: 1px solid var(--bonsai-border-strong);
+}
+
+.bsup-pagination a.page-numbers:hover,
+.bsup-pagination a.page-numbers:focus-visible {
+	border-color: var(--bonsai-black);
+}
+
+.bsup-pagination .page-numbers.current {
+	color: var(--bonsai-white);
+	background-color: var(--bonsai-black);
+	border-color: var(--bonsai-black);
+}
+
+/* =============================
+   # Still stuck
+============================= */
+.still-stuck {
+	padding: 2.25rem;
+	color: rgba(255, 255, 255, 0.78);
+	background-color: var(--bonsai-black);
+}
+
+.still-stuck__title {
+	margin-bottom: 0.6rem;
+	font-family: var(--bonsai-header);
+	font-size: 1.5rem;
+	font-weight: 500;
+	color: var(--bonsai-white);
+}
+
+.still-stuck__text {
+	margin-bottom: 1.5rem;
+	font-size: 0.9375rem;
+	line-height: 1.6;
+}
+
+.still-stuck :focus-visible {
+	outline-color: var(--bonsai-white);
+}
+
+/* Full-width version (help archive). */
+.help-section--cta .still-stuck {
+	display: grid;
+	grid-template-columns: 1fr auto;
+	grid-template-areas:
+		"title button"
+		"text  button";
+	align-items: center;
+	column-gap: 3rem;
+	padding: 3rem;
+}
+
+.help-section--cta .still-stuck__title {
+	grid-area: title;
+	font-size: clamp(1.5rem, 2.6vw, 2.25rem);
+}
+
+.help-section--cta .still-stuck__text {
+	grid-area: text;
+	margin-bottom: 0;
+}
+
+.help-section--cta .still-stuck .btn {
+	grid-area: button;
+}
+
+@media (max-width: 768px) {
+	.help-section--cta .still-stuck {
+		display: block;
+		padding: 2.25rem;
+	}
+
+	.help-section--cta .still-stuck__text {
+		margin-bottom: 1.5rem;
+	}
+}

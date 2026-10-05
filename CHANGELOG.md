@@ -68,6 +68,13 @@ All notable changes to this plugin are documented here. Format: [Keep a Changelo
 - **Replace the WordPress dashboard** (Settings → General, on by default): agents and administrators land on the overview after login; the Dashboard and the admin bar's Dashboard link open it. Agents lose the Dashboard menu; administrators keep it for Updates. Other roles are unchanged.
 - `bst_overview_stats` filter. Hidden `bst_view=monitor` ticket list view (open uptime alerts).
 
+- **Companion theme in the plugin repo** (`theme/support-desk-theme/`, theme version 0.2.0), replacing the separate ACF-based theme:
+  - 12 server-rendered Support Desk blocks instead of the ACF page builder (same templates and CSS; attribute names match the old ACF fields).
+  - Customiser settings instead of the ACF options page; logo via Site Identity; name, logo and colours follow Support → Settings → Appearance.
+  - Team fields as a plain meta box (same meta keys).
+  - Neutral defaults and no company branding; self-hosted fonts; new screenshot.
+  - See `theme/support-desk-theme/CHANGELOG.md`.
+
 ### Changed
 - `BST_Admin_Tickets::view_meta_query()` is public. Full-page screen detection uses `BST_Admin_UI::FULL_PAGES`.
 - The auto-reply replaces the fixed "We have received your request" email. It's still only sent on ticket creation and never to unverified senders.

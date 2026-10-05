@@ -1,0 +1,84 @@
+/**
+ * Help Search Hero module.
+ * Section padding comes from base.css (.site-main > section[class*="-module"]).
+ */
+
+.site-main > .help-search-hero-module {
+	padding-top: 7rem;
+	padding-bottom: 6rem;
+}
+
+.help-search-hero-module__inner {
+	max-width: 860px;
+	margin: 0 auto;
+	text-align: center;
+}
+
+.help-search-hero-module__title {
+	margin-bottom: 1.25rem;
+	font-size: clamp(2.5rem, 5.5vw, 4.5rem);
+}
+
+.help-search-hero-module__lead {
+	max-width: 620px;
+	margin: 0 auto 2.75rem;
+	font-size: clamp(1.0625rem, 1.6vw, 1.3125rem);
+	font-weight: 300;
+	line-height: 1.55;
+	color: var(--bonsai-grey-dark);
+}
+
+.help-search-hero-module .help-search {
+	margin: 0 auto;
+	text-align: left;
+}
+
+/* Popular articles. */
+.help-search-hero-module__popular {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	justify-content: center;
+	gap: 0.5rem 0.9rem;
+	margin-top: 1.75rem;
+	font-size: 0.875rem;
+}
+
+.help-search-hero-module__popular-label {
+	font-weight: 600;
+	color: var(--bonsai-grey-mid);
+}
+
+.help-search-hero-module__popular-list {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 0.5rem 1.25rem;
+}
+
+.help-search-hero-module__popular-list a {
+	color: var(--bonsai-black);
+	border-bottom: 1px solid var(--bonsai-accent);
+}
+
+.help-search-hero-module__popular-list a:hover,
+.help-search-hero-module__popular-list a:focus-visible {
+	color: var(--bonsai-accent-text);
+}
+
+/* On black, keep the search box white and the links light. */
+.help-search-hero-module.bg--black .help-search-hero-module__lead,
+.help-search-hero-module.bg--black .help-search-hero-module__popular-label {
+	color: rgba(255, 255, 255, 0.78);
+}
+
+.help-search-hero-module.bg--black .help-search-hero-module__popular-list a {
+	color: var(--bonsai-white);
+}
+
+@media (max-width: 768px) {
+	.site-main > .help-search-hero-module {
+		padding-top: 4.5rem;
+		padding-bottom: 4rem;
+	}
+}

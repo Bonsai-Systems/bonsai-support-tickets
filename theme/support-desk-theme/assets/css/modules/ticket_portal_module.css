@@ -1,0 +1,26 @@
+/**
+ * Ticket Portal module. The list/thread markup is the plugin's
+ * (bst-frontend.css); this only sets the frame around it.
+ */
+
+.site-main > .ticket-portal-module {
+	padding-top: 4.5rem;
+}
+
+.ticket-portal-module__inner {
+	max-width: 1100px;
+}
+
+.ticket-portal-module__intro {
+	max-width: 680px;
+	margin-bottom: 2.5rem;
+	font-size: 1.125rem;
+	font-weight: 300;
+	line-height: 1.6;
+	color: var(--bonsai-grey-dark);
+}
+
+/* The plugin's login prompt and empty state read better on white. */
+.ticket-portal-module .bst {
+	font-size: 1rem;
+}

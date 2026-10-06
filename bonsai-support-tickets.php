@@ -106,6 +106,7 @@ require_once BST_DIR . 'includes/class-bst-companies.php';
 require_once BST_DIR . 'includes/class-bst-canned.php';
 require_once BST_DIR . 'includes/class-bst-duration.php';
 require_once BST_DIR . 'includes/class-bst-time.php';
+require_once BST_DIR . 'includes/class-bst-theme-installer.php';
 require_once BST_DIR . 'includes/class-bst-business-hours.php';
 require_once BST_DIR . 'includes/class-bst-sla.php';
 
@@ -152,6 +153,7 @@ add_action(
 		BST_Slack::init();
 		BST_Monitoring::init();
 		BST_Time::init();
+		BST_Theme_Installer::init();
 		BST_SLA::init();
 		BST_Cron::init();
 		BST_Forms::init();

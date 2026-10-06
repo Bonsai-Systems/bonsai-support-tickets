@@ -1054,3 +1054,16 @@
 .bst-overview-activity li:first-child {
 	border-top: 0;
 }
+
+/* Setup card: bundled theme actions. */
+.bst-setup__theme {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px 12px;
+}
+
+.bst-setup__theme form,
+.bst-setup__theme .description {
+	margin: 0;
+}

@@ -11,7 +11,7 @@ No other plugins needed (no ACF, no page builder).
 
 ## Setup
 
-1. Activate the Support Desk plugin, then this theme.
+1. Activate the Support Desk plugin. Under **Support → Settings → General → Get set up**, click **Install the Support Desk theme**, then **Activate the theme**. (The plugin keeps the theme updated; see "Customising".)
 2. Click **Create starter pages** (shown on Support → Overview, Appearance → Themes and Pages). This:
    - creates **Home**, **Submit a request**, **My requests** and **Meet the team**, built from blocks (existing pages with the same address are left alone);
    - sets Home as the front page (only if the site was showing latest posts);

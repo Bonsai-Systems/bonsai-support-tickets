@@ -177,7 +177,12 @@ When a client raises a new request, through the form or by emailing the support 
 
 `theme/support-desk-theme/` is the Support Desk theme: help centre, request form, client portal and team page, built with its own blocks (no ACF). It follows the plugin's support name, logo and colours. See its [README](theme/support-desk-theme/README.md).
 
-It ships inside the plugin zip. (One-click install from **Get set up** and automatic theme updates come in the bundling step.) Until then, copy the folder to `wp-content/themes/` to use it.
+It ships inside the plugin zip:
+
+- **Install:** Support → Settings → General → **Get set up** → **Install the Support Desk theme**, then **Preview** or **Activate**. Installing doesn't change the site until you activate it.
+- **Updates:** when the plugin updates, the installed theme is updated too (once per plugin version, by comparing file fingerprints). If someone edited the installed theme's files, the update is held back and admins see **Support Desk theme not updated** with an **Update anyway** button. Put customisations in a child theme so updates never conflict.
+- A `support-desk-theme` folder the plugin didn't install is never touched. Sites with `DISALLOW_FILE_MODS` upload the theme folder by hand.
+- The theme has `Update URI: false`, so WordPress never offers to replace it with a different theme from WordPress.org.
 
 ## Theming
 
@@ -270,4 +275,5 @@ Manual pre-launch checklist: [tests/manual/support-flow.md](tests/manual/support
 1. Bump `Version:` and `BST_VERSION` in `bonsai-support-tickets.php`, and add a `CHANGELOG.md` entry.
    (Updates currently come from GitHub releases; licensed updates replace this.)
 2. Merge `develop` into `main` and push.
-3. Publish a GitHub Release on `main` tagged `vX.Y.Z`. `.github/workflows/release.yml` checks the tag matches both version numbers, builds `bonsai-support-tickets.zip` (production `vendor/`, no tests or dev files) and attaches it. Sites update from that zip (release-assets mode).
+3. If the theme changed, bump its version (`Version:` in `theme/support-desk-theme/style.css` and `BSUP_VERSION` in its `functions.php`) and add to its CHANGELOG. Sites get theme changes either way; the version is what admins see.
+4. Publish a GitHub Release on `main` tagged `vX.Y.Z`. `.github/workflows/release.yml` checks the tag matches both version numbers, builds `bonsai-support-tickets.zip` (production `vendor/`, no tests or dev files) and attaches it. It also checks the bundled theme is complete and its two version numbers agree. Sites update from that zip (release-assets mode).

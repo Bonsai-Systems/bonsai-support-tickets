@@ -86,10 +86,18 @@ Required because this plugin stores client data, sends email, and has custom tab
 - [ ] Nowhere visible to a client (portal, register, login-required box, every email, email headers) mentions Bonsai or BDC.
 - [ ] wp-admin shows the product name and mark, not Bonsai.
 
+## Bundled theme
+- [ ] Fresh install: Settings → General → Get set up lists **Install the Support Desk theme (optional)** with an **Install** button. Click it → "installed", and **Preview the theme** + **Activate the theme** appear. Appearance → Themes lists Support Desk.
+- [ ] Preview opens the Customiser on the theme without changing the live site. Activate (confirm) → the front end uses it; **Create starter pages** builds the pages.
+- [ ] Update a site to a plugin build with a changed theme file → after the first admin page load the installed theme has the change; no `support-desk-theme-new-…`/`-old-…` folders left in wp-content/themes.
+- [ ] Edit a file in wp-content/themes/support-desk-theme, then update the plugin to a build with theme changes → **Support Desk theme not updated** notice (Themes and Support screens); the edit is still there. **Update anyway** → bundled files restored.
+- [ ] With `define( 'DISALLOW_FILE_MODS', true )` → no Install button; the notice explains uploading by hand.
+- [ ] Appearance → Themes never shows an update for Support Desk from WordPress.org.
+
 ## Theme switch-over (Bonsai site, dev build)
 Do this on staging first, with a fresh backup.
 - [ ] Before: note the front page, Submit a request, My requests and Meet the team, and screenshot the header and footer.
-- [ ] Pages, Support → Overview or Appearance → Themes shows **Move to the Support Desk theme**. Click **Switch and convert** → "Moved to the Support Desk theme: N pages converted…, 0 problems".
+- [ ] Pages, Support → Overview or Appearance → Themes shows **Move to the Support Desk theme**. Click **Switch and convert** (it installs the theme from the plugin first if needed) → "Moved to the Support Desk theme: N pages converted…, 0 problems".
 - [ ] Each page shows the same sections and wording as before. Open one in the editor: Support Desk blocks, each with its settings in the sidebar; no "This block contains unexpected content" warnings.
 - [ ] Open a page that had a Content block → its text is in a Classic block inside the Content block. **Convert to blocks** works.
 - [ ] Header: same logo, label and button. Footer: tagline, support hours, contact details, Main website link, © line and "Website by…" credit. If there's no footer logo, the footer now shows the support name instead of the "Bonsai." wordmark: add a footer logo under Customise → Support Desk theme → Footer if that matters.

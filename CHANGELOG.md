@@ -74,6 +74,12 @@ All notable changes to this plugin are documented here. Format: [Keep a Changelo
   - Team fields as a plain meta box (same meta keys).
   - Neutral defaults and no company branding; self-hosted fonts; new screenshot.
   - See `theme/support-desk-theme/CHANGELOG.md`.
+- **Bundled theme install and updates** (`BST_Theme_Installer`):
+  - **Get set up** gets an optional step: **Install the Support Desk theme**, then **Preview** (Customiser live preview) or **Activate**.
+  - Installs through a temporary folder and a swap, with a marker file recording a fingerprint of the files.
+  - On each plugin update, an installed copy is updated if the bundled files changed. Local edits hold the update back with an **Update anyway** notice; folders the plugin didn't install are never touched; `DISALLOW_FILE_MODS` is respected.
+  - The legacy "Move to the Support Desk theme" button installs the theme first if needed.
+  - `bst_theme_installed` action. Release workflow checks the bundled theme. Theme gets `Update URI: false`.
 - **Development builds only** (`includes/legacy/class-bst-legacy-theme.php`): moves the original site from its ACF theme to the Support Desk theme. A "Move to the Support Desk theme" notice switches and converts in one click (switching under Appearance → Themes converts too):
   - Every page's ACF page builder becomes Support Desk blocks (ACF defaults applied for never-saved fields; WYSIWYG content becomes a Classic block inside a Content block). The previous content is kept in a revision and `_bst_pre_blocks_content`, and the ACF meta is untouched, so switching back restores the old pages.
   - Site settings become Customiser values, with the old theme's fixed footer text, credit and light-blue tint written explicitly. Menu locations are copied.

@@ -38,7 +38,7 @@ class BST_Admin_Setup {
 			return $id && 'publish' === get_post_status( (int) $id );
 		};
 
-		return array(
+		$steps = array(
 			'brand'   => array(
 				'label'    => __( 'Add your support name and logo', 'bonsai-support-tickets' ),
 				'done'     => '' !== trim( (string) $s['brand_name'] ) && '' !== (string) $s['email_logo_url'],
@@ -70,6 +70,18 @@ class BST_Admin_Setup {
 				'tab'      => 'inbound',
 			),
 		);
+
+		// The bundled theme, when this build includes it.
+		if ( BST_Theme_Installer::bundled() ) {
+			$steps['theme'] = array(
+				'label'    => __( 'Install the Support Desk theme for your help centre and portal', 'bonsai-support-tickets' ),
+				'done'     => BST_Theme_Installer::installed(),
+				'required' => false,
+				'tab'      => 'general',
+			);
+		}
+
+		return $steps;
 	}
 
 	/**
@@ -123,6 +135,12 @@ class BST_Admin_Setup {
 					</li>
 				<?php endforeach; ?>
 			</ol>
+
+			<?php if ( isset( $steps['theme'] ) && ! BST_Theme_Installer::active() ) : ?>
+				<div class="bonsai-ui-card__footer">
+					<?php BST_Theme_Installer::render_actions(); ?>
+				</div>
+			<?php endif; ?>
 
 			<?php if ( $need_pages ) : ?>
 				<div class="bonsai-ui-card__footer bonsai-ui-actions">

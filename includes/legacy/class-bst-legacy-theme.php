@@ -281,9 +281,12 @@ class BST_Legacy_Theme {
 		}
 		check_admin_referer( 'bst_legacy_switch_theme' );
 
-		// The theme ships in the plugin; install it if needed (bundling step).
+		// The theme ships in the plugin; install it if needed.
 		if ( ! wp_get_theme( self::NEW_THEME )->exists() && class_exists( 'BST_Theme_Installer' ) ) {
-			BST_Theme_Installer::install();
+			$installed = BST_Theme_Installer::install();
+			if ( is_wp_error( $installed ) ) {
+				wp_die( esc_html( $installed->get_error_message() ) );
+			}
 		}
 
 		$theme = wp_get_theme( self::NEW_THEME );

@@ -92,6 +92,10 @@ require_once BST_DIR . 'includes/class-bst-install.php';
 if ( file_exists( BST_DIR . 'includes/legacy/class-bst-legacy-defaults.php' ) ) {
 	require_once BST_DIR . 'includes/legacy/class-bst-legacy-defaults.php';
 }
+// Development builds only: moves the original site from its ACF theme to the bundled theme.
+if ( file_exists( BST_DIR . 'includes/legacy/class-bst-legacy-theme.php' ) ) {
+	require_once BST_DIR . 'includes/legacy/class-bst-legacy-theme.php';
+}
 require_once BST_DIR . 'includes/class-bst-post-types.php';
 require_once BST_DIR . 'includes/class-bst-activity.php';
 require_once BST_DIR . 'includes/class-bst-messages.php';

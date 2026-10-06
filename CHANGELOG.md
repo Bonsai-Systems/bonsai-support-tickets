@@ -74,6 +74,10 @@ All notable changes to this plugin are documented here. Format: [Keep a Changelo
   - Team fields as a plain meta box (same meta keys).
   - Neutral defaults and no company branding; self-hosted fonts; new screenshot.
   - See `theme/support-desk-theme/CHANGELOG.md`.
+- **Development builds only** (`includes/legacy/class-bst-legacy-theme.php`): moves the original site from its ACF theme to the Support Desk theme. A "Move to the Support Desk theme" notice switches and converts in one click (switching under Appearance → Themes converts too):
+  - Every page's ACF page builder becomes Support Desk blocks (ACF defaults applied for never-saved fields; WYSIWYG content becomes a Classic block inside a Content block). The previous content is kept in a revision and `_bst_pre_blocks_content`, and the ACF meta is untouched, so switching back restores the old pages.
+  - Site settings become Customiser values, with the old theme's fixed footer text, credit and light-blue tint written explicitly. Menu locations are copied.
+  - Safe to run again. Integration tests in `tests/integration/LegacyThemeTest.php`.
 
 ### Changed
 - `BST_Admin_Tickets::view_meta_query()` is public. Full-page screen detection uses `BST_Admin_UI::FULL_PAGES`.

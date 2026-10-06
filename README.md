@@ -263,7 +263,7 @@ Manual pre-launch checklist: [tests/manual/support-flow.md](tests/manual/support
 
 - The product name shown in wp-admin and logs is `BST_PRODUCT_NAME` in `bonsai-support-tickets.php` (with `BST_PRODUCT_URL` for a help link). Rename it there and in the plugin header before launch.
 - Code prefixes (`bst_`, `BST_`), the plugin folder, the text domain and the `bonsai-ui` admin CSS classes are internal and not yet renamed; the folder/text domain rename happens with the final name, in the packaging step.
-- `includes/legacy/` is **development builds only** and must be excluded from the product zip. It keeps the original Bonsai support site's branding when it upgrades from the old Bonsai defaults (DB version 3 → 4), including copying its logo into the Media Library.
+- `includes/legacy/` is **development builds only** and must be excluded from the product zip. It keeps the original Bonsai support site's branding when it upgrades from the old Bonsai defaults (DB version 3 → 4), including copying its logo into the Media Library, and moves that site from its ACF theme to the bundled theme (`class-bst-legacy-theme.php`; checklist in `tests/manual/support-flow.md`).
 
 ## Releasing
 

@@ -86,6 +86,18 @@ Required because this plugin stores client data, sends email, and has custom tab
 - [ ] Nowhere visible to a client (portal, register, login-required box, every email, email headers) mentions Bonsai or BDC.
 - [ ] wp-admin shows the product name and mark, not Bonsai.
 
+## Theme switch-over (Bonsai site, dev build)
+Do this on staging first, with a fresh backup.
+- [ ] Before: note the front page, Submit a request, My requests and Meet the team, and screenshot the header and footer.
+- [ ] Pages, Support → Overview or Appearance → Themes shows **Move to the Support Desk theme**. Click **Switch and convert** → "Moved to the Support Desk theme: N pages converted…, 0 problems".
+- [ ] Each page shows the same sections and wording as before. Open one in the editor: Support Desk blocks, each with its settings in the sidebar; no "This block contains unexpected content" warnings.
+- [ ] Open a page that had a Content block → its text is in a Classic block inside the Content block. **Convert to blocks** works.
+- [ ] Header: same logo, label and button. Footer: tagline, support hours, contact details, Main website link, © line and "Website by…" credit. If there's no footer logo, the footer now shows the support name instead of the "Bonsai." wordmark: add a footer logo under Customise → Support Desk theme → Footer if that matters.
+- [ ] Tint sections are still light blue; buttons and accents still pink.
+- [ ] Menus are in the same places.
+- [ ] Rollback check (staging only): Appearance → Themes → activate Bonsai Support → pages look as before. Switch back to Support Desk.
+- [ ] ACF Pro can be deactivated once nothing else on the site uses it; pages still render.
+
 ## White-label (Bonsai site upgrade, dev build)
 - [ ] After updating support.bonsaidigitalcollective.co.uk: refs still `BDC-`, pink colours, Bonsai auto-reply wording, From "Bonsai Support", logo in emails (now from the Media Library), Gmail label unchanged.
 

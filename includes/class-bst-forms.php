@@ -6,7 +6,7 @@
  * per-user transient and the user is sent back to the form, which reads
  * them with BST_Forms::flash().
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -116,7 +116,7 @@ class BST_Forms {
 			wp_safe_redirect( add_query_arg( 'bst_notice', 'created', BST_Tickets::client_url( $created['ticket_id'] ) ) );
 			exit;
 		} catch ( Throwable $e ) {
-			error_log( 'Bonsai Support Tickets: submit failed: ' . $e->getMessage() );
+			error_log( BST_PRODUCT_NAME . ': submit failed: ' . $e->getMessage() );
 			self::fail( array( __( 'Sorry, something went wrong. Please try again, or email us directly.', 'bonsai-support-tickets' ) ), array() );
 		}
 	}
@@ -174,7 +174,7 @@ class BST_Forms {
 			wp_safe_redirect( add_query_arg( 'bst_notice', $notice, BST_Tickets::client_url( $ticket_id ) ) . '#bst-latest' );
 			exit;
 		} catch ( Throwable $e ) {
-			error_log( 'Bonsai Support Tickets: client reply failed: ' . $e->getMessage() );
+			error_log( BST_PRODUCT_NAME . ': client reply failed: ' . $e->getMessage() );
 			self::fail( array( __( 'Sorry, something went wrong. Please try again.', 'bonsai-support-tickets' ) ), array() );
 		}
 	}

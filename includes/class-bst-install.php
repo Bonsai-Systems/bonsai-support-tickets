@@ -2,7 +2,7 @@
 /**
  * Activation, upgrades, roles and capabilities, custom tables.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -24,6 +24,7 @@ class BST_Install {
 		'bst_add_internal_notes',
 		'bst_assign_tickets',
 		'bst_approve_clients',
+		'bst_log_time',
 		'edit_bst_tickets',
 		'edit_others_bst_tickets',
 		'edit_published_bst_tickets',
@@ -36,11 +37,29 @@ class BST_Install {
 	 */
 	const ADMIN_CAPS = array(
 		'bst_manage_settings',
+		'bst_manage_time',
 		'delete_bst_tickets',
 		'delete_others_bst_tickets',
 		'delete_published_bst_tickets',
 		'delete_private_bst_tickets',
 		'edit_private_bst_tickets',
+	);
+
+	/**
+	 * Canned response capabilities. One shared library, so every agent
+	 * (and administrator) can add, edit and delete any of them.
+	 */
+	const CANNED_CAPS = array(
+		'edit_bst_canned_responses',
+		'edit_others_bst_canned_responses',
+		'edit_published_bst_canned_responses',
+		'edit_private_bst_canned_responses',
+		'publish_bst_canned_responses',
+		'read_private_bst_canned_responses',
+		'delete_bst_canned_responses',
+		'delete_others_bst_canned_responses',
+		'delete_published_bst_canned_responses',
+		'delete_private_bst_canned_responses',
 	);
 
 	/**
@@ -63,9 +82,13 @@ class BST_Install {
 
 		BST_Post_Types::register();
 		BST_Post_Types::create_default_terms();
+		BST_Canned::create_defaults();
 		flush_rewrite_rules();
 
 		BST_Cron::schedule();
+
+		// Reactivating over pre-0.2 data: turn client names into Client records.
+		BST_Companies::migrate_legacy_names();
 
 		update_option( 'bst_db_version', BST_DB_VERSION, false );
 	}
@@ -75,6 +98,7 @@ class BST_Install {
 	 */
 	public static function deactivate() {
 		BST_Cron::unschedule();
+		wp_clear_scheduled_hook( BST_SLA::CRON_HOOK );
 		flush_rewrite_rules();
 	}
 
@@ -85,10 +109,57 @@ class BST_Install {
 		if ( get_option( 'bst_db_version' ) === BST_DB_VERSION ) {
 			return;
 		}
+		$from = (int) get_option( 'bst_db_version' );
+
 		self::create_tables();
 		self::create_roles();
 		self::create_private_dir();
+
+		// 3: client names become Client records.
+		if ( $from < 3 ) {
+			self::migrate_companies();
+		}
+
+		// 5: starter canned responses (their caps come from create_roles() above).
+		if ( $from < 5 ) {
+			BST_Post_Types::register();
+			BST_Canned::create_defaults();
+		}
+
+		/**
+		 * After the schema/data upgrade, before the new DB version is saved.
+		 *
+		 * @param int $from DB version before the upgrade.
+		 */
+		do_action( 'bst_upgraded', $from );
+
 		update_option( 'bst_db_version', BST_DB_VERSION, false );
+	}
+
+	/**
+	 * Run the client-name migration and tell whoever triggered it what
+	 * happened, so near-duplicates can be tidied up under Support → Clients.
+	 */
+	private static function migrate_companies() {
+		try {
+			BST_Post_Types::register(); // admin_init runs after init, but be explicit.
+			$result = BST_Companies::migrate_legacy_names();
+		} catch ( Throwable $e ) {
+			error_log( BST_PRODUCT_NAME . ': client migration failed: ' . $e->getMessage() );
+			return;
+		}
+
+		if ( $result['created'] || $result['linked'] ) {
+			BST_Admin_UI::flash(
+				sprintf(
+					/* translators: 1: clients created, 2: people linked, 3: tickets updated. */
+					__( 'Support now has Client records. Created %1$d from existing client names, linked %2$d people and %3$d tickets. Check Support → Clients for near-duplicates (e.g. "Ley Arms" and "The Ley Arms") and move people between them on their user profile.', 'bonsai-support-tickets' ),
+					$result['created'],
+					$result['linked'],
+					$result['tickets']
+				)
+			);
+		}
 	}
 
 	/**
@@ -139,6 +210,22 @@ class BST_Install {
 			created_at datetime NOT NULL,
 			PRIMARY KEY  (id),
 			KEY ticket_id (ticket_id)
+		) $charset;
+		CREATE TABLE {$wpdb->prefix}bst_time_entries (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			ticket_id bigint(20) unsigned NOT NULL,
+			company_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			user_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			minutes int(10) unsigned NOT NULL DEFAULT 0,
+			billable tinyint(1) NOT NULL DEFAULT 1,
+			note varchar(255) NOT NULL DEFAULT '',
+			work_date date NOT NULL,
+			created_at datetime NOT NULL,
+			updated_at datetime NOT NULL,
+			PRIMARY KEY  (id),
+			KEY ticket_id (ticket_id),
+			KEY company_date (company_id,work_date),
+			KEY user_date (user_id,work_date)
 		) $charset;";
 
 		dbDelta( $sql );
@@ -169,14 +256,14 @@ class BST_Install {
 
 		$agent = get_role( 'bst_agent' );
 		if ( $agent ) {
-			foreach ( self::AGENT_CAPS as $cap ) {
+			foreach ( array_merge( self::AGENT_CAPS, self::CANNED_CAPS ) as $cap ) {
 				$agent->add_cap( $cap );
 			}
 		}
 
 		$admin = get_role( 'administrator' );
 		if ( $admin ) {
-			foreach ( array_merge( self::AGENT_CAPS, self::ADMIN_CAPS ) as $cap ) {
+			foreach ( array_merge( self::AGENT_CAPS, self::ADMIN_CAPS, self::CANNED_CAPS ) as $cap ) {
 				$admin->add_cap( $cap );
 			}
 		}
@@ -192,12 +279,12 @@ class BST_Install {
 	public static function create_private_dir() {
 		$dir = BST_Attachments::base_dir();
 		if ( ! wp_mkdir_p( $dir ) ) {
-			error_log( 'Bonsai Support Tickets: could not create private upload folder ' . $dir );
+			error_log( BST_PRODUCT_NAME . ': could not create private upload folder ' . $dir );
 			return;
 		}
 
 		$files = array(
-			'.htaccess'  => "# Bonsai Support Tickets — never serve these files directly.\n<IfModule mod_authz_core.c>\nRequire all denied\n</IfModule>\n<IfModule !mod_authz_core.c>\nDeny from all\n</IfModule>\n",
+			'.htaccess'  => "# Private support attachments — never serve these files directly.\n<IfModule mod_authz_core.c>\nRequire all denied\n</IfModule>\n<IfModule !mod_authz_core.c>\nDeny from all\n</IfModule>\n",
 			'index.php'  => "<?php\n// Silence is golden.\n",
 			'index.html' => '',
 		);

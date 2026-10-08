@@ -1,28 +1,27 @@
 <?php
 /**
- * Bonsai admin UI: shared header and stylesheet for this plugin's screens.
+ * Admin UI: shared header and stylesheet for this plugin's screens.
  *
- * Markup and CSS follow the Bonsai admin design system
- * (assets/admin/bonsai-admin-ui.css, canonical copy in bonsai-seo-geo-checker).
- * Self-contained: nothing here depends on another Bonsai plugin.
+ * Markup and CSS follow the admin design system in
+ * assets/admin/bonsai-admin-ui.css (class names are internal only).
+ * The header shows the product (BST_PRODUCT_NAME) with a neutral mark;
+ * nothing here names a company.
  *
  * Ticket and help-article screens are core post screens, so they can't be
- * wrapped in .bonsai-ui. They get a compact Bonsai banner above the page
+ * wrapped in .bonsai-ui. They get a compact product banner above the page
  * instead (in_admin_header), and bst-admin.css styles the rest.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Renders the Bonsai header and loads the stylesheets.
+ * Renders the product header and loads the stylesheets.
  */
 class BST_Admin_UI {
 
-	const REPO    = 'https://github.com/Bonsai-Systems/bonsai-support-tickets';
-	const WEBSITE = 'https://bonsaidigitalcollective.co.uk/';
-	const HANDLE  = 'bst-bonsai-admin-ui';
+	const HANDLE = 'bst-bonsai-admin-ui';
 
 	/**
 	 * Hooks.
@@ -34,6 +33,11 @@ class BST_Admin_UI {
 	}
 
 	/**
+	 * Page slugs of our full-page screens.
+	 */
+	const FULL_PAGES = array( 'bst-overview', 'bst-settings', 'bst-signups', 'bst-time', 'bst-sla' );
+
+	/**
 	 * Whether the current screen belongs to this plugin.
 	 *
 	 * @return bool
@@ -43,24 +47,32 @@ class BST_Admin_UI {
 		if ( ! $screen ) {
 			return false;
 		}
-		if ( in_array( $screen->post_type, array( BST_Post_Types::TICKET, BST_Post_Types::ARTICLE ), true ) ) {
+		if ( in_array( $screen->post_type, array( BST_Post_Types::TICKET, BST_Post_Types::ARTICLE, BST_Post_Types::COMPANY, BST_Post_Types::CANNED ), true ) ) {
 			return true;
 		}
-		if ( in_array( $screen->taxonomy, array( BST_Post_Types::TICKET_TYPE, BST_Post_Types::ARTICLE_TOPIC ), true ) ) {
+		if ( in_array( $screen->taxonomy, array( BST_Post_Types::TICKET_TYPE, BST_Post_Types::ARTICLE_TOPIC, BST_Post_Types::PARTNER, BST_Post_Types::PLAN, BST_Post_Types::CANNED_TAG ), true ) ) {
 			return true;
 		}
-		return str_contains( (string) $screen->id, 'bst-settings' ) || str_contains( (string) $screen->id, 'bst-signups' );
+		return self::is_full_page( $screen );
 	}
 
 	/**
-	 * Whether the screen is one of our full pages (settings, sign-ups),
-	 * which print their own header instead of the banner.
+	 * Whether the screen is one of our full pages (FULL_PAGES), which print
+	 * their own header instead of the banner.
 	 *
 	 * @param WP_Screen|null $screen Screen.
 	 * @return bool
 	 */
 	private static function is_full_page( $screen ) {
-		return $screen && ( str_contains( (string) $screen->id, 'bst-settings' ) || str_contains( (string) $screen->id, 'bst-signups' ) );
+		if ( ! $screen ) {
+			return false;
+		}
+		foreach ( self::FULL_PAGES as $slug ) {
+			if ( str_contains( (string) $screen->id, $slug ) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -76,7 +88,14 @@ class BST_Admin_UI {
 
 		$screen = get_current_screen();
 		if ( self::is_full_page( $screen ) ) {
-			wp_enqueue_script( 'bst-admin', BST_URL . 'assets/admin/bst-admin.js', array( 'jquery' ), BST_VERSION, true );
+			$deps = array( 'jquery' );
+			// Core colour picker for Settings → Appearance.
+			if ( str_contains( (string) $screen->id, 'bst-settings' ) ) {
+				wp_enqueue_style( 'wp-color-picker' );
+				wp_enqueue_media(); // Logo picker on the Appearance tab.
+				$deps[] = 'wp-color-picker';
+			}
+			wp_enqueue_script( 'bst-admin', BST_URL . 'assets/admin/bst-admin.js', $deps, BST_VERSION, true );
 		}
 		if ( $screen && BST_Post_Types::TICKET === $screen->post_type && 'post' === $screen->base ) {
 			wp_enqueue_script( 'bst-admin', BST_URL . 'assets/admin/bst-admin.js', array( 'jquery' ), BST_VERSION, true );
@@ -102,7 +121,7 @@ class BST_Admin_UI {
 	}
 
 	/**
-	 * Compact Bonsai banner above core post/taxonomy screens.
+	 * Compact product banner above core post/taxonomy screens.
 	 */
 	public static function banner() {
 		$screen = get_current_screen();
@@ -113,8 +132,7 @@ class BST_Admin_UI {
 		<div class="bonsai-ui bst-banner">
 			<div class="bonsai-ui-header bst-banner__inner">
 				<div class="bst-banner__brand">
-					<img class="bst-banner__logo" src="<?php echo esc_url( BST_URL . 'assets/bonsai-avatar.jpg' ); ?>" width="412" height="108" alt="<?php esc_attr_e( 'The Bonsai Digital Collective', 'bonsai-support-tickets' ); ?>">
-					<span class="bst-banner__title"><?php esc_html_e( 'Support', 'bonsai-support-tickets' ); ?></span>
+					<?php self::product_mark(); ?>
 				</div>
 				<nav class="bst-banner__nav" aria-label="<?php esc_attr_e( 'Support sections', 'bonsai-support-tickets' ); ?>">
 					<?php foreach ( self::nav_links() as $link ) : ?>
@@ -139,6 +157,11 @@ class BST_Admin_UI {
 				'label'   => __( 'Tickets', 'bonsai-support-tickets' ),
 				'url'     => admin_url( 'edit.php?post_type=' . BST_Post_Types::TICKET ),
 				'current' => $screen && BST_Post_Types::TICKET === $screen->post_type && ! $screen->taxonomy,
+			),
+			array(
+				'label'   => __( 'Clients', 'bonsai-support-tickets' ),
+				'url'     => admin_url( 'edit.php?post_type=' . BST_Post_Types::COMPANY ),
+				'current' => $screen && BST_Post_Types::COMPANY === $screen->post_type,
 			),
 			array(
 				'label'   => __( 'Help articles', 'bonsai-support-tickets' ),
@@ -177,30 +200,17 @@ class BST_Admin_UI {
 	 * @param array  $links Extra links shown before the standard ones: each array( 'label' => '', 'url' => '' ).
 	 */
 	public static function header( $title, $lead = '', $links = array() ) {
-		$links = array_merge(
-			$links,
-			array(
-				array(
-					'label'    => __( 'GitHub', 'bonsai-support-tickets' ),
-					'url'      => self::REPO,
-					'external' => true,
-				),
-				array(
-					'label'    => __( 'Changelog', 'bonsai-support-tickets' ),
-					'url'      => self::REPO . '/releases',
-					'external' => true,
-				),
-				array(
-					'label'    => __( 'The Bonsai Digital Collective', 'bonsai-support-tickets' ),
-					'url'      => self::WEBSITE,
-					'external' => true,
-				),
-			)
-		);
+		if ( '' !== BST_PRODUCT_URL ) {
+			$links[] = array(
+				'label'    => __( 'Help', 'bonsai-support-tickets' ),
+				'url'      => BST_PRODUCT_URL,
+				'external' => true,
+			);
+		}
 		?>
 		<header class="bonsai-ui-header">
 			<div class="bonsai-ui-header__main">
-				<img class="bonsai-ui-header__logo" src="<?php echo esc_url( BST_URL . 'assets/bonsai-avatar.jpg' ); ?>" width="412" height="108" alt="<?php esc_attr_e( 'The Bonsai Digital Collective', 'bonsai-support-tickets' ); ?>">
+				<?php self::product_mark(); ?>
 				<h1 class="bonsai-ui-header__title"><?php echo esc_html( $title ); ?></h1>
 				<?php if ( '' !== $lead ) : ?>
 					<p class="bonsai-ui-header__lead"><?php echo wp_kses( $lead, self::lead_tags() ); ?></p>
@@ -222,6 +232,18 @@ class BST_Admin_UI {
 			</div>
 		</header>
 		<hr class="wp-header-end">
+		<?php
+	}
+
+	/**
+	 * Product mark: a neutral icon and the product name.
+	 */
+	private static function product_mark() {
+		?>
+		<span class="bst-product-mark">
+			<svg class="bst-product-mark__icon" width="28" height="28" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M4 3h16a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2h-6.6L8 22v-4H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm4 6.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Zm4 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Zm4 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z"/></svg>
+			<span class="bst-product-mark__name"><?php echo esc_html( BST_PRODUCT_NAME ); ?></span>
+		</span>
 		<?php
 	}
 

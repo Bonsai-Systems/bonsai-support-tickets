@@ -1,0 +1,68 @@
+/**
+ * Feature Cards module. Ported from the original theme.
+ */
+
+.feature-cards-module__grid {
+	display: grid;
+	gap: 1.5rem;
+}
+
+.feature-cards-module__grid--cols-3 {
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.feature-cards-module__grid--cols-2 {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (max-width: 900px) {
+	.feature-cards-module__grid--cols-3,
+	.feature-cards-module__grid--cols-2 {
+		grid-template-columns: 1fr;
+	}
+}
+
+.feature-cards-module__card {
+	padding: 2.5rem;
+	background-color: var(--bonsai-white);
+	border: 1px solid var(--bonsai-border);
+	transition: border-color 0.3s ease;
+}
+
+.feature-cards-module__card:hover {
+	border-color: color-mix(in srgb, var(--bonsai-accent) 35%, transparent);
+}
+
+.feature-cards-module__card-label {
+	display: block;
+	margin-bottom: 1rem;
+	font-size: 0.75rem;
+	font-weight: 600;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: var(--bonsai-accent-text);
+}
+
+.feature-cards-module__card-title {
+	margin-bottom: 1rem;
+	font-size: 1rem;
+	font-weight: 600;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+	color: var(--bonsai-black);
+}
+
+.feature-cards-module__card-desc {
+	font-size: 0.9375rem;
+	line-height: 1.6;
+	color: var(--bonsai-grey-dark);
+}
+
+/* Cards stay white on black sections. */
+.feature-cards-module.bg--black .feature-cards-module__card-title {
+	color: var(--bonsai-black);
+}
+
+.feature-cards-module.bg--black .feature-cards-module__card-desc {
+	color: var(--bonsai-grey-dark);
+}

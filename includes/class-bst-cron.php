@@ -6,7 +6,7 @@
  * subdomain, set a real server cron to hit wp-cron.php every 2 minutes and
  * add define( 'DISABLE_WP_CRON', true ); to wp-config.php.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;

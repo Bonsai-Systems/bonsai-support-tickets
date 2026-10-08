@@ -3,9 +3,9 @@
  * Template loader with theme overrides, WooCommerce-style.
  *
  * A theme overrides any file in this plugin's templates/ folder by copying
- * it to {theme}/bonsai-support/{same path}. Child theme first, then parent.
+ * it to {theme}/support-desk/{same path}. Child theme first, then parent.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class BST_Template {
 
-	const THEME_DIR = 'bonsai-support/';
+	const THEME_DIR = 'support-desk/';
 
 	/**
 	 * Find a template: theme override, else the plugin's default.
@@ -49,7 +49,7 @@ class BST_Template {
 	public static function render( $name, array $args = array() ) {
 		$path = self::locate( $name );
 		if ( ! $path ) {
-			error_log( 'Bonsai Support Tickets: template not found: ' . $name );
+			error_log( BST_PRODUCT_NAME . ': template not found: ' . $name );
 			return;
 		}
 		extract( $args, EXTR_SKIP ); // phpcs:ignore WordPress.PHP.DontExtract.extract_extract -- template scope, as in core's load_template().

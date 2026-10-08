@@ -1,0 +1,1779 @@
+{
+    "key": "group_bsup_page_builder",
+    "title": "Page builder",
+    "fields": [
+        {
+            "key": "field_bpb_flex",
+            "label": "Page modules",
+            "name": "page_builder",
+            "aria-label": "",
+            "type": "flexible_content",
+            "instructions": "Add, remove and reorder page sections.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "layouts": {
+                "layout_bsup_hsh": {
+                    "key": "layout_bsup_hsh",
+                    "name": "help_search_hero_module",
+                    "label": "Help search hero",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_bsup_hsh_badge",
+                            "label": "Badge",
+                            "name": "hero_badge",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "Small label above the heading, e.g. \"Support\".",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "33",
+                                "class": "",
+                                "id": ""
+                            }
+                        },
+                        {
+                            "key": "field_bsup_hsh_title",
+                            "label": "Heading",
+                            "name": "hero_title",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "Page H1. Defaults to \"How can we help\".",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "67",
+                                "class": "",
+                                "id": ""
+                            }
+                        },
+                        {
+                            "key": "field_bsup_hsh_lead",
+                            "label": "Lead text",
+                            "name": "hero_lead",
+                            "aria-label": "",
+                            "type": "textarea",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "rows": 2,
+                            "new_lines": ""
+                        },
+                        {
+                            "key": "field_bsup_hsh_ph",
+                            "label": "Search placeholder",
+                            "name": "search_placeholder",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "placeholder": "e.g. update opening hours"
+                        },
+                        {
+                            "key": "field_bsup_hsh_bg",
+                            "label": "Background",
+                            "name": "background_style",
+                            "aria-label": "",
+                            "type": "select",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "33",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "default": "White",
+                                "warm": "Page background",
+                                "blue": "Tint",
+                                "black": "Dark"
+                            },
+                            "default_value": "default",
+                            "return_format": "value",
+                            "ui": 0,
+                            "allow_null": 0,
+                            "multiple": 0
+                        },
+                        {
+                            "key": "field_bsup_hsh_popular",
+                            "label": "Popular articles",
+                            "name": "popular_articles",
+                            "aria-label": "",
+                            "type": "relationship",
+                            "instructions": "Optional quick links under the search box. Three or four works best.",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "post_type": [
+                                "bst_article"
+                            ],
+                            "post_status": [
+                                "publish"
+                            ],
+                            "taxonomy": "",
+                            "filters": [
+                                "search",
+                                "taxonomy"
+                            ],
+                            "return_format": "id",
+                            "min": 0,
+                            "max": 6,
+                            "elements": ""
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                "layout_bsup_sl": {
+                    "key": "layout_bsup_sl",
+                    "name": "support_links_module",
+                    "label": "Support quick links",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_bsup_sl_tag",
+                            "label": "Section tag",
+                            "name": "section_tag",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "33",
+                                "class": "",
+                                "id": ""
+                            }
+                        },
+                        {
+                            "key": "field_bsup_sl_head",
+                            "label": "Heading",
+                            "name": "heading",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "67",
+                                "class": "",
+                                "id": ""
+                            }
+                        },
+                        {
+                            "key": "field_bsup_sl_desc",
+                            "label": "Description",
+                            "name": "description",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            }
+                        },
+                        {
+                            "key": "field_bsup_sl_links",
+                            "label": "Links",
+                            "name": "links",
+                            "aria-label": "",
+                            "type": "repeater",
+                            "instructions": "Submit a request / My requests / Help centre pick up their URL from Support → Settings automatically.",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "layout": "block",
+                            "min": 1,
+                            "max": 4,
+                            "button_label": "Add link",
+                            "collapsed": "field_bsup_sl_ltitle",
+                            "rows_per_page": 20,
+                            "sub_fields": [
+                                {
+                                    "key": "field_bsup_sl_ltype",
+                                    "label": "Goes to",
+                                    "name": "link_type",
+                                    "aria-label": "",
+                                    "type": "select",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "33",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "choices": {
+                                        "submit": "Submit a request",
+                                        "portal": "My requests",
+                                        "help": "Help centre",
+                                        "custom": "Custom link"
+                                    },
+                                    "default_value": "submit",
+                                    "return_format": "value",
+                                    "parent_repeater": "field_bsup_sl_links"
+                                },
+                                {
+                                    "key": "field_bsup_sl_licon",
+                                    "label": "Icon",
+                                    "name": "icon",
+                                    "aria-label": "",
+                                    "type": "select",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "33",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "choices": {
+                                        "ticket": "Ticket",
+                                        "list": "List",
+                                        "book": "Book",
+                                        "mail": "Email",
+                                        "phone": "Phone",
+                                        "pulse": "Status / pulse",
+                                        "calendar": "Calendar",
+                                        "search": "Search",
+                                        "arrow": "Arrow"
+                                    },
+                                    "default_value": "ticket",
+                                    "return_format": "value",
+                                    "parent_repeater": "field_bsup_sl_links"
+                                },
+                                {
+                                    "key": "field_bsup_sl_llink",
+                                    "label": "Link",
+                                    "name": "link",
+                                    "aria-label": "",
+                                    "type": "link",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": [
+                                        [
+                                            {
+                                                "field": "field_bsup_sl_ltype",
+                                                "operator": "==",
+                                                "value": "custom"
+                                            }
+                                        ]
+                                    ],
+                                    "wrapper": {
+                                        "width": "33",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "return_format": "array",
+                                    "parent_repeater": "field_bsup_sl_links"
+                                },
+                                {
+                                    "key": "field_bsup_sl_ltitle",
+                                    "label": "Title",
+                                    "name": "title",
+                                    "aria-label": "",
+                                    "type": "text",
+                                    "instructions": "",
+                                    "required": 1,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "parent_repeater": "field_bsup_sl_links"
+                                },
+                                {
+                                    "key": "field_bsup_sl_ldesc",
+                                    "label": "Description",
+                                    "name": "description",
+                                    "aria-label": "",
+                                    "type": "text",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "parent_repeater": "field_bsup_sl_links"
+                                }
+                            ]
+                        },
+                        {
+                            "key": "field_bsup_sl_bg",
+                            "label": "Background",
+                            "name": "background_style",
+                            "aria-label": "",
+                            "type": "select",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "33",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "default": "White",
+                                "warm": "Page background",
+                                "blue": "Tint",
+                                "black": "Dark"
+                            },
+                            "default_value": "default",
+                            "return_format": "value",
+                            "ui": 0,
+                            "allow_null": 0,
+                            "multiple": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                "layout_bsup_ht": {
+                    "key": "layout_bsup_ht",
+                    "name": "help_topics_module",
+                    "label": "Help topics",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_bsup_ht_tag",
+                            "label": "Section tag",
+                            "name": "section_tag",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "33",
+                                "class": "",
+                                "id": ""
+                            }
+                        },
+                        {
+                            "key": "field_bsup_ht_head",
+                            "label": "Heading",
+                            "name": "heading",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "67",
+                                "class": "",
+                                "id": ""
+                            }
+                        },
+                        {
+                            "key": "field_bsup_ht_desc",
+                            "label": "Description",
+                            "name": "description",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            }
+                        },
+                        {
+                            "key": "field_bsup_ht_source",
+                            "label": "Topics",
+                            "name": "topics_source",
+                            "aria-label": "",
+                            "type": "radio",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "all": "All topics that have articles",
+                                "selected": "Selected topics"
+                            },
+                            "default_value": "all",
+                            "return_format": "value",
+                            "layout": "horizontal"
+                        },
+                        {
+                            "key": "field_bsup_ht_topics",
+                            "label": "Selected topics",
+                            "name": "topics",
+                            "aria-label": "",
+                            "type": "taxonomy",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": [
+                                [
+                                    {
+                                        "field": "field_bsup_ht_source",
+                                        "operator": "==",
+                                        "value": "selected"
+                                    }
+                                ]
+                            ],
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "taxonomy": "bst_article_topic",
+                            "field_type": "multi_select",
+                            "add_term": 0,
+                            "save_terms": 0,
+                            "load_terms": 0,
+                            "return_format": "id",
+                            "multiple": 0,
+                            "allow_null": 0
+                        },
+                        {
+                            "key": "field_bsup_ht_per",
+                            "label": "Articles per topic",
+                            "name": "articles_per_topic",
+                            "aria-label": "",
+                            "type": "number",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "33",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": 5,
+                            "min": 1,
+                            "max": 12,
+                            "step": 1
+                        },
+                        {
+                            "key": "field_bsup_ht_cols",
+                            "label": "Columns",
+                            "name": "columns",
+                            "aria-label": "",
+                            "type": "select",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "33",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "3": "3",
+                                "2": "2"
+                            },
+                            "default_value": "3",
+                            "return_format": "value"
+                        },
+                        {
+                            "key": "field_bsup_ht_bg",
+                            "label": "Background",
+                            "name": "background_style",
+                            "aria-label": "",
+                            "type": "select",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "33",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "default": "White",
+                                "warm": "Page background",
+                                "blue": "Tint",
+                                "black": "Dark"
+                            },
+                            "default_value": "default",
+                            "return_format": "value",
+                            "ui": 0,
+                            "allow_null": 0,
+                            "multiple": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                "layout_bsup_tp": {
+                    "key": "layout_bsup_tp",
+                    "name": "ticket_portal_module",
+                    "label": "My requests (ticket portal)",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_bsup_tp_msg",
+                            "label": "",
+                            "name": "",
+                            "aria-label": "",
+                            "type": "message",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "message": "Shows the logged-in client's requests, or a login form. Set this page as \"My requests page\" in Support → Settings so email links land here. Use a Page header module above it for the H1.",
+                            "new_lines": "wpautop",
+                            "esc_html": 0
+                        },
+                        {
+                            "key": "field_bsup_tp_intro",
+                            "label": "Intro",
+                            "name": "intro",
+                            "aria-label": "",
+                            "type": "textarea",
+                            "instructions": "Shown above the request list (not on a single request).",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "rows": 2,
+                            "new_lines": ""
+                        },
+                        {
+                            "key": "field_bsup_tp_bg",
+                            "label": "Background",
+                            "name": "background_style",
+                            "aria-label": "",
+                            "type": "select",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "33",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "default": "White",
+                                "warm": "Page background",
+                                "blue": "Tint",
+                                "black": "Dark"
+                            },
+                            "default_value": "default",
+                            "return_format": "value",
+                            "ui": 0,
+                            "allow_null": 0,
+                            "multiple": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                "layout_bsup_sr": {
+                    "key": "layout_bsup_sr",
+                    "name": "submit_request_module",
+                    "label": "Submit a request form",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_bsup_sr_msg",
+                            "label": "",
+                            "name": "",
+                            "aria-label": "",
+                            "type": "message",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "message": "Outputs the request form from the Support Desk plugin. Set this page as \"Submit a request page\" in Support → Settings. Support hours come from Site settings.",
+                            "new_lines": "wpautop",
+                            "esc_html": 0
+                        },
+                        {
+                            "key": "field_bsup_sr_tag",
+                            "label": "Section tag",
+                            "name": "section_tag",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "33",
+                                "class": "",
+                                "id": ""
+                            }
+                        },
+                        {
+                            "key": "field_bsup_sr_head",
+                            "label": "Heading",
+                            "name": "heading",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "67",
+                                "class": "",
+                                "id": ""
+                            }
+                        },
+                        {
+                            "key": "field_bsup_sr_intro",
+                            "label": "Intro",
+                            "name": "intro",
+                            "aria-label": "",
+                            "type": "wysiwyg",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "tabs": "all",
+                            "toolbar": "basic",
+                            "media_upload": 0,
+                            "delay": 1
+                        },
+                        {
+                            "key": "field_bsup_sr_tips",
+                            "label": "Tips",
+                            "name": "tips",
+                            "aria-label": "",
+                            "type": "repeater",
+                            "instructions": "Shown under \"To help us fix it faster\".",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "layout": "table",
+                            "button_label": "Add tip",
+                            "min": 0,
+                            "max": 8,
+                            "rows_per_page": 20,
+                            "sub_fields": [
+                                {
+                                    "key": "field_bsup_sr_tip",
+                                    "label": "Tip",
+                                    "name": "tip",
+                                    "aria-label": "",
+                                    "type": "text",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "parent_repeater": "field_bsup_sr_tips"
+                                }
+                            ]
+                        },
+                        {
+                            "key": "field_bsup_sr_help",
+                            "label": "Link to help centre",
+                            "name": "show_help_link",
+                            "aria-label": "",
+                            "type": "true_false",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "33",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": 1,
+                            "ui": 1
+                        },
+                        {
+                            "key": "field_bsup_sr_bg",
+                            "label": "Background",
+                            "name": "background_style",
+                            "aria-label": "",
+                            "type": "select",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "33",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "default": "White",
+                                "warm": "Page background",
+                                "blue": "Tint",
+                                "black": "Dark"
+                            },
+                            "default_value": "default",
+                            "return_format": "value",
+                            "ui": 0,
+                            "allow_null": 0,
+                            "multiple": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                "layout_bpb_sph": {
+                    "key": "layout_bpb_sph",
+                    "name": "subpage_hero_module",
+                    "label": "Page header",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_bpb_sph_badge",
+                            "label": "Badge",
+                            "name": "hero_badge",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "maxlength": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": ""
+                        },
+                        {
+                            "key": "field_bpb_sph_title",
+                            "label": "Title",
+                            "name": "hero_title",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "Blank uses the page title.",
+                            "required": 1,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "100",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "maxlength": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": ""
+                        },
+                        {
+                            "key": "field_bpb_sph_lead",
+                            "label": "Lead text",
+                            "name": "hero_lead",
+                            "aria-label": "",
+                            "type": "textarea",
+                            "instructions": "",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "100",
+                                "class": "",
+                                "id": ""
+                            },
+                            "rows": 2,
+                            "default_value": "",
+                            "new_lines": "",
+                            "maxlength": "",
+                            "placeholder": ""
+                        },
+                        {
+                            "key": "field_bpb_sph_style",
+                            "label": "Alignment",
+                            "name": "hero_style",
+                            "aria-label": "",
+                            "type": "select",
+                            "instructions": "",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "default": "Left",
+                                "centered": "Centred"
+                            },
+                            "default_value": "default",
+                            "multiple": 0,
+                            "allow_null": 0,
+                            "ui": 0,
+                            "ajax": 0,
+                            "placeholder": "",
+                            "return_format": "value",
+                            "create_options": 0,
+                            "save_options": 0
+                        },
+                        {
+                            "key": "field_bpb_sph_bg",
+                            "label": "Background",
+                            "name": "background_style",
+                            "aria-label": "",
+                            "type": "select",
+                            "instructions": "",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "25",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "default": "White",
+                                "warm": "Page background",
+                                "blue": "Tint",
+                                "black": "Dark"
+                            },
+                            "default_value": "default",
+                            "multiple": 0,
+                            "allow_null": 0,
+                            "ui": 0,
+                            "return_format": "value"
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                "layout_bpb_cb": {
+                    "key": "layout_bpb_cb",
+                    "name": "content_block_module",
+                    "label": "Content block",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_bpb_cb_tag",
+                            "label": "Section Tag",
+                            "name": "section_tag",
+                            "type": "text",
+                            "instructions": "Optional eyebrow label, e.g. 'Last updated: January 2026'.",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": ""
+                        },
+                        {
+                            "key": "field_bpb_cb_width",
+                            "label": "Content Width",
+                            "name": "content_width",
+                            "type": "select",
+                            "instructions": "Reading width suits long text such as policies. Full container fills the page width.",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "25",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "narrow": "Reading width",
+                                "standard": "Full container"
+                            },
+                            "default_value": "narrow",
+                            "return_format": "value",
+                            "multiple": 0,
+                            "allow_null": 0,
+                            "ui": 0
+                        },
+                        {
+                            "key": "field_bpb_cb_bg",
+                            "label": "Background",
+                            "name": "background_style",
+                            "type": "select",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "25",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "default": "White",
+                                "warm": "Page background",
+                                "blue": "Tint",
+                                "black": "Dark"
+                            },
+                            "default_value": "default",
+                            "return_format": "value",
+                            "multiple": 0,
+                            "allow_null": 0,
+                            "ui": 0
+                        },
+                        {
+                            "key": "field_bpb_cb_hlevel",
+                            "label": "Heading level",
+                            "name": "heading_level",
+                            "aria-label": "",
+                            "type": "select",
+                            "instructions": "Use H1 only when this block is the first thing on the page (no page header module above it).",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "33",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "h2": "H2 (section heading)",
+                                "h1": "H1 (page title)"
+                            },
+                            "default_value": "h2",
+                            "return_format": "value"
+                        },
+                        {
+                            "key": "field_bpb_cb_head",
+                            "label": "Heading",
+                            "name": "heading",
+                            "type": "text",
+                            "instructions": "Optional. Its level is set by Heading level above.",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "100",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": ""
+                        },
+                        {
+                            "key": "field_bpb_cb_body",
+                            "label": "Content",
+                            "name": "body_content",
+                            "type": "wysiwyg",
+                            "instructions": "Full content. Supports headings, lists, tables, links, and blockquotes.",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "100",
+                                "class": "",
+                                "id": ""
+                            },
+                            "tabs": "all",
+                            "toolbar": "full",
+                            "media_upload": 1
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                "layout_bpb_faq": {
+                    "key": "layout_bpb_faq",
+                    "name": "faq_module",
+                    "label": "FAQ",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_bpb_faq_tag",
+                            "label": "Section Tag",
+                            "name": "section_tag",
+                            "type": "text",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "FAQ",
+                            "placeholder": "Frequently Asked Questions"
+                        },
+                        {
+                            "key": "field_bpb_faq_head",
+                            "label": "Heading",
+                            "name": "heading",
+                            "type": "text",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "100",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": ""
+                        },
+                        {
+                            "key": "field_bpb_faq_desc",
+                            "label": "Description",
+                            "name": "description",
+                            "type": "text",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "100",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": ""
+                        },
+                        {
+                            "key": "field_bpb_faq_rep",
+                            "label": "FAQ Items",
+                            "name": "faq_items",
+                            "type": "repeater",
+                            "instructions": "Add each question and answer pair.",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "100",
+                                "class": "",
+                                "id": ""
+                            },
+                            "layout": "block",
+                            "button_label": "Add Question",
+                            "min": 1,
+                            "max": 0,
+                            "collapsed": "field_bpb_faq_q",
+                            "sub_fields": [
+                                {
+                                    "key": "field_bpb_faq_q",
+                                    "label": "Question",
+                                    "name": "question",
+                                    "type": "text",
+                                    "required": true,
+                                    "conditional_logic": false,
+                                    "wrapper": {
+                                        "width": "100",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "default_value": "",
+                                    "placeholder": "How does your pricing work?"
+                                },
+                                {
+                                    "key": "field_bpb_faq_a",
+                                    "label": "Answer",
+                                    "name": "answer",
+                                    "type": "wysiwyg",
+                                    "instructions": "Supports basic formatting, lists, and links.",
+                                    "required": true,
+                                    "conditional_logic": false,
+                                    "wrapper": {
+                                        "width": "100",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "tabs": "all",
+                                    "toolbar": "basic",
+                                    "media_upload": 0
+                                }
+                            ]
+                        },
+                        {
+                            "key": "field_bpb_faq_bg",
+                            "label": "Background",
+                            "name": "background_style",
+                            "aria-label": "",
+                            "type": "select",
+                            "instructions": "",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "25",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "default": "White",
+                                "warm": "Page background",
+                                "blue": "Tint",
+                                "black": "Dark"
+                            },
+                            "default_value": "default",
+                            "multiple": 0,
+                            "allow_null": 0,
+                            "ui": 0,
+                            "return_format": "value"
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                "layout_bpb_fc": {
+                    "key": "layout_bpb_fc",
+                    "name": "feature_cards_module",
+                    "label": "Feature cards",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_bpb_fc_eye",
+                            "label": "Eyebrow / Section Tag",
+                            "name": "eyebrow",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "maxlength": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": ""
+                        },
+                        {
+                            "key": "field_bpb_fc_head",
+                            "label": "Heading",
+                            "name": "heading",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "100",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "maxlength": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": ""
+                        },
+                        {
+                            "key": "field_bpb_fc_bg",
+                            "label": "Background",
+                            "name": "background_style",
+                            "aria-label": "",
+                            "type": "select",
+                            "instructions": "",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "33",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "default": "White",
+                                "warm": "Page background",
+                                "blue": "Tint",
+                                "black": "Dark"
+                            },
+                            "default_value": "default",
+                            "multiple": 0,
+                            "allow_null": 0,
+                            "ui": 0,
+                            "ajax": 0,
+                            "placeholder": "",
+                            "return_format": "value",
+                            "create_options": 0,
+                            "save_options": 0
+                        },
+                        {
+                            "key": "field_bpb_fc_cols",
+                            "label": "Columns",
+                            "name": "columns",
+                            "aria-label": "",
+                            "type": "select",
+                            "instructions": "",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "33",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "3": "3 Columns",
+                                "2": "2 Columns"
+                            },
+                            "default_value": 3,
+                            "multiple": 0,
+                            "allow_null": 0,
+                            "ui": 0,
+                            "ajax": 0,
+                            "placeholder": "",
+                            "return_format": "value",
+                            "create_options": 0,
+                            "save_options": 0
+                        },
+                        {
+                            "key": "field_bpb_fc_cards",
+                            "label": "Cards",
+                            "name": "feature_cards",
+                            "aria-label": "",
+                            "type": "repeater",
+                            "instructions": "",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "layout": "block",
+                            "button_label": "Add Card",
+                            "collapsed": "field_bpb_fc_ctitle",
+                            "min": 0,
+                            "max": 0,
+                            "rows_per_page": 20,
+                            "sub_fields": [
+                                {
+                                    "key": "field_bpb_fc_clabel",
+                                    "label": "Card Label",
+                                    "name": "card_label",
+                                    "aria-label": "",
+                                    "type": "text",
+                                    "instructions": "",
+                                    "required": false,
+                                    "conditional_logic": false,
+                                    "wrapper": {
+                                        "width": "30",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "default_value": "",
+                                    "maxlength": "",
+                                    "placeholder": "",
+                                    "prepend": "",
+                                    "append": "",
+                                    "parent_repeater": "field_bpb_fc_cards"
+                                },
+                                {
+                                    "key": "field_bpb_fc_ctitle",
+                                    "label": "Card Title",
+                                    "name": "card_title",
+                                    "aria-label": "",
+                                    "type": "text",
+                                    "instructions": "",
+                                    "required": 1,
+                                    "conditional_logic": false,
+                                    "wrapper": {
+                                        "width": "70",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "default_value": "",
+                                    "maxlength": "",
+                                    "placeholder": "",
+                                    "prepend": "",
+                                    "append": "",
+                                    "parent_repeater": "field_bpb_fc_cards"
+                                },
+                                {
+                                    "key": "field_bpb_fc_cdesc",
+                                    "label": "Description",
+                                    "name": "card_description",
+                                    "aria-label": "",
+                                    "type": "textarea",
+                                    "instructions": "",
+                                    "required": false,
+                                    "conditional_logic": false,
+                                    "wrapper": {
+                                        "width": "100",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "rows": 3,
+                                    "default_value": "",
+                                    "new_lines": "",
+                                    "maxlength": "",
+                                    "placeholder": "",
+                                    "parent_repeater": "field_bpb_fc_cards"
+                                }
+                            ]
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                "layout_bpb_proc": {
+                    "key": "layout_bpb_proc",
+                    "name": "process_module",
+                    "label": "Process steps",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_bpb_proc_tag",
+                            "label": "Section Tag",
+                            "name": "section_tag",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "Methodology",
+                            "maxlength": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": ""
+                        },
+                        {
+                            "key": "field_bpb_proc_head",
+                            "label": "Heading",
+                            "name": "heading",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 1,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "100",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "Our Process",
+                            "maxlength": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": ""
+                        },
+                        {
+                            "key": "field_bpb_proc_desc",
+                            "label": "Description",
+                            "name": "description",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "100",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "maxlength": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": ""
+                        },
+                        {
+                            "key": "field_bpb_proc_rep",
+                            "label": "Steps",
+                            "name": "steps",
+                            "aria-label": "",
+                            "type": "repeater",
+                            "instructions": "",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "min": 0,
+                            "max": 0,
+                            "layout": "table",
+                            "button_label": "Add Step",
+                            "collapsed": "field_bpb_proc_title",
+                            "rows_per_page": 20,
+                            "sub_fields": [
+                                {
+                                    "key": "field_bpb_proc_num",
+                                    "label": "Number",
+                                    "name": "step_number",
+                                    "aria-label": "",
+                                    "type": "text",
+                                    "instructions": "E.g. 01 - leave blank to auto-number.",
+                                    "required": false,
+                                    "conditional_logic": false,
+                                    "wrapper": {
+                                        "width": "10",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "placeholder": "01",
+                                    "default_value": "",
+                                    "maxlength": "",
+                                    "prepend": "",
+                                    "append": "",
+                                    "parent_repeater": "field_bpb_proc_rep"
+                                },
+                                {
+                                    "key": "field_bpb_proc_title",
+                                    "label": "Step Title",
+                                    "name": "step_title",
+                                    "aria-label": "",
+                                    "type": "text",
+                                    "instructions": "",
+                                    "required": 1,
+                                    "conditional_logic": false,
+                                    "wrapper": {
+                                        "width": "30",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "placeholder": "Understand",
+                                    "default_value": "",
+                                    "maxlength": "",
+                                    "prepend": "",
+                                    "append": "",
+                                    "parent_repeater": "field_bpb_proc_rep"
+                                },
+                                {
+                                    "key": "field_bpb_proc_sdesc",
+                                    "label": "Description",
+                                    "name": "step_description",
+                                    "aria-label": "",
+                                    "type": "text",
+                                    "instructions": "",
+                                    "required": false,
+                                    "conditional_logic": false,
+                                    "wrapper": {
+                                        "width": "60",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "default_value": "",
+                                    "maxlength": "",
+                                    "placeholder": "",
+                                    "prepend": "",
+                                    "append": "",
+                                    "parent_repeater": "field_bpb_proc_rep"
+                                }
+                            ]
+                        },
+                        {
+                            "key": "field_bpb_proc_bg",
+                            "label": "Background",
+                            "name": "background_style",
+                            "aria-label": "",
+                            "type": "select",
+                            "instructions": "",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "25",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "default": "White",
+                                "warm": "Page background",
+                                "blue": "Tint",
+                                "black": "Dark"
+                            },
+                            "default_value": "default",
+                            "multiple": 0,
+                            "allow_null": 0,
+                            "ui": 0,
+                            "return_format": "value"
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                "layout_bpb_ctac": {
+                    "key": "layout_bpb_ctac",
+                    "name": "cta_compact_module",
+                    "label": "Call to action (compact)",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_bpb_ctac_head",
+                            "label": "Heading",
+                            "name": "heading",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 1,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "100",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "maxlength": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": ""
+                        },
+                        {
+                            "key": "field_bpb_ctac_desc",
+                            "label": "Description",
+                            "name": "description",
+                            "aria-label": "",
+                            "type": "textarea",
+                            "instructions": "",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "100",
+                                "class": "",
+                                "id": ""
+                            },
+                            "rows": 2,
+                            "default_value": "",
+                            "new_lines": "",
+                            "maxlength": "",
+                            "placeholder": ""
+                        },
+                        {
+                            "key": "field_bpb_ctac_pbtn",
+                            "label": "Primary Button",
+                            "name": "primary_button",
+                            "aria-label": "",
+                            "type": "link",
+                            "instructions": "",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "return_format": "array"
+                        },
+                        {
+                            "key": "field_bpb_ctac_sbtn",
+                            "label": "Secondary Button (outline)",
+                            "name": "secondary_button",
+                            "aria-label": "",
+                            "type": "link",
+                            "instructions": "",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "return_format": "array"
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                "layout_bpb_mtt": {
+                    "key": "layout_bpb_mtt",
+                    "name": "meet_the_team_module",
+                    "label": "Meet the team",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_bpb_mtt_tag",
+                            "label": "Section Tag",
+                            "name": "section_tag",
+                            "type": "text",
+                            "default_value": "The Team",
+                            "placeholder": "The Team",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            }
+                        },
+                        {
+                            "key": "field_bpb_mtt_head",
+                            "label": "Heading",
+                            "name": "heading",
+                            "type": "text",
+                            "required": true,
+                            "default_value": "Meet the Team",
+                            "placeholder": "Meet the people behind the work.",
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "100",
+                                "class": "",
+                                "id": ""
+                            }
+                        },
+                        {
+                            "key": "field_bpb_mtt_intro",
+                            "label": "Intro Text",
+                            "name": "intro",
+                            "type": "wysiwyg",
+                            "instructions": "Optional introductory paragraph below the heading.",
+                            "required": false,
+                            "conditional_logic": false,
+                            "tabs": "all",
+                            "toolbar": "basic",
+                            "media_upload": 0,
+                            "wrapper": {
+                                "width": "100",
+                                "class": "",
+                                "id": ""
+                            }
+                        },
+                        {
+                            "key": "field_bpb_mtt_source",
+                            "label": "Show",
+                            "name": "source",
+                            "aria-label": "",
+                            "type": "radio",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "all": "All team members (in Team menu order)",
+                                "selected": "Selected team members"
+                            },
+                            "default_value": "all",
+                            "return_format": "value",
+                            "layout": "horizontal"
+                        },
+                        {
+                            "key": "field_bpb_mtt_members",
+                            "label": "Team Members",
+                            "name": "team_members",
+                            "type": "relationship",
+                            "instructions": "Select team members to display. Drag to reorder.",
+                            "required": false,
+                            "conditional_logic": [
+                                [
+                                    {
+                                        "field": "field_bpb_mtt_source",
+                                        "operator": "==",
+                                        "value": "selected"
+                                    }
+                                ]
+                            ],
+                            "post_type": [
+                                "team"
+                            ],
+                            "taxonomy": "",
+                            "filters": [
+                                "search"
+                            ],
+                            "return_format": "object",
+                            "min": 0,
+                            "max": 0,
+                            "wrapper": {
+                                "width": "100",
+                                "class": "",
+                                "id": ""
+                            }
+                        },
+                        {
+                            "key": "field_bpb_mtt_bg",
+                            "label": "Background",
+                            "name": "background_style",
+                            "aria-label": "",
+                            "type": "select",
+                            "instructions": "",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "25",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "default": "White",
+                                "warm": "Page background",
+                                "blue": "Tint",
+                                "black": "Dark"
+                            },
+                            "default_value": "default",
+                            "multiple": 0,
+                            "allow_null": 0,
+                            "ui": 0,
+                            "return_format": "value"
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                }
+            },
+            "button_label": "Add module",
+            "min": 0,
+            "max": 0
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "page"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "acf_after_title",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": [
+        "the_content",
+        "excerpt",
+        "discussion",
+        "comments",
+        "author",
+        "format",
+        "send-trackbacks"
+    ],
+    "active": true,
+    "description": "Support Desk page builder: one layout per page module.",
+    "show_in_rest": 0,
+    "modified": 1791417600
+}

@@ -1,0 +1,16 @@
+/*
+Theme Name: Support Desk
+Description: Companion theme for the Support Desk plugin: a branded help centre, client portal and request form, built with an ACF Pro page builder. Logo, name and colours come from Support → Settings → Appearance.
+Version: 0.3.0
+Requires at least: 6.2
+Tested up to: 6.8
+Requires PHP: 8.1
+Author: Support Desk
+Text Domain: support-desk
+License: GPL-2.0-or-later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Update URI: false
+Tags: blog, one-column, custom-logo, custom-menu, editor-style, accessibility-ready
+*/
+
+/* Styles live in assets/css/ — this file only holds the theme header. */

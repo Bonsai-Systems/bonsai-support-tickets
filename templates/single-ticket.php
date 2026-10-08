@@ -2,7 +2,7 @@
 /**
  * One request: the conversation (client-visible messages only) and a reply form.
  *
- * Override: copy to {theme}/bonsai-support/single-ticket.php
+ * Override: copy to {theme}/support-desk/single-ticket.php
  * Keep the reply form's field names, nonce and action field.
  *
  * @var WP_Post  $ticket      The ticket.
@@ -16,7 +16,7 @@
  * @var string   $accept      Accepted file extensions.
  * @var string   $notice      created|replied|solved after a redirect.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;

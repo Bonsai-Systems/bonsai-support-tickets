@@ -15,7 +15,7 @@
  *
  * Auto-replies, bounces, bulk mail and our own outgoing mail are skipped.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -28,7 +28,6 @@ class BST_Inbound {
 	const STATUS_OPTION = 'bst_inbound_status';
 	const LOCK          = 'bst_inbound_lock';
 	const BATCH_SIZE    = 20;
-	const FAILED_LABEL  = 'Bonsai Support/Failed';
 
 	/**
 	 * Poll the mailbox once. Called by cron and the "Check now" button.
@@ -77,12 +76,12 @@ class BST_Inbound {
 				} catch ( Throwable $e ) {
 					// Mark it read anyway so one bad email can't block the queue forever;
 					// the Failed label makes it easy to find in Gmail.
-					error_log( 'Bonsai Support Tickets: failed processing email UID ' . $uid . ': ' . $e->getMessage() );
+					error_log( BST_PRODUCT_NAME . ': failed processing email UID ' . $uid . ': ' . $e->getMessage() );
 					$result = array(
 						'result'    => 'failed',
 						'ticket_id' => 0,
 					);
-					$label  = self::FAILED_LABEL;
+					$label  = self::failed_label();
 				}
 
 				$client->mark_seen( $uid );
@@ -95,13 +94,25 @@ class BST_Inbound {
 			$client->logout();
 		} catch ( Throwable $e ) {
 			$status['error'] = $e->getMessage();
-			error_log( 'Bonsai Support Tickets: mailbox check failed: ' . $e->getMessage() );
+			error_log( BST_PRODUCT_NAME . ': mailbox check failed: ' . $e->getMessage() );
 		}
 
 		delete_transient( self::LOCK );
 		self::save_status( $status );
 
 		return $status;
+	}
+
+	/**
+	 * Gmail label for emails that failed: a "Failed" sibling of the processed
+	 * label ("Support/Processed" → "Support/Failed").
+	 *
+	 * @return string
+	 */
+	public static function failed_label() {
+		$processed = trim( (string) BST_Settings::get( 'imap_processed_tag' ) );
+		$slash     = strrpos( $processed, '/' );
+		return false !== $slash ? substr( $processed, 0, $slash ) . '/Failed' : 'Support/Failed';
 	}
 
 	/**

@@ -4,7 +4,7 @@
  * references, permissions. Everything that changes a ticket goes through
  * here so activity logging and notifications happen in one place.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -160,7 +160,7 @@ class BST_Tickets {
 	}
 
 	/**
-	 * Reference, e.g. BDC-1042.
+	 * Reference, e.g. SUP-1042.
 	 *
 	 * @param int $ticket_id Ticket ID.
 	 * @return string
@@ -252,7 +252,7 @@ class BST_Tickets {
 	/**
 	 * Find a ticket by reference.
 	 *
-	 * @param string $ref e.g. BDC-1042.
+	 * @param string $ref e.g. SUP-1042.
 	 * @return int Ticket ID or 0.
 	 */
 	public static function find_by_ref( $ref ) {
@@ -421,7 +421,7 @@ class BST_Tickets {
 		}
 
 		// Should never happen. Fall back to something unique rather than fail the ticket.
-		error_log( 'Bonsai Support Tickets: could not reserve a reference number, using a timestamp.' );
+		error_log( BST_PRODUCT_NAME . ': could not reserve a reference number, using a timestamp.' );
 		return (int) gmdate( 'ymdHis' );
 	}
 
@@ -481,7 +481,8 @@ class BST_Tickets {
 	 *     @type int     $type_id          bst_ticket_type term ID.
 	 *     @type string  $priority         Priority slug.
 	 *     @type string  $site_url         Site/page the issue is on.
-	 *     @type string  $source           web|email|admin.
+	 *     @type string  $source           web|email|admin|monitor.
+	 *     @type int     $company_id       Client company. Defaults to the client's company.
 	 *     @type int     $actor_id         Who is creating it (client, or agent on their behalf). Defaults to client_id.
 	 *     @type string  $email_message_id Inbound Message-ID (dedupe).
 	 *     @type array[] $uploads          Normalised $_FILES entries (already validated).
@@ -502,6 +503,7 @@ class BST_Tickets {
 				'priority'         => 'normal',
 				'site_url'         => '',
 				'source'           => 'web',
+				'company_id'       => 0,
 				'actor_id'         => null,
 				'email_message_id' => '',
 				'uploads'          => array(),
@@ -528,7 +530,7 @@ class BST_Tickets {
 		);
 
 		if ( is_wp_error( $ticket_id ) ) {
-			error_log( 'Bonsai Support Tickets: could not create ticket: ' . $ticket_id->get_error_message() );
+			error_log( BST_PRODUCT_NAME . ': could not create ticket: ' . $ticket_id->get_error_message() );
 			return $ticket_id;
 		}
 
@@ -547,8 +549,14 @@ class BST_Tickets {
 		if ( ! $client_id ) {
 			update_post_meta( $ticket_id, self::META_CONTACT_EMAIL, sanitize_email( $args['contact_email'] ) );
 			update_post_meta( $ticket_id, self::META_CONTACT_NAME, sanitize_text_field( $args['contact_name'] ) );
-			update_post_meta( $ticket_id, self::META_UNVERIFIED, 1 );
+			// Uptime alerts have no sender to distrust; they're team-only, not unknown mail.
+			if ( 'monitor' !== $args['source'] ) {
+				update_post_meta( $ticket_id, self::META_UNVERIFIED, 1 );
+			}
 		}
+
+		// Record the company now, so it stays right if the person moves on later.
+		BST_Companies::stamp_ticket( $ticket_id, $args['company_id'] ? (int) $args['company_id'] : BST_Companies::for_user( $client_id ) );
 
 		if ( $args['type_id'] && term_exists( (int) $args['type_id'], BST_Post_Types::TICKET_TYPE ) ) {
 			wp_set_object_terms( $ticket_id, array( (int) $args['type_id'] ), BST_Post_Types::TICKET_TYPE );
@@ -603,8 +611,9 @@ class BST_Tickets {
 	 *     @type string  $author_name      For unknown senders.
 	 *     @type string  $visibility       external|internal.
 	 *     @type string  $body             Message HTML.
-	 *     @type string  $source           web|admin|email.
+	 *     @type string  $source           web|admin|email|monitor.
 	 *     @type string  $status           Explicit status to set afterwards.
+	 *     @type bool    $system           Written by the plugin (e.g. an uptime alert), not a person: may be an internal note with no user.
 	 *     @type string  $email_message_id Inbound Message-ID (dedupe).
 	 *     @type array[] $uploads          Normalised, validated $_FILES entries.
 	 *     @type array[] $raw_attachments  Email attachments.
@@ -622,6 +631,7 @@ class BST_Tickets {
 				'body'             => '',
 				'source'           => 'web',
 				'status'           => '',
+				'system'           => false,
 				'email_message_id' => '',
 				'uploads'          => array(),
 				'raw_attachments'  => array(),
@@ -640,8 +650,8 @@ class BST_Tickets {
 		$is_agent    = self::is_agent( $user_id );
 		$is_internal = BST_Messages::INTERNAL === $args['visibility'];
 
-		// Only agents can write internal notes.
-		if ( $is_internal && ! $is_agent ) {
+		// Only agents (or the plugin itself) can write internal notes.
+		if ( $is_internal && ! $is_agent && ! $args['system'] ) {
 			$is_internal = false;
 		}
 
@@ -781,6 +791,15 @@ class BST_Tickets {
 		}
 		update_post_meta( $ticket_id, self::META_PRIORITY, $priority );
 		BST_Activity::log( $ticket_id, 'priority', $old, $priority );
+
+		/**
+		 * Ticket priority changed (SLA targets follow it).
+		 *
+		 * @param int    $ticket_id Ticket ID.
+		 * @param string $old       Old priority.
+		 * @param string $priority  New priority.
+		 */
+		do_action( 'bst_priority_changed', (int) $ticket_id, $old, $priority );
 		return true;
 	}
 
@@ -817,7 +836,8 @@ class BST_Tickets {
 
 	/**
 	 * Link a ticket to a client account. Clears the unverified flag, so the
-	 * client starts receiving emails about it.
+	 * client starts receiving emails about it, and moves the ticket to the
+	 * client's company (if they have one).
 	 *
 	 * @param int $ticket_id Ticket ID.
 	 * @param int $client_id Client user ID.
@@ -837,6 +857,39 @@ class BST_Tickets {
 
 		delete_post_meta( $ticket_id, self::META_UNVERIFIED );
 		BST_Activity::log( $ticket_id, 'client', (string) $old, (string) $client_id );
+
+		$company_id = BST_Companies::for_user( $client_id );
+		if ( $company_id ) {
+			self::set_company( $ticket_id, $company_id );
+		}
+		return true;
+	}
+
+	/**
+	 * Set the company a ticket is for (0 clears it). Logged.
+	 *
+	 * @param int $ticket_id  Ticket ID.
+	 * @param int $company_id Company ID or 0.
+	 * @return bool Whether it changed.
+	 */
+	public static function set_company( $ticket_id, $company_id ) {
+		$company_id = (int) $company_id;
+		$old        = BST_Companies::for_ticket( $ticket_id );
+		if ( $old === $company_id || ( $company_id && ! BST_Companies::exists( $company_id ) ) ) {
+			return false;
+		}
+
+		BST_Companies::stamp_ticket( $ticket_id, $company_id );
+		BST_Activity::log( $ticket_id, 'company', (string) $old, (string) $company_id );
+
+		/**
+		 * A ticket moved to a different client company.
+		 *
+		 * @param int $ticket_id  Ticket ID.
+		 * @param int $old        Previous company (0 = none).
+		 * @param int $company_id New company (0 = none).
+		 */
+		do_action( 'bst_ticket_company_changed', (int) $ticket_id, (int) $old, $company_id );
 		return true;
 	}
 

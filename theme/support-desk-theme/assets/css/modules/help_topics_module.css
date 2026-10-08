@@ -1,0 +1,26 @@
+/**
+ * Help Topics module. The grid itself is styled in help.css (shared with
+ * the /help/ archive), which page-builder.php loads for this module.
+ */
+
+.help-topics-module__all {
+	margin-top: 3rem;
+}
+
+/* Topic cards stay white on black sections; keep their text dark. */
+.help-topics-module.bg--black .help-topic__title a,
+.help-topics-module.bg--black .help-topic__more {
+	color: var(--bonsai-black);
+}
+
+.help-topics-module.bg--black .help-topic__list a {
+	color: var(--bonsai-grey-dark);
+}
+
+.help-topics-module.bg--black .help-topic__desc {
+	color: var(--bonsai-grey-mid);
+}
+
+.help-topics-module.bg--black .help-topic :focus-visible {
+	outline-color: var(--bonsai-accent-text);
+}

@@ -10,7 +10,7 @@
  * ticket's secret token (inbound+t{ID}-{token}@domain), and a References
  * header so mail clients group a ticket's emails into one conversation.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -51,7 +51,7 @@ class BST_Mailer {
 	*/
 
 	/**
-	 * New ticket: acknowledge to the client, alert the agents.
+	 * New ticket (web form or email in): auto-reply to the client, alert the agents.
 	 *
 	 * @param int $ticket_id  Ticket ID.
 	 * @param int $message_id First message.
@@ -59,21 +59,18 @@ class BST_Mailer {
 	 */
 	public static function on_ticket_created( $ticket_id, $message_id, $actor_id ) {
 		$message = BST_Messages::get( $message_id );
-		$ref     = BST_Tickets::ref( $ticket_id );
 		$subject = get_the_title( $ticket_id );
 
-		// Client acknowledgement. Never to unverified senders — that would
+		// Auto-reply, editable under Support → Settings. Only fires here, so
+		// replies never trigger it. Never to unverified senders — that would
 		// let anyone use us to send mail to any address (backscatter).
-		if ( ! BST_Tickets::is_unverified( $ticket_id ) ) {
+		if ( BST_Settings::get( 'autoreply_enabled' ) && ! BST_Tickets::is_unverified( $ticket_id ) ) {
 			self::send_to_client(
 				$ticket_id,
-				/* translators: %s: ticket subject. */
-				sprintf( __( 'We have received your request: %s', 'bonsai-support-tickets' ), $subject ),
+				self::fill_placeholders( BST_Settings::get( 'autoreply_subject' ), $ticket_id, false ),
 				array(
-					'heading' => __( 'Thanks — we have got your request', 'bonsai-support-tickets' ),
-					/* translators: %s: ticket reference. */
-					'intro'   => sprintf( __( 'Your reference is %s. One of the team will get back to you shortly. You can reply to this email to add more detail.', 'bonsai-support-tickets' ), $ref ),
-					'message' => $message,
+					'body_html' => self::fill_placeholders( BST_Settings::get( 'autoreply_body' ), $ticket_id, true ),
+					'message'   => $message,
 				)
 			);
 		}
@@ -226,6 +223,56 @@ class BST_Mailer {
 
 	/*
 	|----------------------------------------------------------------------
+	| Placeholders
+	|----------------------------------------------------------------------
+	*/
+
+	/**
+	 * Placeholders available in editable email templates, with their values
+	 * for a ticket. Pass 0 to get the list for the settings screen.
+	 *
+	 * @param int $ticket_id Ticket ID.
+	 * @return array<string,string> Placeholder => value.
+	 */
+	public static function placeholders( $ticket_id = 0 ) {
+		$ticket_id = (int) $ticket_id;
+
+		// Raw title, not get_the_title(): that adds curly-quote entities that
+		// would show up literally in a subject line.
+		$placeholders = array(
+			'{{site.name}}'    => BST_Settings::brand_name(),
+			'{{ticket.title}}' => $ticket_id ? (string) get_post_field( 'post_title', $ticket_id, 'raw' ) : '',
+			'{{ticket.id}}'    => $ticket_id ? BST_Tickets::ref( $ticket_id ) : '',
+			'{{client.name}}'  => $ticket_id ? BST_Tickets::contact_name( $ticket_id ) : '',
+		);
+
+		/**
+		 * Filter the placeholders available in editable emails.
+		 *
+		 * @param array<string,string> $placeholders Placeholder => value.
+		 * @param int                  $ticket_id    Ticket ID (0 when listing them).
+		 */
+		return apply_filters( 'bst_email_placeholders', $placeholders, $ticket_id );
+	}
+
+	/**
+	 * Swap placeholders for a ticket's values.
+	 *
+	 * @param string $template  Text containing {{placeholders}}.
+	 * @param int    $ticket_id Ticket ID.
+	 * @param bool   $html      Template is HTML, so escape the values.
+	 * @return string
+	 */
+	public static function fill_placeholders( $template, $ticket_id, $html ) {
+		$values = self::placeholders( $ticket_id );
+		if ( $html ) {
+			$values = array_map( 'esc_html', $values );
+		}
+		return strtr( (string) $template, $values );
+	}
+
+	/*
+	|----------------------------------------------------------------------
 	| Recipients
 	|----------------------------------------------------------------------
 	*/
@@ -263,7 +310,7 @@ class BST_Mailer {
 	 *
 	 * @param int    $ticket_id         Ticket ID.
 	 * @param string $subject           Subject (ref is prepended).
-	 * @param array  $content           heading, intro, message.
+	 * @param array  $content           heading, intro, body_html, message.
 	 * @param bool   $allow_unverified  Send even when the ticket is unverified.
 	 */
 	private static function send_to_client( $ticket_id, $subject, array $content, $allow_unverified = false ) {
@@ -327,6 +374,7 @@ class BST_Mailer {
 			array(
 				'heading'      => '',
 				'intro'        => '',
+				'body_html'    => '',
 				'details'      => array(),
 				'message'      => null,
 				'internal'     => false,
@@ -339,8 +387,9 @@ class BST_Mailer {
 		$content['ref']          = '';
 		$content['subject']      = '';
 		$content['reply_marker'] = '';
-		$content['logo_url']     = BST_Settings::get( 'email_logo_url' ) ? BST_Settings::get( 'email_logo_url' ) : BST_URL . 'assets/bonsai-avatar.jpg';
-		$content['site_name']    = BST_Settings::get( 'from_name' ) ? BST_Settings::get( 'from_name' ) : get_bloginfo( 'name' );
+		$content['logo_url']     = (string) BST_Settings::get( 'email_logo_url' ); // '' = support name as text.
+		$content['site_name']    = BST_Settings::brand_name();
+		$content['colors']       = BST_Appearance::email_colors();
 
 		$html = BST_Template::capture( 'emails/layout.php', $content );
 		$text = self::html_to_text( $html );
@@ -348,7 +397,7 @@ class BST_Mailer {
 		$headers    = array( 'Content-Type: text/html; charset=UTF-8', 'Auto-Submitted: auto-generated' );
 		$from_email = BST_Settings::get( 'from_email' );
 		if ( is_email( $from_email ) ) {
-			$headers[] = sprintf( 'From: %s <%s>', self::header_safe( BST_Settings::get( 'from_name' ) ), $from_email );
+			$headers[] = sprintf( 'From: %s <%s>', self::header_safe( BST_Settings::from_name() ), $from_email );
 		}
 
 		$set_mailer = function ( $phpmailer ) use ( $text ) {
@@ -373,7 +422,7 @@ class BST_Mailer {
 		remove_action( 'phpmailer_init', $set_mailer );
 
 		if ( ! $sent ) {
-			error_log( 'Bonsai Support Tickets: wp_mail failed sending account email "' . $subject . '" to ' . $to );
+			error_log( BST_PRODUCT_NAME . ': wp_mail failed sending account email "' . $subject . '" to ' . $to );
 		}
 		return $sent;
 	}
@@ -398,6 +447,7 @@ class BST_Mailer {
 			array(
 				'heading'      => '',
 				'intro'        => '',
+				'body_html'    => '',
 				'message'      => null,
 				'internal'     => false,
 				'button_url'   => '',
@@ -409,8 +459,9 @@ class BST_Mailer {
 		$content['ref']          = $ref;
 		$content['subject']      = get_the_title( $ticket_id );
 		$content['reply_marker'] = $reply_to ? self::REPLY_MARKER : '';
-		$content['logo_url']     = BST_Settings::get( 'email_logo_url' ) ? BST_Settings::get( 'email_logo_url' ) : BST_URL . 'assets/bonsai-avatar.jpg';
-		$content['site_name']    = BST_Settings::get( 'from_name' ) ? BST_Settings::get( 'from_name' ) : get_bloginfo( 'name' );
+		$content['logo_url']     = (string) BST_Settings::get( 'email_logo_url' ); // '' = support name as text.
+		$content['site_name']    = BST_Settings::brand_name();
+		$content['colors']       = BST_Appearance::email_colors();
 
 		$html = BST_Template::capture( 'emails/layout.php', $content );
 		$text = self::html_to_text( $html );
@@ -419,10 +470,10 @@ class BST_Mailer {
 
 		$from_email = BST_Settings::get( 'from_email' );
 		if ( is_email( $from_email ) ) {
-			$headers[] = sprintf( 'From: %s <%s>', self::header_safe( BST_Settings::get( 'from_name' ) ), $from_email );
+			$headers[] = sprintf( 'From: %s <%s>', self::header_safe( BST_Settings::from_name() ), $from_email );
 		}
 		if ( $reply_to ) {
-			$headers[] = sprintf( 'Reply-To: %s <%s>', self::header_safe( BST_Settings::get( 'from_name' ) ), $reply_to );
+			$headers[] = sprintf( 'Reply-To: %s <%s>', self::header_safe( BST_Settings::from_name() ), $reply_to );
 		}
 
 		// Thread every email for this ticket together in the recipient's mail client.
@@ -465,14 +516,14 @@ class BST_Mailer {
 		remove_action( 'phpmailer_init', $set_mailer );
 
 		if ( ! $sent ) {
-			error_log( 'Bonsai Support Tickets: wp_mail failed sending "' . $full_subject . '" to ' . $to );
+			error_log( BST_PRODUCT_NAME . ': wp_mail failed sending "' . $full_subject . '" to ' . $to );
 		}
 		return $sent;
 	}
 
 	/**
 	 * Reply-To address for a ticket. With plus addressing on, Gmail delivers
-	 * bonsaisupport+t123-abcdef1234@gmail.com to bonsaisupport@gmail.com, and
+	 * support+t123-abcdef1234@example.com to support@example.com, and
 	 * the inbound processor reads the ticket ID and token back out of it.
 	 *
 	 * @param int $ticket_id Ticket ID.
@@ -499,6 +550,7 @@ class BST_Mailer {
 	public static function html_to_text( $html ) {
 		$html = preg_replace( '#<(head|style|script)[^>]*>.*?</\1>#is', '', $html );
 		$html = preg_replace( '#<a [^>]*href="([^"]+)"[^>]*>(.*?)</a>#is', '$2 ($1)', $html );
+		$html = preg_replace( '#<li[^>]*>#i', '- ', $html );
 		$html = preg_replace( '#<(br|/p|/div|/h[1-6]|/tr|/li)[^>]*>#i', "\n", $html );
 		$text = html_entity_decode( wp_strip_all_tags( $html ), ENT_QUOTES, 'UTF-8' );
 		$text = preg_replace( "/[ \t]+/", ' ', $text );

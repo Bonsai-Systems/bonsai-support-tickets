@@ -8,7 +8,7 @@
  *
  * No WordPress dependencies, so it can be unit tested on its own.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;

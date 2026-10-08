@@ -1,0 +1,67 @@
+/**
+ * Process module — numbered steps. Ported from the original theme; the column
+ * count now follows the number of steps (--1 to --5) instead of always 5.
+ */
+
+.process-module__steps {
+	display: grid;
+	gap: 2rem;
+}
+
+.process-module__steps--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.process-module__steps--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.process-module__steps--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.process-module__steps--5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+
+@media (max-width: 1080px) {
+	.process-module__steps--4,
+	.process-module__steps--5 {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@media (max-width: 768px) {
+	.process-module__steps {
+		grid-template-columns: 1fr;
+		gap: 2.5rem;
+	}
+}
+
+.process-module__step {
+	display: flex;
+	flex-direction: column;
+	padding-top: 1.5rem;
+	border-top: 1px solid var(--bonsai-border-strong);
+}
+
+.process-module__num {
+	margin-bottom: 1.25rem;
+	font-size: 0.875rem;
+	font-weight: 600;
+	color: var(--bonsai-accent-text);
+}
+
+.process-module__step-title {
+	margin-bottom: 0.75rem;
+	font-size: 1.25rem;
+	font-weight: 500;
+	color: var(--bonsai-black);
+}
+
+.process-module__step-desc {
+	font-size: 0.9375rem;
+	line-height: 1.6;
+	color: var(--bonsai-grey-dark);
+}
+
+.process-module.bg--black .process-module__step {
+	border-top-color: var(--bonsai-border-dark);
+}
+
+.process-module.bg--black .process-module__num {
+	color: var(--bonsai-accent);
+}
+
+.process-module.bg--black .process-module__step-title {
+	color: var(--bonsai-white);
+}

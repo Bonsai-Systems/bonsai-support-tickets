@@ -1,0 +1,48 @@
+/**
+ * CTA Compact module — always black. Ported from the original theme.
+ */
+
+.site-main > .cta-compact-module {
+	text-align: center;
+	color: var(--bonsai-warm);
+	background-color: var(--bonsai-black);
+	border-bottom: 0;
+}
+
+.cta-compact-module__content {
+	max-width: 700px;
+	margin: 0 auto;
+}
+
+.cta-compact-module .display-heading {
+	margin-bottom: 1rem;
+	font-size: clamp(2rem, 3.5vw, 2.75rem);
+	color: var(--bonsai-warm);
+}
+
+.cta-compact-module__desc {
+	margin-bottom: 2.5rem;
+	font-size: 1.125rem;
+	font-weight: 300;
+	line-height: 1.6;
+	color: rgba(255, 255, 255, 0.78);
+}
+
+.cta-compact-module__actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: 1rem 1.5rem;
+}
+
+.cta-compact-module :focus-visible {
+	outline-color: var(--bonsai-white);
+}
+
+@media (max-width: 480px) {
+	.cta-compact-module__actions {
+		flex-direction: column;
+		align-items: stretch;
+	}
+}

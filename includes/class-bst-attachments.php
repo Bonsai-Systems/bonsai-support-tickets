@@ -6,7 +6,7 @@
  * .bin extension (so nothing in there can ever execute), and are only
  * served through serve(), after a permission check.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -177,7 +177,7 @@ class BST_Attachments {
 			$check = wp_check_filetype_and_ext( $file['tmp_name'], $file['name'], self::allowed_types() );
 			$path  = self::new_path();
 			if ( ! $path || ! move_uploaded_file( $file['tmp_name'], self::base_dir() . $path ) ) {
-				error_log( 'Bonsai Support Tickets: could not store upload ' . $file['name'] );
+				error_log( BST_PRODUCT_NAME . ': could not store upload ' . $file['name'] );
 				continue;
 			}
 			$ids[] = self::insert_row( $ticket_id, $message_id, $file['name'], $path, $check['type'], (int) $file['size'] );
@@ -198,13 +198,13 @@ class BST_Attachments {
 	public static function store_raw( $filename, $content, $ticket_id, $message_id ) {
 		$size = strlen( $content );
 		if ( 0 === $size || $size > self::max_bytes() ) {
-			error_log( 'Bonsai Support Tickets: skipped email attachment ' . $filename . ' (' . $size . ' bytes)' );
+			error_log( BST_PRODUCT_NAME . ': skipped email attachment ' . $filename . ' (' . $size . ' bytes)' );
 			return false;
 		}
 
 		$type = wp_check_filetype( $filename, self::allowed_types() );
 		if ( empty( $type['type'] ) ) {
-			error_log( 'Bonsai Support Tickets: skipped email attachment ' . $filename . ' (type not allowed)' );
+			error_log( BST_PRODUCT_NAME . ': skipped email attachment ' . $filename . ' (type not allowed)' );
 			return false;
 		}
 
@@ -216,14 +216,14 @@ class BST_Attachments {
 				finfo_close( $finfo );
 			}
 			if ( $real && ! self::mime_matches( $real, $type['type'] ) ) {
-				error_log( 'Bonsai Support Tickets: skipped email attachment ' . $filename . ' (content is ' . $real . ')' );
+				error_log( BST_PRODUCT_NAME . ': skipped email attachment ' . $filename . ' (content is ' . $real . ')' );
 				return false;
 			}
 		}
 
 		$path = self::new_path();
 		if ( ! $path || false === file_put_contents( self::base_dir() . $path, $content ) ) { // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
-			error_log( 'Bonsai Support Tickets: could not store email attachment ' . $filename );
+			error_log( BST_PRODUCT_NAME . ': could not store email attachment ' . $filename );
 			return false;
 		}
 

@@ -29,6 +29,21 @@ jobs:
             exit 1
           fi
 
+      # The theme ships inside the plugin zip. Sites update it by comparing
+      # file fingerprints, so its version needn't change every release, but
+      # its two version numbers must agree and it must be complete.
+      - name: Check bundled theme
+        run: |
+          dir=theme/support-desk-theme
+          test -f "$dir/style.css" -a -f "$dir/functions.php" -a -f "$dir/screenshot.png" || { echo "::error::Bundled theme is incomplete."; exit 1; }
+          style=$(grep -m1 -E '^Version:' "$dir/style.css" | awk '{print $NF}')
+          constant=$(sed -nE "s/.*define\( 'BSUP_VERSION', '([^']+)'.*/\1/p" "$dir/functions.php" | head -1)
+          echo "Theme style.css: $style  BSUP_VERSION: $constant"
+          if [ -z "$style" ] || [ "$style" != "$constant" ]; then
+            echo "::error::Theme Version in style.css ($style) must match BSUP_VERSION ($constant)."
+            exit 1
+          fi
+
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.1'

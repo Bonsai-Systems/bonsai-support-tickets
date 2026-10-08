@@ -1,0 +1,142 @@
+/**
+ * FAQ module — accordion.
+ * Ported from the original theme. The question button now sits inside an h3
+ * so the questions show up in the heading outline.
+ */
+
+.faq-module__inner {
+	max-width: 860px;
+}
+
+.faq-module__header {
+	margin-bottom: 3.5rem;
+}
+
+.faq-module__list {
+	border-top: 1px solid var(--bonsai-border-strong);
+}
+
+.faq-module__item {
+	border-bottom: 1px solid var(--bonsai-border-strong);
+}
+
+.faq-module__q-heading {
+	font-size: inherit;
+	font-weight: inherit;
+}
+
+.faq-module__question {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 2rem;
+	width: 100%;
+	padding: 1.6rem 0;
+	font-family: var(--bonsai-sans);
+	font-size: 1.0625rem;
+	font-weight: 500;
+	line-height: 1.4;
+	text-align: left;
+	color: var(--bonsai-black);
+	background: transparent;
+	border: 0;
+	transition: color 0.2s ease;
+}
+
+.faq-module__question:hover {
+	color: var(--bonsai-accent-text);
+}
+
+.faq-module__icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	width: 20px;
+	height: 20px;
+	color: var(--bonsai-grey-mid);
+	transition: color 0.2s ease;
+}
+
+.faq-module__question:hover .faq-module__icon,
+.faq-module__question[aria-expanded="true"] .faq-module__icon {
+	color: var(--bonsai-accent-text);
+}
+
+/* + becomes − when open. */
+.faq-icon-v {
+	transform-origin: center;
+	transition: transform 0.35s var(--bonsai-curve), opacity 0.2s ease;
+}
+
+.faq-module__question[aria-expanded="true"] .faq-icon-v {
+	transform: scaleY(0);
+	opacity: 0;
+}
+
+/* Without JS every answer is visible. With JS, closed answers are
+   display:none (out of the accessibility tree) and main.js animates height. */
+.faq-module__answer {
+	overflow: hidden;
+	transition: height 0.4s var(--bonsai-curve);
+}
+
+.js .faq-module__answer:not(.is-open) {
+	display: none;
+}
+
+.faq-module__answer-inner {
+	padding-bottom: 1.75rem;
+}
+
+.faq-module__answer-inner > * + * {
+	margin-top: 1rem;
+}
+
+.faq-module__answer-inner p,
+.faq-module__answer-inner li {
+	font-size: 1rem;
+	line-height: 1.75;
+	color: var(--bonsai-grey-dark);
+}
+
+.faq-module__answer-inner ul,
+.faq-module__answer-inner ol {
+	padding-left: 1.25rem;
+}
+
+.faq-module__answer-inner a {
+	color: var(--bonsai-accent-text);
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+
+/* Black background. */
+.faq-module.bg--black .faq-module__list,
+.faq-module.bg--black .faq-module__item {
+	border-color: var(--bonsai-border-dark);
+}
+
+.faq-module.bg--black .faq-module__question {
+	color: var(--bonsai-white);
+}
+
+.faq-module.bg--black .faq-module__question:hover,
+.faq-module.bg--black .faq-module__question[aria-expanded="true"] .faq-module__icon {
+	color: var(--bonsai-accent);
+}
+
+.faq-module.bg--black .faq-module__icon {
+	color: rgba(255, 255, 255, 0.7);
+}
+
+.faq-module.bg--black .faq-module__answer-inner a {
+	color: var(--bonsai-white);
+}
+
+@media (max-width: 768px) {
+	.faq-module__question {
+		padding: 1.35rem 0;
+		font-size: 1rem;
+	}
+}

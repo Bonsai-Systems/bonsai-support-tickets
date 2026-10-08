@@ -1,0 +1,335 @@
+/**
+ * Header — glass navigation.
+ *
+ * Styles for template-parts/header/site-header.php. Ported from
+ * the original theme core/header.css, plus: "Support" label, account link,
+ * 44px menu toggle (was 24×16), and a [hidden] mobile overlay so the
+ * closed menu is removed from the tab order and screen readers.
+ */
+
+/* =============================
+   # Glass header
+============================= */
+.bonsai-header {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 1000;
+	width: 100%;
+	background-color: rgba(250, 248, 245, 0.9);
+	-webkit-backdrop-filter: blur(15px);
+	backdrop-filter: blur(15px);
+	border-bottom: 1px solid var(--bonsai-border);
+	transition: box-shadow 0.4s ease;
+}
+
+.admin-bar .bonsai-header {
+	top: 32px;
+}
+
+@media (max-width: 782px) {
+	.admin-bar .bonsai-header {
+		top: 46px;
+	}
+}
+
+@media (max-width: 600px) {
+	/* WP's admin bar stops being fixed here and scrolls away. */
+	.admin-bar .bonsai-header {
+		top: 0;
+	}
+}
+
+.bonsai-header.scrolled {
+	box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+}
+
+.bonsai-nav-container {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 2rem;
+	max-width: var(--bonsai-max);
+	height: var(--bonsai-header-h);
+	margin: 0 auto;
+	padding: 0 var(--bonsai-gutter);
+}
+
+/* =============================
+   # Brand
+============================= */
+.bonsai-brand-logo {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.9rem;
+	flex-shrink: 0;
+	color: var(--bonsai-black);
+	line-height: 1;
+}
+
+.bonsai-brand-logo img {
+	width: auto;
+	max-height: 40px;
+}
+
+.bonsai-brand-text {
+	font-family: var(--bonsai-sans);
+	font-size: 1.5rem;
+	font-weight: 700;
+	letter-spacing: -0.03em;
+}
+
+.bonsai-accent-dot {
+	color: var(--bonsai-accent);
+}
+
+.bonsai-brand-label {
+	padding-left: 0.9rem;
+	border-left: 1px solid var(--bonsai-border-strong);
+	font-size: 0.75rem;
+	font-weight: 600;
+	letter-spacing: 0.15em;
+	text-transform: uppercase;
+	color: var(--bonsai-grey-mid);
+}
+
+/* =============================
+   # Desktop navigation
+============================= */
+.bonsai-nav-menu-wrap {
+	margin-left: auto;
+}
+
+.bonsai-nav-menu {
+	display: flex;
+	align-items: center;
+	gap: 2.25rem;
+}
+
+.bonsai-nav-menu a {
+	display: block;
+	padding: 0.5rem 0;
+	font-size: 0.875rem;
+	font-weight: 500;
+	letter-spacing: 0.02em;
+	color: var(--bonsai-grey-dark);
+}
+
+.bonsai-nav-link {
+	position: relative;
+	display: inline-block;
+	padding-bottom: 0.2rem;
+}
+
+.bonsai-nav-link::after {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 1px;
+	background-color: var(--bonsai-accent);
+	transform: scaleX(0);
+	transform-origin: right;
+	transition: transform 0.4s var(--bonsai-curve);
+}
+
+.bonsai-nav-menu a:hover,
+.bonsai-nav-menu a:focus-visible,
+.bonsai-nav-menu .current-menu-item > a,
+.bonsai-nav-menu .current_page_item > a {
+	color: var(--bonsai-black);
+}
+
+.bonsai-nav-menu a:hover .bonsai-nav-link::after,
+.bonsai-nav-menu a:focus-visible .bonsai-nav-link::after,
+.bonsai-nav-menu .current-menu-item > a .bonsai-nav-link::after,
+.bonsai-nav-menu .current_page_item > a .bonsai-nav-link::after {
+	transform: scaleX(1);
+	transform-origin: left;
+}
+
+/* =============================
+   # Actions (account + CTA)
+============================= */
+.bonsai-nav-actions {
+	display: flex;
+	align-items: center;
+	gap: 1.5rem;
+	flex-shrink: 0;
+}
+
+.bonsai-account-link {
+	font-size: 0.875rem;
+	font-weight: 500;
+	color: var(--bonsai-grey-dark);
+	border-bottom: 1px solid transparent;
+}
+
+.bonsai-account-link:hover,
+.bonsai-account-link:focus-visible {
+	color: var(--bonsai-black);
+	border-bottom-color: var(--bonsai-accent);
+}
+
+.btn-nav {
+	position: relative;
+	z-index: 0;
+	display: inline-flex;
+	align-items: center;
+	padding: 0.7rem 1.4rem;
+	overflow: hidden;
+	font-size: 0.75rem;
+	font-weight: 500;
+	letter-spacing: 0.05em;
+	line-height: 1;
+	text-transform: uppercase;
+	color: var(--bonsai-black);
+	background-color: transparent;
+	border: 1px solid var(--bonsai-border-strong);
+	transition: color 0.35s ease, border-color 0.35s ease;
+}
+
+.btn-nav::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: -1;
+	width: 0;
+	height: 100%;
+	background-color: var(--bonsai-black);
+	transform: skewX(-16deg);
+	transform-origin: top left;
+	transition: width 0.45s var(--bonsai-curve);
+}
+
+.btn-nav:hover::before,
+.btn-nav:focus-visible::before {
+	width: calc(100% + 20px);
+}
+
+.btn-nav:hover,
+.btn-nav:focus-visible {
+	border-color: var(--bonsai-black);
+	color: var(--bonsai-warm);
+}
+
+/* =============================
+   # Menu toggle (44px target)
+============================= */
+.bonsai-menu-toggle {
+	display: none;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	width: 44px;
+	height: 44px;
+	margin-right: -10px;
+	padding: 0;
+	background: transparent;
+	border: 0;
+}
+
+.bonsai-hamburger-line {
+	display: block;
+	width: 24px;
+	height: 2px;
+	background-color: var(--bonsai-black);
+	transition: transform 0.3s var(--bonsai-curve);
+}
+
+.bonsai-menu-toggle[aria-expanded="true"] .bonsai-hamburger-line:nth-child(2) {
+	transform: translateY(4px) rotate(45deg);
+}
+
+.bonsai-menu-toggle[aria-expanded="true"] .bonsai-hamburger-line:nth-child(3) {
+	transform: translateY(-4px) rotate(-45deg);
+}
+
+@media (max-width: 900px) {
+	.bonsai-nav-menu-wrap,
+	.bonsai-nav-actions {
+		display: none;
+	}
+
+	.bonsai-menu-toggle {
+		display: flex;
+	}
+}
+
+/* =============================
+   # Mobile overlay
+   [hidden] removes it entirely; JS removes the attribute then adds
+   .active on the next frame so it can fade in.
+============================= */
+.bonsai-mobile-overlay {
+	position: fixed;
+	inset: 0;
+	z-index: 999;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: calc(var(--bonsai-header-h) + 2rem) var(--bonsai-gutter) 2rem;
+	overflow-y: auto;
+	background-color: var(--bonsai-warm);
+	opacity: 0;
+	transition: opacity 0.35s ease;
+}
+
+.bonsai-mobile-overlay[hidden] {
+	display: none;
+}
+
+.bonsai-mobile-overlay.active {
+	opacity: 1;
+}
+
+.bonsai-mobile-nav-wrap {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 2.5rem;
+	text-align: center;
+}
+
+.bonsai-mobile-nav {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1.5rem;
+}
+
+.bonsai-mobile-nav a {
+	display: block;
+	font-family: var(--bonsai-header);
+	font-size: clamp(1.75rem, 7vw, 2.25rem);
+	font-weight: 500;
+	letter-spacing: -0.02em;
+	line-height: 1.2;
+	color: var(--bonsai-black);
+}
+
+.bonsai-mobile-nav a:hover,
+.bonsai-mobile-nav a:focus-visible,
+.bonsai-mobile-nav .current-menu-item > a {
+	color: var(--bonsai-accent-text);
+}
+
+.bonsai-mobile-actions {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1.25rem;
+}
+
+/* Stop the page scrolling behind the open menu. */
+body.bonsai-menu-open {
+	overflow: hidden;
+}
+
+/* Fixed header offset. */
+.bonsai-header-spacer {
+	height: var(--bonsai-header-h);
+}

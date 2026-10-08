@@ -1,0 +1,130 @@
+/**
+ * Support Links module — quick-link cards.
+ */
+
+.support-links-module__grid {
+	display: grid;
+	gap: 1.5rem;
+}
+
+.support-links-module__grid--2 {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.support-links-module__grid--3 {
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.support-links-module__grid--4 {
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media (max-width: 1080px) {
+	.support-links-module__grid--4 {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@media (max-width: 900px) {
+	.support-links-module__grid--3 {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media (max-width: 600px) {
+	.support-links-module__grid--2,
+	.support-links-module__grid--4 {
+		grid-template-columns: 1fr;
+	}
+}
+
+.support-link-card {
+	display: flex;
+}
+
+/* Whole card is the link. */
+.support-link-card__link {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	padding: 2.25rem 2.25rem 2rem;
+	background-color: var(--bonsai-white);
+	border: 1px solid var(--bonsai-border);
+	transition: border-color 0.3s ease, transform 0.4s var(--bonsai-curve);
+}
+
+.support-link-card__link:hover,
+.support-link-card__link:focus-visible {
+	border-color: var(--bonsai-black);
+	transform: translateY(-3px);
+}
+
+.support-link-card__icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 52px;
+	height: 52px;
+	margin-bottom: 1.75rem;
+	color: var(--bonsai-black);
+	background-color: var(--bonsai-blue);
+	transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.support-link-card__link:hover .support-link-card__icon,
+.support-link-card__link:focus-visible .support-link-card__icon {
+	color: var(--bonsai-white);
+	background-color: var(--bonsai-accent-hover);
+}
+
+.support-link-card__title {
+	margin-bottom: 0.5rem;
+	font-family: var(--bonsai-header);
+	font-size: 1.5rem;
+	font-weight: 500;
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	color: var(--bonsai-black);
+}
+
+.support-link-card__desc {
+	padding-right: 2rem;
+	font-size: 0.9375rem;
+	line-height: 1.6;
+	color: var(--bonsai-grey-dark);
+}
+
+.support-link-card__arrow {
+	position: absolute;
+	right: 2rem;
+	bottom: 1.85rem;
+	font-size: 1.125rem;
+	color: var(--bonsai-black);
+	transition: transform 0.3s ease;
+}
+
+.support-link-card__link:hover .support-link-card__arrow {
+	transform: translateX(4px);
+}
+
+/* Cards stay white on black/blue sections; keep their text dark. */
+.bg--black .support-link-card__title,
+.bg--black .support-link-card__arrow {
+	color: var(--bonsai-black);
+}
+
+.bg--black .support-link-card__desc {
+	color: var(--bonsai-grey-dark);
+}
+
+.bg--black .support-link-card__link:focus-visible {
+	outline-color: var(--bonsai-white);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.support-link-card__link:hover,
+	.support-link-card__link:focus-visible {
+		transform: none;
+	}
+}

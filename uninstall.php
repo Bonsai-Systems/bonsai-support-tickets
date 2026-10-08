@@ -8,7 +8,7 @@
  *
  * define( 'BST_REMOVE_ALL_DATA', true );
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
@@ -17,8 +17,9 @@ global $wpdb;
 
 wp_clear_scheduled_hook( 'bst_poll_mailbox' );
 wp_clear_scheduled_hook( 'bst_daily_maintenance' );
+wp_clear_scheduled_hook( 'bst_sla_check' );
 
-foreach ( array( 'bst_settings', 'bst_inbound_status', 'bst_db_version', 'bst_default_terms_created' ) as $bst_option ) {
+foreach ( array( 'bst_settings', 'bst_inbound_status', 'bst_db_version', 'bst_default_terms_created', 'bst_monitor_log', 'bst_canned_seeded', 'bst_bank_holidays', 'bst_theme_synced', 'bst_theme_update' ) as $bst_option ) {
 	delete_option( $bst_option );
 }
 delete_transient( 'bst_menu_count' );
@@ -33,6 +34,8 @@ $bst_caps = array(
 	'bst_assign_tickets',
 	'bst_approve_clients',
 	'bst_manage_settings',
+	'bst_log_time',
+	'bst_manage_time',
 	'edit_bst_tickets',
 	'edit_others_bst_tickets',
 	'edit_published_bst_tickets',
@@ -43,6 +46,16 @@ $bst_caps = array(
 	'delete_others_bst_tickets',
 	'delete_published_bst_tickets',
 	'delete_private_bst_tickets',
+	'edit_bst_canned_responses',
+	'edit_others_bst_canned_responses',
+	'edit_published_bst_canned_responses',
+	'edit_private_bst_canned_responses',
+	'publish_bst_canned_responses',
+	'read_private_bst_canned_responses',
+	'delete_bst_canned_responses',
+	'delete_others_bst_canned_responses',
+	'delete_published_bst_canned_responses',
+	'delete_private_bst_canned_responses',
 );
 $bst_admin = get_role( 'administrator' );
 if ( $bst_admin ) {
@@ -56,13 +69,13 @@ if ( ! defined( 'BST_REMOVE_ALL_DATA' ) || true !== BST_REMOVE_ALL_DATA ) {
 	return;
 }
 
-// Posts (tickets and help articles) and their meta/terms.
-$bst_post_ids = $wpdb->get_col( "SELECT ID FROM {$wpdb->posts} WHERE post_type IN ('bst_ticket','bst_article')" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+// Posts (tickets, clients, canned responses and help articles) and their meta/terms.
+$bst_post_ids = $wpdb->get_col( "SELECT ID FROM {$wpdb->posts} WHERE post_type IN ('bst_ticket','bst_company','bst_canned','bst_article')" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 foreach ( $bst_post_ids as $bst_post_id ) {
 	wp_delete_post( (int) $bst_post_id, true );
 }
 
-foreach ( array( 'bst_ticket_type', 'bst_article_topic' ) as $bst_taxonomy ) {
+foreach ( array( 'bst_ticket_type', 'bst_article_topic', 'bst_partner', 'bst_plan', 'bst_canned_tag' ) as $bst_taxonomy ) {
 	$bst_terms = $wpdb->get_col( $wpdb->prepare( "SELECT term_id FROM {$wpdb->term_taxonomy} WHERE taxonomy = %s", $bst_taxonomy ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 	foreach ( $bst_terms as $bst_term_id ) {
 		wp_delete_term( (int) $bst_term_id, $bst_taxonomy );
@@ -70,7 +83,7 @@ foreach ( array( 'bst_ticket_type', 'bst_article_topic' ) as $bst_taxonomy ) {
 }
 
 // Custom tables.
-foreach ( array( 'bst_messages', 'bst_attachments', 'bst_activity' ) as $bst_table ) {
+foreach ( array( 'bst_messages', 'bst_attachments', 'bst_activity', 'bst_time_entries' ) as $bst_table ) {
 	$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}{$bst_table}" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 }
 
@@ -95,7 +108,7 @@ if ( is_dir( $bst_dir ) ) {
 delete_option( 'bst_ref_counter' );
 
 // Client fields on user accounts (the accounts themselves are kept).
-foreach ( array( 'bst_client_name', 'bst_phone', 'bst_pending', 'bst_registered_via' ) as $bst_meta_key ) {
+foreach ( array( 'bst_client_name', 'bst_company_id', 'bst_phone', 'bst_pending', 'bst_registered_via' ) as $bst_meta_key ) {
 	delete_metadata( 'user', 0, $bst_meta_key, '', true );
 }
 

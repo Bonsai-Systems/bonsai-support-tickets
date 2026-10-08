@@ -7,7 +7,7 @@
  * that can return internal notes is for_ticket( $id, true ), and that is
  * only used by the admin screen behind a capability check.
  *
- * @package Bonsai_Support_Tickets
+ * @package Support_Desk
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -123,7 +123,7 @@ class BST_Messages {
 		);
 
 		if ( ! $inserted ) {
-			error_log( 'Bonsai Support Tickets: failed to insert message for ticket ' . $ticket_id . ': ' . $wpdb->last_error );
+			error_log( BST_PRODUCT_NAME . ': failed to insert message for ticket ' . $ticket_id . ': ' . $wpdb->last_error );
 			return false;
 		}
 

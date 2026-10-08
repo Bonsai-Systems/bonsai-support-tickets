@@ -1,22 +1,22 @@
 /**
- * Bonsai Support Tickets — admin.
+ * Support Desk — admin.
  *
- * Builds on bonsai-admin-ui.css (the shared Bonsai admin design system).
+ * Builds on bonsai-admin-ui.css (the admin design system; class names are internal).
  * Ticket and help-article screens are core post screens that can't be
  * wrapped in .bonsai-ui, so rules here are scoped to body.bst-admin-screen
  * and reuse the same token values.
  */
 
 .bst-admin-screen {
-	--bst-accent: #ee4367;
-	--bst-accent-strong: #c21f48;
+	--bst-accent: #4f46e5;
+	--bst-accent-strong: #4338ca;
 	--bst-ink: #000;
 	--bst-text: #1d2327;
 	--bst-muted: #50575e;
 	--bst-line: #d8dcdf;
 	--bst-line-soft: #f0f0f1;
 	--bst-subtle: #f6f7f7;
-	--bst-header-bg: #f9f8f4;
+	--bst-header-bg: #f9fafb;
 	--bst-note: #8a4b00;
 	--bst-note-bg: #fff8e1;
 	--bst-note-line: #f5a623;
@@ -24,7 +24,41 @@
 	--bst-radius-sm: 6px;
 }
 
-/* Banner (compact Bonsai header above core screens) ------------------- */
+/* The shared design system's tokens, set to the product palette. The
+ * shared stylesheet itself stays untouched. */
+.bst-admin-screen .bonsai-ui {
+	--bonsai-ui-accent: var(--bst-accent);
+	--bonsai-ui-accent-strong: var(--bst-accent-strong); /* White text passes AA (7.9:1). */
+	--bonsai-ui-ink: #111827;
+	--bonsai-ui-header-bg: var(--bst-header-bg);
+}
+
+/* Product mark (header and banner) ------------------------------------ */
+
+.bst-product-mark {
+	display: inline-flex;
+	gap: 10px;
+	align-items: center;
+	margin-bottom: 14px;
+	color: var(--bst-ink);
+}
+
+.bst-product-mark__icon {
+	flex: 0 0 auto;
+	color: var(--bst-accent-strong);
+}
+
+.bst-product-mark__name {
+	font-size: 15px;
+	font-weight: 700;
+	letter-spacing: 0.01em;
+}
+
+.bst-banner .bst-product-mark {
+	margin-bottom: 0;
+}
+
+/* Banner (compact header above core screens) --------------------------- */
 
 .bst-banner.bonsai-ui {
 	max-width: none;
@@ -318,6 +352,179 @@
 	border-color: var(--bst-note-line);
 }
 
+/* Time tracking --------------------------------------------------------- */
+
+.bst-admin-screen {
+	--bst-usage-ok: var(--bst-accent);
+	--bst-usage-warning: #b45309; /* 3:1+ against the track for a non-text bar. */
+	--bst-usage-over: #b0122c;
+}
+
+.bst-log-time {
+	margin: 12px 0;
+	padding: 10px 12px 4px;
+	background: var(--bst-subtle);
+	border: 1px solid var(--bst-line);
+	border-radius: var(--bst-radius-sm);
+}
+
+.bst-log-time legend {
+	padding: 0 4px;
+	font-weight: 600;
+}
+
+.bst-log-time__fields {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+	gap: 8px 20px;
+}
+
+.bst-log-time__fields p {
+	margin: 0 0 6px;
+}
+
+.bst-log-time__fields label {
+	display: block;
+	margin-bottom: 2px;
+}
+
+.bst-log-time__note {
+	flex: 1 1 220px;
+}
+
+.bst-log-time__billable label {
+	display: inline;
+}
+
+.bst-log-time .bst-log-time__duration {
+	width: 7em;
+}
+
+.bst-usage {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	min-width: 160px;
+}
+
+.bst-usage__bar {
+	width: 100%;
+	height: 8px;
+	appearance: none;
+	background: var(--bst-line-soft);
+	border: 0;
+	border-radius: 999px;
+	overflow: hidden;
+}
+
+.bst-usage__bar::-webkit-progress-bar {
+	background: var(--bst-line-soft);
+	border-radius: 999px;
+}
+
+.bst-usage__bar::-webkit-progress-value {
+	background: var(--bst-usage-ok);
+	border-radius: 999px;
+}
+
+.bst-usage__bar::-moz-progress-bar {
+	background: var(--bst-usage-ok);
+	border-radius: 999px;
+}
+
+.bst-usage--warning .bst-usage__bar::-webkit-progress-value {
+	background: var(--bst-usage-warning);
+}
+
+.bst-usage--warning .bst-usage__bar::-moz-progress-bar {
+	background: var(--bst-usage-warning);
+}
+
+.bst-usage--over .bst-usage__bar::-webkit-progress-value {
+	background: var(--bst-usage-over);
+}
+
+.bst-usage--over .bst-usage__bar::-moz-progress-bar {
+	background: var(--bst-usage-over);
+}
+
+.bst-usage__text {
+	font-size: 12px;
+	color: var(--bst-muted);
+}
+
+.bst-usage--over .bst-usage__text {
+	font-weight: 600;
+	color: var(--bst-usage-over);
+}
+
+.bst-time-list {
+	margin: 8px 0 0;
+}
+
+.bst-time-list li {
+	padding: 8px 0;
+	border-top: 1px solid var(--bst-line-soft);
+}
+
+.bst-time-box__total {
+	margin: 12px 0 0;
+	font-weight: 600;
+}
+
+.bst-month-nav {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 6px;
+}
+
+.bst-time-table {
+	margin-top: 12px;
+}
+
+.bst-time-table td {
+	vertical-align: middle;
+}
+
+/* Canned responses ------------------------------------------------------ */
+
+.bst-canned-picker {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px 12px;
+	margin: 0 0 10px;
+}
+
+.bst-canned-picker label {
+	font-weight: 600;
+}
+
+.bst-canned-picker__select {
+	min-width: 240px;
+	max-width: 100%;
+}
+
+.bst-canned-picker__filter {
+	width: 180px;
+}
+
+.bst-canned-text {
+	font-family: inherit;
+	line-height: 1.6;
+}
+
+.bst-placeholder-list dt {
+	margin: 8px 0 0;
+}
+
+.bst-placeholder-list dd {
+	margin: 2px 0 0;
+	color: var(--bst-muted);
+}
+
 .bst-reply-box__row {
 	display: flex;
 	flex-wrap: wrap;
@@ -428,7 +635,82 @@
 	border-bottom: 0;
 }
 
+/* Client (company) screen ---------------------------------------------- */
+
+.bst-company-people {
+	margin: 0 0 12px;
+}
+
+.bst-company-people li {
+	margin: 0;
+	padding: 8px 0;
+	border-bottom: 1px solid var(--bst-line-soft);
+}
+
 /* Settings page -------------------------------------------------------- */
+
+/* Left-hand tab nav, one tab per page load. Mobile first: a scrolling row
+ * of tabs, becoming a sticky side column from 783px (WP's admin breakpoint). */
+.bst-settings__nav {
+	display: flex;
+	gap: 5px;
+	margin: 0 0 20px;
+	padding-bottom: 6px;
+	overflow-x: auto;
+}
+
+.bst-settings__nav a {
+	flex: 0 0 auto;
+	padding: 11px 14px;
+	border-radius: var(--bst-radius-sm);
+	color: var(--bst-muted);
+	font-size: 13px;
+	text-decoration: none;
+	white-space: nowrap;
+}
+
+.bst-settings__nav a:hover {
+	color: var(--bst-ink);
+	background: var(--bst-line-soft);
+}
+
+.bst-settings__nav a:focus-visible {
+	outline: 2px solid var(--bst-accent);
+	outline-offset: 1px;
+	box-shadow: none;
+}
+
+.bst-settings__nav a[aria-current="page"] {
+	color: #fff;
+	font-weight: 600;
+	background: var(--bst-ink);
+}
+
+.bst-settings__main {
+	min-width: 0;
+}
+
+@media (min-width: 783px) {
+	.bst-settings {
+		display: grid;
+		grid-template-columns: 200px minmax(0, 1fr);
+		gap: 28px;
+	}
+
+	.bst-settings__nav {
+		flex-direction: column;
+		align-self: start;
+		position: sticky;
+		top: 50px; /* Clears the admin bar. */
+		margin: 0;
+		padding: 0;
+		overflow: visible;
+	}
+
+	.bst-settings__nav a {
+		white-space: normal;
+	}
+}
 
 .bst-steps {
 	margin: 8px 0 0 18px;
@@ -458,7 +740,93 @@
 	margin: 0;
 }
 
+/* Uptime monitoring: copyable URL/secret fields ------------------------- */
+
+.bst-copy-field {
+	width: 100%;
+	max-width: 640px;
+	font-family: Consolas, Monaco, monospace;
+	font-size: 12px;
+}
+
+.bst-monitor-promo {
+	margin: 12px 0 0;
+}
+
+/* Setup checklist ------------------------------------------------------ */
+
+.bst-setup__steps {
+	margin: 4px 0 0;
+	padding: 0;
+	list-style: none;
+}
+
+.bst-setup__steps li {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+	margin: 0;
+	padding: 8px 0;
+	border-bottom: 1px solid var(--bst-line-soft);
+}
+
+.bst-setup__steps li:last-child {
+	border-bottom: 0;
+}
+
+.bst-setup__state {
+	display: inline-flex;
+	flex: 0 0 auto;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	height: 20px;
+	font-size: 12px;
+	font-weight: 700;
+	color: #fff;
+	border: 2px solid var(--bst-line);
+	border-radius: 50%;
+}
+
+.bst-setup__steps .is-done .bst-setup__state {
+	background: #13744a;
+	border-color: #13744a;
+}
+
+.bst-setup__steps .is-done {
+	color: var(--bst-muted);
+}
+
+/* Logo field ------------------------------------------------------------ */
+
+.bst-media-field {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	align-items: center;
+}
+
+.bst-media-field__preview {
+	display: block;
+	flex-basis: 100%;
+	max-width: 240px;
+	max-height: 80px;
+	padding: 8px;
+	background: var(--bst-subtle);
+	border: 1px solid var(--bst-line);
+	border-radius: var(--bst-radius-sm);
+}
+
+.bst-media-field__preview[hidden] {
+	display: none;
+}
+
 /* Sign-ups ------------------------------------------------------------- */
+
+.bst-signups__company {
+	max-width: 240px;
+	margin-top: 6px;
+}
 
 .bst-signups td {
 	vertical-align: middle;
@@ -472,5 +840,230 @@
 }
 
 .bst-signups__actions form {
+	margin: 0;
+}
+
+/* SLAs & reminders ----------------------------------------------------- */
+
+.bst-days {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px 16px;
+}
+
+.bst-sla-targets {
+	max-width: 720px;
+	margin: 8px 0 12px;
+}
+
+.bst-sla-targets th[scope="row"] {
+	font-weight: 600;
+}
+
+.bst-sla-targets td,
+.bst-sla-targets th {
+	vertical-align: middle;
+}
+
+/* Due column: deadline time, coloured by how close it is. */
+.bst-due {
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 999px;
+	font-size: 12px;
+	line-height: 1.6;
+	white-space: nowrap;
+	color: var(--bst-text);
+	background: var(--bst-subtle);
+}
+
+.bst-due__label {
+	font-weight: 600;
+}
+
+.bst-due--warning {
+	color: var(--bonsai-ui-warning);
+	background: var(--bonsai-ui-warning-bg);
+}
+
+.bst-due--over {
+	color: var(--bonsai-ui-error);
+	background: var(--bonsai-ui-error-bg);
+}
+
+.bst-sla-box {
+	margin: 0;
+}
+
+.bst-sla-box dt {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	font-weight: 600;
+}
+
+.bst-sla-box dd {
+	margin: 2px 0 12px;
+	color: var(--bst-muted);
+}
+
+/* Overview ------------------------------------------------------------- */
+
+.bst-overview-stats {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+	gap: 12px;
+	margin: 0 0 20px;
+	padding: 0;
+	list-style: none;
+}
+
+.bst-overview-stat {
+	margin: 0;
+}
+
+.bst-overview-stat a {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	height: 100%;
+	padding: 14px 16px;
+	box-sizing: border-box;
+	color: var(--bst-text);
+	text-decoration: none;
+	background: #fff;
+	border: 1px solid var(--bst-line);
+	border-radius: var(--bst-radius);
+}
+
+.bst-overview-stat a:hover,
+.bst-overview-stat a:focus {
+	border-color: var(--bst-accent);
+}
+
+.bst-overview-stat a:focus {
+	outline: 2px solid var(--bst-accent);
+	outline-offset: 2px;
+	box-shadow: none;
+}
+
+.bst-overview-stat__count {
+	font-size: 28px;
+	font-weight: 600;
+	line-height: 1.1;
+	color: var(--bst-ink);
+}
+
+.bst-overview-stat__label {
+	color: var(--bst-muted);
+}
+
+.bst-overview-stat--warning a {
+	border-color: var(--bonsai-ui-warning);
+	background: var(--bonsai-ui-warning-bg);
+}
+
+.bst-overview-stat--error a {
+	border-color: var(--bonsai-ui-error);
+	background: var(--bonsai-ui-error-bg);
+}
+
+.bst-overview-stat--warning .bst-overview-stat__count {
+	color: var(--bonsai-ui-warning);
+}
+
+.bst-overview-stat--error .bst-overview-stat__count {
+	color: var(--bonsai-ui-error);
+}
+
+.bst-overview-grid {
+	display: grid;
+	gap: 20px;
+}
+
+@media (min-width: 1100px) {
+	.bst-overview-grid {
+		grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+		align-items: start;
+	}
+}
+
+.bst-overview-panel .bonsai-ui-card__head {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+.bst-overview-list,
+.bst-overview-activity {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.bst-overview-ticket {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 6px 16px;
+	margin: 0;
+	padding: 10px 0;
+	border-top: 1px solid var(--bst-line-soft);
+}
+
+.bst-overview-ticket:first-child {
+	border-top: 0;
+}
+
+.bst-overview-ticket__link {
+	display: flex;
+	gap: 8px;
+	min-width: 0;
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.bst-overview-ticket__ref {
+	flex: none;
+	color: var(--bst-muted);
+	font-weight: 400;
+}
+
+.bst-overview-ticket__title {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.bst-overview-ticket__meta {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 6px 10px;
+}
+
+.bst-overview-activity li {
+	margin: 0;
+	padding: 8px 0;
+	border-top: 1px solid var(--bst-line-soft);
+}
+
+.bst-overview-activity li:first-child {
+	border-top: 0;
+}
+
+/* Setup card: bundled theme actions. */
+.bst-setup__theme {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px 12px;
+}
+
+.bst-setup__theme form,
+.bst-setup__theme .description {
 	margin: 0;
 }

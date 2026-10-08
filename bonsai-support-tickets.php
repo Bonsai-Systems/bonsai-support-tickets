@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Support Desk
  * Description: Support ticketing for your clients: a branded client portal, email in and out, agent assignment, internal notes, client records and a help centre.
- * Version:     0.1.0
+ * Version:     0.2.0
  * Author:      Support Desk
  * Requires at least: 6.2
  * Requires PHP: 8.1
@@ -48,7 +48,7 @@ if ( ! defined( 'BST_MONITOR_PROMO_URL' ) ) {
 	define( 'BST_MONITOR_PROMO_URL', '' ); // "Get uptime monitoring" link on Settings → Uptime monitoring; '' hides it.
 }
 
-define( 'BST_VERSION', '0.1.0' );
+define( 'BST_VERSION', '0.2.0' );
 define( 'BST_DB_VERSION', '6' ); // 2: bst_approve_clients capability. 3: Client records. 4: neutral defaults. 5: canned responses. 6: time tracking.
 define( 'BST_FILE', __FILE__ );
 define( 'BST_DIR', plugin_dir_path( __FILE__ ) );

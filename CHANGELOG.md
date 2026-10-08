@@ -2,7 +2,7 @@
 
 All notable changes to this plugin are documented here. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [0.2.0] - 2026-10-08
 
 ### Added
 - Editable auto-reply for new tickets (web form and email in), under **Support → Settings → Auto-reply**: on/off, subject and rich-text message, with `{{site.name}}`, `{{ticket.title}}`, `{{ticket.id}}` and `{{client.name}}` placeholders. Ships with neutral wording as the default. Clearing a field restores the default.

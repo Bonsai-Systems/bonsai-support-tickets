@@ -68,10 +68,9 @@ All notable changes to this plugin are documented here. Format: [Keep a Changelo
 - **Replace the WordPress dashboard** (Settings → General, on by default): agents and administrators land on the overview after login; the Dashboard and the admin bar's Dashboard link open it. Agents lose the Dashboard menu; administrators keep it for Updates. Other roles are unchanged.
 - `bst_overview_stats` filter. Hidden `bst_view=monitor` ticket list view (open uptime alerts).
 
-- **Companion theme in the plugin repo** (`theme/support-desk-theme/`, theme version 0.2.0), replacing the separate ACF-based theme:
-  - 12 server-rendered Support Desk blocks instead of the ACF page builder (same templates and CSS; attribute names match the old ACF fields).
-  - Customiser settings instead of the ACF options page; logo via Site Identity; name, logo and colours follow Support → Settings → Appearance.
-  - Team fields as a plain meta box (same meta keys).
+- **Companion theme in the plugin repo** (`theme/support-desk-theme/`, theme version 0.3.0), replacing the separate theme:
+  - Same ACF Pro page builder (12 modules), Site settings page and team fields as the original theme, with the same field keys, so existing content carries over. The theme needs ACF Pro; without it pages show their plain content and admins get a notice. The plugin itself still doesn't use ACF.
+  - Logo via Site Identity; name, logo and colours follow Support → Settings → Appearance.
   - Neutral defaults and no company branding; self-hosted fonts; new screenshot.
   - See `theme/support-desk-theme/CHANGELOG.md`.
 - **Bundled theme install and updates** (`BST_Theme_Installer`):
@@ -80,9 +79,9 @@ All notable changes to this plugin are documented here. Format: [Keep a Changelo
   - On each plugin update, an installed copy is updated if the bundled files changed. Local edits hold the update back with an **Update anyway** notice; folders the plugin didn't install are never touched; `DISALLOW_FILE_MODS` is respected.
   - The legacy "Move to the Support Desk theme" button installs the theme first if needed.
   - `bst_theme_installed` action. Release workflow checks the bundled theme. Theme gets `Update URI: false`.
-- **Development builds only** (`includes/legacy/class-bst-legacy-theme.php`): moves the original site from its ACF theme to the Support Desk theme. A "Move to the Support Desk theme" notice switches and converts in one click (switching under Appearance → Themes converts too):
-  - Every page's ACF page builder becomes Support Desk blocks (ACF defaults applied for never-saved fields; WYSIWYG content becomes a Classic block inside a Content block). The previous content is kept in a revision and `_bst_pre_blocks_content`, and the ACF meta is untouched, so switching back restores the old pages.
-  - Site settings become Customiser values, with the old theme's fixed footer text, credit and light-blue tint written explicitly. Menu locations are copied.
+- **Development builds only** (`includes/legacy/class-bst-legacy-theme.php`): moves the original site from its old theme to the Support Desk theme. A "Move to the Support Desk theme" notice switches in one click (switching under Appearance → Themes runs the same steps):
+  - Pages, Site settings and team members carry over untouched (same ACF field groups).
+  - The old header logo becomes the Site Identity logo; the old theme's hard-coded footer text, help centre text, credit and light-blue tint are written into Site settings where empty. Menu locations are copied.
   - Safe to run again. Integration tests in `tests/integration/LegacyThemeTest.php`.
 
 ### Changed

@@ -1,0 +1,84 @@
+{
+    "key": "group_bsup_team",
+    "title": "Team Member Details",
+    "fields": [
+        {
+            "key": "field_team_role",
+            "label": "Role / Title",
+            "name": "team_role",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "e.g. Creative Director, Senior Developer",
+            "required": 1,
+            "default_value": "",
+            "placeholder": "Creative Director",
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_team_bio",
+            "label": "Short Bio",
+            "name": "team_bio",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "2–3 sentences. Displayed below the name on the team module card.",
+            "required": 0,
+            "default_value": "",
+            "rows": 4,
+            "new_lines": "",
+            "wrapper": {
+                "width": "100",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_team_linkedin",
+            "label": "LinkedIn URL",
+            "name": "team_linkedin",
+            "aria-label": "",
+            "type": "url",
+            "instructions": "Full LinkedIn profile URL. Shown as an icon on hover.",
+            "required": 0,
+            "default_value": "",
+            "placeholder": "https://linkedin.com/in/",
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            }
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "team"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "seamless",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": [
+        "the_content",
+        "excerpt",
+        "discussion",
+        "comments",
+        "revisions",
+        "slug",
+        "author",
+        "format",
+        "send-trackbacks"
+    ],
+    "active": true,
+    "description": "ACF fields for team member profiles used by the Meet the Team module.",
+    "show_in_rest": 0,
+    "modified": 1791417600
+}

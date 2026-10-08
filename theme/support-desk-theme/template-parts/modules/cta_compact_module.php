@@ -2,7 +2,7 @@
 /**
  * CTA Compact — centred dark call to action, one or two buttons.
  *
- * Block: support-desk/cta-compact (attributes arrive as $args).
+ * Layout: cta_compact_module in the page builder (row values arrive as $args).
  *
  * @package Support_Desk_Theme
  */

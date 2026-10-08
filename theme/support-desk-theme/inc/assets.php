@@ -33,7 +33,7 @@ function bsup_enqueue_assets() {
 	wp_enqueue_style( 'bsup-footer', BSUP_URI . '/assets/css/footer.css', array( 'bsup-base' ), bsup_asset_version( 'assets/css/footer.css' ) );
 
 	// Help centre styles: the help templates, plus any page using a help
-	// block (enqueued from inc/blocks.php).
+	// module (enqueued from inc/page-builder.php).
 	wp_register_style( 'bsup-help', BSUP_URI . '/assets/css/help.css', array( 'bsup-base' ), bsup_asset_version( 'assets/css/help.css' ) );
 	if ( is_singular( 'bst_article' ) || is_post_type_archive( 'bst_article' ) || is_tax( 'bst_article_topic' ) || is_search() || is_404() || is_home() || is_archive() ) {
 		wp_enqueue_style( 'bsup-help' );
@@ -69,53 +69,9 @@ function bsup_js_flag() {
 add_action( 'wp_head', 'bsup_js_flag', 0 );
 
 /**
- * Editor styles. The block editor (pages) gets the front-end fonts, tokens
- * and every module stylesheet, so the live block previews look like the
- * site. The classic editor (help articles) gets the reading styles only.
- *
- * @param WP_Screen $screen Current screen.
+ * Classic editor reading styles (help articles, Content module WYSIWYG).
  */
-function bsup_editor_styles( $screen ) {
-	if ( ! $screen instanceof WP_Screen || 'post' !== $screen->base ) {
-		return;
-	}
-
-	if ( method_exists( $screen, 'is_block_editor' ) && $screen->is_block_editor() ) {
-		$styles = array( 'assets/css/fonts.css', 'assets/css/base.css', 'assets/css/help.css' );
-		foreach ( glob( BSUP_DIR . '/assets/css/modules/*.css' ) as $file ) {
-			$styles[] = 'assets/css/modules/' . basename( $file );
-		}
-		$styles[] = 'assets/css/editor-blocks.css';
-		add_editor_style( $styles );
-		return;
-	}
-
+function bsup_editor_styles() {
 	add_editor_style( 'assets/css/editor.css' );
 }
-add_action( 'current_screen', 'bsup_editor_styles' );
-
-/**
- * Block editor: the plugin's front-end styles (ticket blocks) and the
- * brand colour tokens.
- *
- * @param array $settings Editor settings.
- * @return array
- */
-function bsup_block_editor_settings( $settings ) {
-	$tokens = bsup_color_tokens();
-	if ( '' !== $tokens ) {
-		$settings['styles'][] = array( 'css' => ':root{' . $tokens . '}' );
-	}
-	$file = defined( 'BST_DIR' ) ? BST_DIR . 'assets/frontend/bst-frontend.css' : '';
-	if ( $file && defined( 'BST_URL' ) && file_exists( $file ) ) {
-		$settings['styles'][] = array(
-			'css'     => (string) file_get_contents( $file ), // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- local file.
-			'baseURL' => BST_URL . 'assets/frontend/bst-frontend.css',
-		);
-		if ( class_exists( 'BST_Appearance' ) ) {
-			$settings['styles'][] = array( 'css' => BST_Appearance::inline_css() );
-		}
-	}
-	return $settings;
-}
-add_filter( 'block_editor_settings_all', 'bsup_block_editor_settings' );
+add_action( 'admin_init', 'bsup_editor_styles' );

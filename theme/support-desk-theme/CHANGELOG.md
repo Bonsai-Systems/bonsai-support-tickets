@@ -2,7 +2,24 @@
 
 All notable changes to this theme are documented here. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [0.2.0] - Unreleased
+## [0.3.0] - Unreleased
+
+### Changed
+- Back to ACF Pro: pages are built with the **Page modules** flexible content field (classic editor), and settings live on the **Site settings** options page. Same field groups and keys as the original theme, so its content carries over without converting. The 12 module templates and their CSS are unchanged; each page builder row arrives as `$args`.
+- Team details (role, bio, LinkedIn) are an ACF field group again (same meta keys).
+- Starter pages write their modules to the page builder, so they need ACF Pro.
+- Classic editor for every post type.
+
+### Added
+- Site settings gained the fields the Customiser had: Main website link text, Credit text and link, Tint background. The logo stays in Site Identity.
+- One-time move of any Customiser values (0.2.x) into empty Site settings.
+- "Needs Advanced Custom Fields Pro" admin notice; pages fall back to their plain title and content without it.
+- `bsup_module_layouts` and `bsup_default_page_layouts` filters.
+
+### Removed
+- Support Desk blocks, the block editor script and its styles, the Customiser panel, the team meta box, and the `bsup_block_definitions` and `bsup_default_page_blocks` filters.
+
+## [0.2.0] - not released
 
 ### Added
 - Ships with the Support Desk plugin.

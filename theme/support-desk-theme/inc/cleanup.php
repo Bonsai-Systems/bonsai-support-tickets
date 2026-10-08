@@ -1,6 +1,6 @@
 <?php
 /**
- * WordPress cleanup: head links, emojis, XML-RPC, comments, editor choice.
+ * WordPress cleanup: head links, emojis, XML-RPC, comments, block editor.
  *
  * Deliberately NOT ported from the original theme: stripping ?ver= query
  * strings (breaks cache busting), whole-page output buffers (role="list",
@@ -25,19 +25,9 @@ add_filter( 'the_generator', '__return_empty_string' );
 // XML-RPC off (re-enable if Jetpack or the mobile app is ever needed).
 add_filter( 'xmlrpc_enabled', '__return_false' );
 
-/**
- * Block editor for pages (built with Support Desk blocks); classic editor
- * for everything else (help articles are plain long-form content, team
- * members are a few fields).
- *
- * @param bool   $use       Whether to use the block editor.
- * @param string $post_type Post type.
- * @return bool
- */
-function bsup_block_editor_for( $use, $post_type ) {
-	return 'page' === $post_type ? $use : false;
-}
-add_filter( 'use_block_editor_for_post_type', 'bsup_block_editor_for', 10, 2 );
+// Classic editor everywhere: pages are built with ACF page modules, help
+// articles are plain long-form content, team members are a few fields.
+add_filter( 'use_block_editor_for_post_type', '__return_false' );
 
 /**
  * Comments off: the support site has no blog.

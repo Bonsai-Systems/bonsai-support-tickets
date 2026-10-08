@@ -29,10 +29,8 @@ function bsup_setup() {
 		)
 	);
 
-	// Block editor: show pages as they'll look (fonts, tokens, module CSS).
+	// Classic editor reading styles (assets/css/editor.css).
 	add_theme_support( 'editor-styles' );
-	add_theme_support( 'responsive-embeds' );
-	add_theme_support( 'wp-block-styles' );
 
 	// Team headshots: 3:4 portrait.
 	add_image_size( 'bsup-portrait', 600, 800, true );

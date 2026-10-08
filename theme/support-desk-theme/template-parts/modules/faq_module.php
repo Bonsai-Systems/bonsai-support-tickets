@@ -2,7 +2,7 @@
 /**
  * FAQ — accordion Q&A with FAQPage schema.
  *
- * Block: support-desk/faq (attributes arrive as $args).
+ * Layout: faq_module in the page builder (row values arrive as $args).
  * JS: assets/js/main.js (FAQ accordion).
  *
  * Fixes from the original theme: IDs are unique per module (two FAQ modules on

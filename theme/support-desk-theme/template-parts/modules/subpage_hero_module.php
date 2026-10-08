@@ -2,7 +2,7 @@
 /**
  * Subpage Hero — page header for interior pages.
  *
- * Block: support-desk/subpage-hero (attributes arrive as $args).
+ * Layout: subpage_hero_module in the page builder (row values arrive as $args).
  *
  * @package Support_Desk_Theme
  */

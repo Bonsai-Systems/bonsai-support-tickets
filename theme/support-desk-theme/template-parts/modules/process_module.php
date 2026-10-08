@@ -3,7 +3,7 @@
  * Process — numbered steps. On the support site: "How support works"
  * (Submit → We triage → We fix → You confirm).
  *
- * Block: support-desk/process (attributes arrive as $args).
+ * Layout: process_module in the page builder (row values arrive as $args).
  *
  * @package Support_Desk_Theme
  */

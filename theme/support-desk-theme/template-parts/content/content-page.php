@@ -1,7 +1,7 @@
 <?php
 /**
  * Plain page layout: title + editor content (used when a page has no
- * Support Desk blocks, e.g. a privacy policy written with normal blocks).
+ * page modules, or while ACF is inactive).
  *
  * @package Support_Desk_Theme
  */

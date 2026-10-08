@@ -3,7 +3,7 @@
  * Feature Cards — header + grid of label/title/description cards.
  * On the support site: "What we cover", "Our service levels" etc.
  *
- * Block: support-desk/feature-cards (attributes arrive as $args).
+ * Layout: feature_cards_module in the page builder (row values arrive as $args).
  *
  * @package Support_Desk_Theme
  */

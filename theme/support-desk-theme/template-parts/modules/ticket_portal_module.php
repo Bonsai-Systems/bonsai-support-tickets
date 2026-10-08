@@ -2,9 +2,9 @@
 /**
  * Ticket Portal — the client's requests (list, or one request when the
  * URL has ?ticket=ID). Output and permissions come from the Support Desk
- * plugin; this block only places it on the page.
+ * plugin; this module only places it on the page.
  *
- * Block: support-desk/ticket-portal (attributes arrive as $args).
+ * Layout: ticket_portal_module in the page builder (row values arrive as $args).
  *
  * Set this page as "My requests page" in Support → Settings so email
  * links land here.

@@ -3,7 +3,7 @@
  * Submit Request — two columns: guidance on the left (sticky on desktop),
  * the Support Desk request form on the right.
  *
- * Block: support-desk/submit-request (attributes arrive as $args).
+ * Layout: submit_request_module in the page builder (row values arrive as $args).
  *
  * Set this page as "Submit a request page" in Support → Settings.
  *

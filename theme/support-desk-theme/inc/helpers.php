@@ -8,22 +8,34 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * A theme setting (Appearance → Customise), stored as a theme mod with a
- * bsup_ prefix. Returns $fallback when it's empty, so templates always
- * have something sensible to show.
+ * Whether ACF Pro is active (flexible content and options pages need Pro).
  *
- * @param string $name     Setting name, e.g. contact_email (see bsup_customizer_settings()).
+ * @return bool
+ */
+function bsup_has_acf() {
+	return function_exists( 'get_field' ) && function_exists( 'acf_add_options_page' );
+}
+
+/**
+ * A Site settings value (ACF options page). Returns $fallback when ACF is
+ * missing or the option is empty, so templates always have something
+ * sensible to show and never fatal without ACF.
+ *
+ * @param string $name     Field name, e.g. contact_email (see acf-json/group_bsup_site_options.json).
  * @param mixed  $fallback Fallback value.
  * @return mixed
  */
 function bsup_option( $name, $fallback = '' ) {
-	$value = get_theme_mod( 'bsup_' . $name, '' );
+	if ( ! function_exists( 'get_field' ) ) {
+		return $fallback;
+	}
+	$value = get_field( $name, 'option' );
 	return ( null === $value || '' === $value || false === $value || array() === $value ) ? $fallback : $value;
 }
 
 /**
- * A block attribute or field value, or $fallback when missing or empty.
- * Module templates receive their block's attributes as $args.
+ * A module field value, or $fallback when missing or empty.
+ * Module templates receive their page builder row as $args.
  *
  * @param array  $args     Attributes.
  * @param string $name     Key.

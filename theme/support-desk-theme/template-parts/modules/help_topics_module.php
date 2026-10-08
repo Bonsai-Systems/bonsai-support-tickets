@@ -2,7 +2,7 @@
 /**
  * Help Topics — grid of help centre topics with their top articles.
  *
- * Block: support-desk/help-topics (attributes arrive as $args).
+ * Layout: help_topics_module in the page builder (row values arrive as $args).
  *
  * @package Support_Desk_Theme
  */

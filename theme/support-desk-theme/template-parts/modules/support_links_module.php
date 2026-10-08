@@ -3,7 +3,7 @@
  * Support Links — quick-link cards ("Submit a request", "My requests",
  * "Help centre", or anything custom).
  *
- * Block: support-desk/support-links (attributes arrive as $args).
+ * Layout: support_links_module in the page builder (row values arrive as $args).
  *
  * Card types submit / portal / help get their URL from the Support Desk
  * plugin's settings automatically, so links never go stale if a page slug

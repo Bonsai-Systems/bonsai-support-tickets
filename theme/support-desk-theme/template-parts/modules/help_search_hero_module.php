@@ -3,7 +3,7 @@
  * Help Search Hero — the support home page header: big heading, help
  * centre search, and optional "popular articles" links.
  *
- * Block: support-desk/help-search-hero (attributes arrive as $args).
+ * Layout: help_search_hero_module in the page builder (row values arrive as $args).
  *
  * @package Support_Desk_Theme
  */

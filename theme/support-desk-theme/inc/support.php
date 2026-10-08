@@ -48,12 +48,12 @@ function bsup_help_url() {
 }
 
 /**
- * Shown in place of a ticket block when the plugin is off. Visitors see
+ * Shown in place of a ticket module when the plugin is off. Visitors see
  * nothing; editors see why.
  */
 function bsup_tickets_missing_notice() {
 	if ( current_user_can( 'edit_pages' ) ) {
-		echo '<p class="bsup-editor-notice">' . esc_html__( 'This block needs the Support Desk plugin to be active.', 'support-desk' ) . '</p>';
+		echo '<p class="bsup-editor-notice">' . esc_html__( 'This module needs the Support Desk plugin to be active.', 'support-desk' ) . '</p>';
 	}
 }
 

@@ -6,7 +6,7 @@
  * a request, My requests and Meet the team — pre-filled with modules —
  * then sets the front page, the Support Desk plugin's page settings and
  * a primary menu. Existing pages with the same slug are never touched.
- * Pages are built from Support Desk blocks (inc/blocks.php).
+ * Modules are written to the ACF page builder, so ACF Pro must be active.
  *
  * @package Support_Desk_Theme
  */
@@ -22,7 +22,7 @@ const BSUP_STARTER_OPTION = 'bsup_starter_pages_done';
  * Admin notice offering to create the starter pages.
  */
 function bsup_starter_pages_notice() {
-	if ( ! current_user_can( 'manage_options' ) || get_option( BSUP_STARTER_OPTION ) ) {
+	if ( ! current_user_can( 'manage_options' ) || get_option( BSUP_STARTER_OPTION ) || ! bsup_has_acf() ) {
 		return;
 	}
 
@@ -96,6 +96,10 @@ add_action( 'admin_post_bsup_dismiss_starter_pages', 'bsup_dismiss_starter_pages
 function bsup_create_starter_pages() {
 	bsup_starter_pages_verify();
 
+	if ( ! bsup_has_acf() || ! function_exists( 'update_field' ) ) {
+		wp_die( esc_html__( 'The starter pages need Advanced Custom Fields Pro. Activate it and try again.', 'support-desk' ) );
+	}
+
 	$ids     = array();
 	$created = 0;
 	$skipped = 0;
@@ -144,17 +148,12 @@ function bsup_create_starter_pages() {
 		BST_Settings::save( $settings );
 	}
 
-	// Blocks (after plugin settings, so links resolve to the new pages).
+	// Modules (after plugin settings, so links resolve to the new pages).
 	foreach ( bsup_starter_page_definitions() as $slug => $page ) {
 		if ( empty( $ids[ $slug ] ) || ! get_post_meta( $ids[ $slug ], '_bsup_starter_page', true ) ) {
 			continue;
 		}
-		wp_update_post(
-			array(
-				'ID'           => $ids[ $slug ],
-				'post_content' => bsup_starter_page_content( $slug ),
-			)
-		);
+		update_field( BSUP_PAGE_BUILDER_KEY, bsup_starter_page_modules( $slug ), $ids[ $slug ] );
 		delete_post_meta( $ids[ $slug ], '_bsup_starter_page' );
 	}
 
@@ -209,32 +208,14 @@ function bsup_starter_page_definitions() {
 }
 
 /**
- * Block markup for a starter page.
- *
- * @param string $slug Page slug.
- * @return string
- */
-function bsup_starter_page_content( $slug ) {
-	$markup = array();
-	foreach ( bsup_starter_page_modules( $slug ) as $module ) {
-		$block = $module['block'];
-		unset( $module['block'] );
-		$markup[] = bsup_block_markup( $block, $module );
-	}
-	return implode( "
-
-", $markup );
-}
-
-/**
- * Blocks for a starter page: block slug + attributes.
+ * Page builder rows for a starter page: layout + sub field values.
  *
  * @param string $slug Page slug.
  * @return array[]
  */
 function bsup_starter_page_modules( $slug ) {
 	$submit_cta = array(
-		'block'            => 'cta-compact',
+		'acf_fc_layout'    => 'cta_compact_module',
 		'heading'          => __( 'Still need a hand', 'support-desk' ),
 		'description'      => __( 'Send us a request and the team will pick it up. You can follow every update from your account.', 'support-desk' ),
 		'primary_button'   => array(
@@ -253,7 +234,7 @@ function bsup_starter_page_modules( $slug ) {
 		case 'home':
 			return array(
 				array(
-					'block'              => 'help-search-hero',
+					'acf_fc_layout'      => 'help_search_hero_module',
 					'hero_badge'         => __( 'Support', 'support-desk' ),
 					'hero_title'         => __( 'How can we help', 'support-desk' ),
 					'hero_lead'          => __( 'Search our guides, or send us a request and we\'ll take it from there.', 'support-desk' ),
@@ -261,7 +242,7 @@ function bsup_starter_page_modules( $slug ) {
 					'background_style'   => 'blue',
 				),
 				array(
-					'block'            => 'support-links',
+					'acf_fc_layout'    => 'support_links_module',
 					'links'            => array(
 						array(
 							'link_type'   => 'submit',
@@ -285,7 +266,7 @@ function bsup_starter_page_modules( $slug ) {
 					'background_style' => 'default',
 				),
 				array(
-					'block'              => 'help-topics',
+					'acf_fc_layout'      => 'help_topics_module',
 					'section_tag'        => __( 'Help centre', 'support-desk' ),
 					'heading'            => __( 'Browse by topic', 'support-desk' ),
 					'topics_source'      => 'all',
@@ -299,7 +280,7 @@ function bsup_starter_page_modules( $slug ) {
 		case 'submit-a-request':
 			return array(
 				array(
-					'block'            => 'subpage-hero',
+					'acf_fc_layout'    => 'subpage_hero_module',
 					'hero_badge'       => __( 'Support', 'support-desk' ),
 					'hero_title'       => __( 'Submit a request', 'support-desk' ),
 					'hero_lead'        => __( 'Tell us what\'s happening and we\'ll get back to you by email.', 'support-desk' ),
@@ -307,7 +288,7 @@ function bsup_starter_page_modules( $slug ) {
 					'background_style' => 'warm',
 				),
 				array(
-					'block'            => 'submit-request',
+					'acf_fc_layout'    => 'submit_request_module',
 					'heading'          => __( 'Before you send', 'support-desk' ),
 					'intro'            => '<p>' . esc_html__( 'The more detail you give us, the quicker we can sort it.', 'support-desk' ) . '</p>',
 					'tips'             => array(
@@ -324,7 +305,7 @@ function bsup_starter_page_modules( $slug ) {
 		case 'my-requests':
 			return array(
 				array(
-					'block'            => 'subpage-hero',
+					'acf_fc_layout'    => 'subpage_hero_module',
 					'hero_badge'       => __( 'Support', 'support-desk' ),
 					'hero_title'       => __( 'My requests', 'support-desk' ),
 					'hero_lead'        => __( 'Everything you\'ve sent us, with the latest replies from the team.', 'support-desk' ),
@@ -332,7 +313,7 @@ function bsup_starter_page_modules( $slug ) {
 					'background_style' => 'warm',
 				),
 				array(
-					'block'            => 'ticket-portal',
+					'acf_fc_layout'    => 'ticket_portal_module',
 					'intro'            => '',
 					'background_style' => 'default',
 				),
@@ -341,7 +322,7 @@ function bsup_starter_page_modules( $slug ) {
 		case 'meet-the-team':
 			return array(
 				array(
-					'block'            => 'subpage-hero',
+					'acf_fc_layout'    => 'subpage_hero_module',
 					'hero_badge'       => __( 'Who you\'ll hear from', 'support-desk' ),
 					'hero_title'       => __( 'Meet the team', 'support-desk' ),
 					'hero_lead'        => __( 'The people who build, host and look after your website.', 'support-desk' ),
@@ -349,7 +330,7 @@ function bsup_starter_page_modules( $slug ) {
 					'background_style' => 'warm',
 				),
 				array(
-					'block'            => 'meet-the-team',
+					'acf_fc_layout'    => 'meet_the_team_module',
 					'source'           => 'all',
 					'background_style' => 'default',
 				),

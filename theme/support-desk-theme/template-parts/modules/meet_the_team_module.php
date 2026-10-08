@@ -2,7 +2,7 @@
 /**
  * Meet the Team — portrait grid of team members.
  *
- * Block: support-desk/meet-the-team (attributes arrive as $args).
+ * Layout: meet_the_team_module in the page builder (row values arrive as $args).
  * Data: 'team' posts (inc/cpt-team.php). Headshot = featured image;
  * team_role, team_bio, team_linkedin post meta (Team → edit person).
  *

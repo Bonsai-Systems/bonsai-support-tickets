@@ -1,0 +1,392 @@
+{
+    "key": "group_bsup_site_options",
+    "title": "Site settings",
+    "fields": [
+        {
+            "key": "field_bso_tab_brand",
+            "label": "Branding",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_bsup_branding_note",
+            "label": "",
+            "name": "",
+            "aria-label": "",
+            "type": "message",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "message": "Logo: Appearance → Customise → Site Identity. Support name and brand colours: Support → Settings → Appearance (shared with the portal and emails).",
+            "new_lines": "",
+            "esc_html": 0
+        },
+        {
+            "key": "field_bso_footer_logo",
+            "label": "Footer logo",
+            "name": "site_footer_logo",
+            "aria-label": "",
+            "type": "image",
+            "instructions": "A version that reads on a dark background. Blank shows your support name.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "id",
+            "library": "all",
+            "preview_size": "medium",
+            "mime_types": "svg,png,webp"
+        },
+        {
+            "key": "field_bsup_header_label",
+            "label": "Header label",
+            "name": "header_label",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Small label next to the logo, e.g. \"Support\". Blank for none.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_bso_footer_tagline",
+            "label": "Footer tagline",
+            "name": "footer_tagline",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "rows": 2,
+            "new_lines": ""
+        },
+        {
+            "key": "field_bsup_color_tint",
+            "label": "Tint background",
+            "name": "color_tint",
+            "aria-label": "",
+            "type": "color_picker",
+            "instructions": "The light \"Tint\" section background.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "#eef2ff",
+            "enable_opacity": 0,
+            "return_format": "string"
+        },
+        {
+            "key": "field_bso_tab_nav",
+            "label": "Header button",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_bso_nav_cta_text",
+            "label": "Button text",
+            "name": "nav_cta_text",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Blank uses \"Submit a request\".",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_bso_nav_cta_url",
+            "label": "Button URL",
+            "name": "nav_cta_url",
+            "aria-label": "",
+            "type": "url",
+            "instructions": "Blank goes to your Submit a request page (Support → Settings).",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_bso_tab_contact",
+            "label": "Contact",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_bso_email",
+            "label": "Support email",
+            "name": "contact_email",
+            "aria-label": "",
+            "type": "email",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_bso_phone",
+            "label": "Telephone",
+            "name": "contact_telephone",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_bsup_hours",
+            "label": "Support hours",
+            "name": "support_hours",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "e.g. \"Monday to Friday, 9am to 5pm (UK time)\". Shown in the footer and next to the request form.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_bsup_main_site",
+            "label": "Main website link",
+            "name": "main_site_url",
+            "aria-label": "",
+            "type": "url",
+            "instructions": "Your company website, linked in the footer. Blank hides it.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placeholder": "https://"
+        },
+        {
+            "key": "field_bsup_main_site_label",
+            "label": "Main website link text",
+            "name": "main_site_label",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Blank uses \"Main website\".",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_bsup_tab_help",
+            "label": "Help centre",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_bsup_help_title",
+            "label": "Help centre heading",
+            "name": "help_title",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Heading on the help centre. Blank uses \"How can we help\".",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_bsup_help_lead",
+            "label": "Help centre intro",
+            "name": "help_lead",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "rows": 2,
+            "new_lines": ""
+        },
+        {
+            "key": "field_bso_tab_footer",
+            "label": "Footer",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_bso_copyright",
+            "label": "Copyright name",
+            "name": "copyright_text",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Shown after \"© year\". Blank uses your support name.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_bsup_credit_text",
+            "label": "Credit text",
+            "name": "credit_text",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Optional, e.g. \"Website by Example Ltd\". Blank hides it.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_bsup_credit_url",
+            "label": "Credit link",
+            "name": "credit_url",
+            "aria-label": "",
+            "type": "url",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "https://"
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "options_page",
+                "operator": "==",
+                "value": "bsup-site-settings"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "Header, footer, contact details and help centre text.",
+    "show_in_rest": 0,
+    "modified": 1791417600
+}

@@ -4,7 +4,7 @@ Clean, editorial and accessible: square buttons, hairline cards, calm motion, AA
 
 ## Colour tokens (`assets/css/base.css`)
 
-The `--bonsai-*` names are internal. With the Support Desk plugin active, the brand colours below are replaced by **Support → Settings → Appearance** (`inc/support.php`, `bsup_color_tokens()`), and the tint by **Customise → Colours**.
+The `--bonsai-*` names are internal. With the Support Desk plugin active, the brand colours below are replaced by **Support → Settings → Appearance** (`inc/support.php`, `bsup_color_tokens()`), and the tint by **Site settings → Branding → Tint background**.
 
 | Token | Default | Plugin colour | Use |
 |---|---|---|---|
@@ -15,10 +15,10 @@ The `--bonsai-*` names are internal. With the Support Desk plugin active, the br
 | `--bonsai-grey-dark` | `#374151` | Body text | Paragraphs |
 | `--bonsai-warm` | `#f9fafb` | Page background | Page background |
 | `--bonsai-white` | `#fff` | Cards | Cards, form panels |
-| `--bonsai-blue` | `#eef2ff` | (Customiser: Tint) | Tint band, icon tiles |
+| `--bonsai-blue` | `#eef2ff` | (Site settings: Tint background) | Tint band, icon tiles |
 | `--bonsai-grey-mid` | `#6b6b6b` | — | Meta text (AA on the page background and white) |
 
-Block backgrounds: White (`default`), Page background (`warm`), Tint (`blue`), Dark (`black`). Cards stay white on any background.
+Module backgrounds: White (`default`), Page background (`warm`), Tint (`blue`), Dark (`black`). Cards stay white on any background.
 
 ## Type
 

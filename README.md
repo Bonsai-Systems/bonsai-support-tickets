@@ -12,7 +12,7 @@ clients see (portal, emails, login) carries **your** name, logo and colours.
 ## Requirements
 
 - WordPress 6.2+, PHP 8.1+
-- No ACF dependency. Works with any theme; ships with a companion theme.
+- No ACF dependency. Works with any theme; ships with a companion theme (which uses ACF Pro).
 
 ## Setup
 
@@ -175,7 +175,7 @@ When a client raises a new request, through the form or by emailing the support 
 
 ## Companion theme
 
-`theme/support-desk-theme/` is the Support Desk theme: help centre, request form, client portal and team page, built with its own blocks (no ACF). It follows the plugin's support name, logo and colours. See its [README](theme/support-desk-theme/README.md).
+`theme/support-desk-theme/` is the Support Desk theme: help centre, request form, client portal and team page, built with an ACF Pro page builder (the theme needs ACF Pro; the plugin doesn't). It follows the plugin's support name, logo and colours. See its [README](theme/support-desk-theme/README.md).
 
 It ships inside the plugin zip:
 

@@ -115,6 +115,7 @@ require_once BST_DIR . 'includes/class-bst-mailer.php';
 require_once BST_DIR . 'includes/class-bst-inbound.php';
 require_once BST_DIR . 'includes/class-bst-slack.php';
 require_once BST_DIR . 'includes/class-bst-monitoring.php';
+require_once BST_DIR . 'includes/class-bst-dashboard-api.php';
 require_once BST_DIR . 'includes/class-bst-cron.php';
 
 // Front end.
@@ -152,6 +153,7 @@ add_action(
 		BST_Mailer::init();
 		BST_Slack::init();
 		BST_Monitoring::init();
+		BST_Dashboard_API::init();
 		BST_Time::init();
 		BST_Theme_Installer::init();
 		BST_SLA::init();

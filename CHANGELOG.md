@@ -2,6 +2,12 @@
 
 All notable changes to this plugin are documented here. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Added
+- Read-only `GET /wp-json/bst/v1/dashboard/summary` for desktop dashboards (`BST_Dashboard_API`): open ticket counts per status, mine, unassigned, SLA missed (when SLAs are on) and the 8 most recently active open tickets (reference, subject, status, priority, assignee, last activity, admin link). Agents only (`bst_view_all_tickets`), authenticated with a WordPress Application Password. Never returns message bodies, client emails or internal notes.
+- Integration tests for the dashboard endpoint.
+
 ## [0.2.0] - 2026-10-08
 
 ### Added
